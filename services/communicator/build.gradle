@@ -1,0 +1,50 @@
+group 'ructfe'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.3.50'
+    ext.ktor_version = '1.2.4'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlinx-serialization'
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+repositories {
+    jcenter()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile group: 'org.jetbrains.exposed', name: 'exposed', version: '0.17.6'
+    compile 'com.h2database:h2:1.4.192'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.3.50'
+    compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
+    compile group: 'redis.clients', name: 'jedis', version: '3.1.0'
+    compile "io.ktor:ktor-server-sessions:$ktor_version"
+    compile "io.ktor:ktor-freemarker:$ktor_version"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
