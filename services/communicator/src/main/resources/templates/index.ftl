@@ -7,7 +7,8 @@
 <form id="sbm-frm">
     Username: <input type="text" name="username" id="usnm"><br>
     Password: <input type="password" name="password" id="pswd"><br>
-    <button onclick="submit()" id="btn">Kreker</button>
+    <button id="btn">Kreker</button>
 </form>
 </body>
 </html>
+

@@ -64,6 +64,7 @@ fun main() {
             }
             post("/login") {
                 val content = call.receiveChannel().toByteArray().decodeToString()
+                println(content)
                 val userPair = Json.parse(UserPair.serializer(), content)
                 if (manager.validate(userPair)) {
                     call.sessions.set(AuthSession(userPair.name))
@@ -89,8 +90,25 @@ fun main() {
             get("/login_page") {
                 call.respond(FreeMarkerContent("index.ftl", mapOf("name" to "user")))
             }
+            get("/test") {
+                println(call.request.cookies.rawCookies)
+            }
         }
     }
 
     server.start(wait = true)
 }
+
+/*
+function setHandlers() {
+    var form = $("#sbm-frm");
+    var usernameField = $("#usnm");
+    var passwordField = $("#pswd");
+    form.onsubmit = function (ev) {
+        console.log(usernameField.val());
+        console.log(passwordField.val());
+        return false;
+    }
+}
+
+ */
