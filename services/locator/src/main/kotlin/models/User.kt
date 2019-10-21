@@ -18,8 +18,8 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var name by Users.name
     var coordinates by Users.coordinates
     var passwordHash by Users.passwordHash
-    val sent by Message referrersOn Messages.sender
-    val received by Message referrersOn Messages.receiver
+//    val sent by Message referrersOn Messages.sender
+//    val received by Message referrersOn Messages.receiver
 
     val coordinateX: Byte
         get() = (coordinates % 256 - 128).toByte()

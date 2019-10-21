@@ -1,7 +1,6 @@
 package managers
 
 import messages.UserPair
-import models.Messages
 import models.User
 import models.Users
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -13,7 +12,7 @@ class UserManager {
     private val hasher = MessageDigest.getInstance("SHA-256")
 
     private fun createTables() {
-        SchemaUtils.create(Users, Messages)
+        SchemaUtils.create(Users)
     }
 
     fun createNewUser(name: String, password: String) = transaction {
