@@ -9,4 +9,7 @@ fun init() {
         driver = "com.mysql.jdbc.Driver",
         user = "root", password = "12341234"
     )
+    transaction {
+        SchemaUtils.create(Users)
+    }
 }

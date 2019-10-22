@@ -9,8 +9,11 @@ import org.jetbrains.exposed.dao.IntIdTable
 object Users : IntIdTable() {
     val name = varchar("name", length = 50).uniqueIndex()
     val coordinates = integer("coordinates")
-    val passwordHash = binary("passwordHash", 200)
+    val passwordHash = binary("passwordHash", 32)
+    val color = varchar("color", length = 6)
+    val power = integer("power")
 }
+
 
 class User(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<User>(Users)
@@ -26,4 +29,11 @@ class User(id: EntityID<Int>) : IntEntity(id) {
 
     val coordinateY: Byte
         get() = ((coordinates / 256) % 256 - 128).toByte()
+
+    var color by Users.color
+    var power by Users.power
+
+    override fun toString(): String {
+        return "User(name=$name, coordinates=($coordinateX, $coordinateY), color=$color, power=$power)"
+    }
 }

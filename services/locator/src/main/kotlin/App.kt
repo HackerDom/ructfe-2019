@@ -19,8 +19,10 @@ import io.ktor.util.toByteArray
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import managers.UserManager
+import messages.RegisterData
 import messages.UserPair
 import java.io.File
+import java.security.MessageDigest
 
 data class AuthSession(
     val username: String
@@ -60,11 +62,13 @@ fun main() {
             }
             get("/") {
                 val session = call.sessions.get<AuthSession>()
-                call.respondText("Your name is '${session?.username}'")
+                session?.username?.let {
+                    val user = manager.userByName(it)
+                    call.respond(FreeMarkerContent("index.ftl", mapOf("user" to user)))
+                } ?: call.respondRedirect("/login_page")
             }
             post("/login") {
                 val content = call.receiveChannel().toByteArray().decodeToString()
-                println(content)
                 val userPair = Json.parse(UserPair.serializer(), content)
                 if (manager.validate(userPair)) {
                     call.sessions.set(AuthSession(userPair.name))
@@ -75,40 +79,28 @@ fun main() {
             }
             post("/register") {
                 val content = call.receiveChannel().toByteArray().decodeToString()
-                val userPair = Json.parse(UserPair.serializer(), content)
-                if (manager.isUserExists(userPair.name)) {
+                val regData = Json.parse(RegisterData.serializer(), content)
+                if (manager.isUserExists(regData.name)) {
                     call.respond(
                         HttpStatusCode.BadRequest,
-                        "Username ${userPair.name} already exist"
+                        "Username ${regData.name} already exist"
                     )
                 } else {
-                    manager.createNewUser(userPair.name, userPair.password)
-                    call.sessions.set(AuthSession(userPair.name))
+                    manager.createNewUser(regData)
+                    call.sessions.set(AuthSession(regData.name))
                     call.respondRedirect("/")
                 }
             }
             get("/login_page") {
-                call.respond(FreeMarkerContent("index.ftl", mapOf("name" to "user")))
+                call.respond(FreeMarkerContent("login_page.ftl", emptyMap<String, String>()))
             }
-            get("/test") {
-                println(call.request.cookies.rawCookies)
+            get("/register_page") {
+                call.respond(FreeMarkerContent("register_page.ftl", emptyMap<String, String>()))
+            }
+            get("/draw") {
+                call.respond(FreeMarkerContent("draw.ftl", emptyMap<String, String>()))
             }
         }
     }
-
     server.start(wait = true)
 }
-
-/*
-function setHandlers() {
-    var form = $("#sbm-frm");
-    var usernameField = $("#usnm");
-    var passwordField = $("#pswd");
-    form.onsubmit = function (ev) {
-        console.log(usernameField.val());
-        console.log(passwordField.val());
-        return false;
-    }
-}
-
- */

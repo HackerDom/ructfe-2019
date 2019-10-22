@@ -1,9 +1,9 @@
 package managers
 
+import messages.RegisterData
 import messages.UserPair
 import models.User
 import models.Users
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.security.MessageDigest
 import kotlin.random.Random
@@ -11,16 +11,13 @@ import kotlin.random.Random
 class UserManager {
     private val hasher = MessageDigest.getInstance("SHA-256")
 
-    private fun createTables() {
-        SchemaUtils.create(Users)
-    }
-
-    fun createNewUser(name: String, password: String) = transaction {
-        createTables()
+    fun createNewUser(regData: RegisterData) = transaction {
         User.new {
-            this.name = name
-            this.passwordHash = hasher.digest(password.toByteArray())
+            this.name = regData.name
+            this.passwordHash = hasher.digest(regData.password.toByteArray())
             this.coordinates = Random.nextInt(0, 255) * 256 + Random.nextInt(0, 255)
+            this.power = regData.power
+            this.color = regData.color
         }
     }
 
@@ -34,9 +31,12 @@ class UserManager {
         } ?: false
     }
 
+    fun userByName(name: String): User? = transaction {
+        User.find { Users.name eq name }.firstOrNull()
+    }
+
     val users: List<User>
         get() = transaction {
-            createTables()
             User.all().toList()
         }
 }
