@@ -66,14 +66,7 @@ app.post('/editUser', async function (request, response) {
             });
     }
 
-    if (isSuccess) {
-        await response.json({ success: true });
-    } else {
-        await response.json({
-            success: false,
-            error: errorMessage
-        });
-    }
+    await sendResponse(response, isSuccess, errorMessage, { });
 });
 
 app.post('/createChat', async function (request, response) {
@@ -109,17 +102,7 @@ app.post('/createChat', async function (request, response) {
             });
     }
 
-    if (isSuccess) {
-        await response.json({
-            success: true,
-            chatId: chatId
-        });
-    } else {
-        await response.json({
-            success: false,
-            error: errorMessage
-        });
-    }
+    await sendResponse(response, isSuccess, errorMessage, { chatId });
 });
 
 app.post('/joinChat', async function (request, response) {
@@ -135,7 +118,7 @@ app.post('/joinChat', async function (request, response) {
             isSuccess = false;
             errorMessage = 'Can not find chat.';
         });
-    chat.userIds.push(userId);
+    chat.usersIds.push(userId);
 
     if (isSuccess) {
         await chatsCollection.saveChat(chat)
@@ -145,17 +128,7 @@ app.post('/joinChat', async function (request, response) {
             });
     }
 
-    if (isSuccess) {
-        await response.json({
-            success: true,
-            chatId: chatId
-        });
-    } else {
-        await response.json({
-            success: false,
-            error: errorMessage
-        });
-    }
+    await sendResponse(response, isSuccess, errorMessage, { chatId });
 });
 
 app.post('/sendMessage', async function (request, response) {
@@ -167,12 +140,7 @@ app.post('/sendMessage', async function (request, response) {
     const userId = request.body.userId;
 
     let chat;
-    const messageId = await messagesCollection
-        .createMessage(userId, messageText)
-        .catch(_ => {
-            isSuccess = false;
-            errorMessage = 'Can not create message.';
-        });
+
     if (isSuccess) {
         chat = await chatsCollection
             .findChat(chatId)
@@ -181,6 +149,19 @@ app.post('/sendMessage', async function (request, response) {
                 errorMessage = `Can not find chat with id: ${chatId}.`;
             });
     }
+
+    if (hasAccessToWriteMessages(userId, chat)) {
+        isSuccess = false;
+        errorMessage = 'You can not send messages in this chat.';
+    }
+
+    const messageId = await messagesCollection
+        .createMessage(userId, messageText)
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = 'Can not create message.';
+        });
+
     if (isSuccess) {
         chat.messagesIds.push(messageId);
         await chatsCollection
@@ -191,16 +172,41 @@ app.post('/sendMessage', async function (request, response) {
             });
     }
 
+    await sendResponse(response, isSuccess, errorMessage, { });
+});
+
+app.post('/deleteMessage', async function (request, response) {
+    let isSuccess = true;
+    let errorMessage = '';
+
+    const userId = request.body.userId;
+    const messageId = request.body.messageId;
+
+    const message = await messagesCollection
+        .getMessage(messageId)
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = 'Can not find message.';
+        });
+
     if (isSuccess) {
-        await response.json({
-            success: true
-        });
-    } else {
-        await response.json({
-            success: false,
-            error: errorMessage
-        });
+        message.isDeleted = true;
     }
+    if (isSuccess && hasAccessToDeleteMessage(userId, message)) {
+        isSuccess = false;
+        errorMessage = 'Can not delete message of another user';
+    }
+
+    if (isSuccess) {
+        await messagesCollection
+            .saveMessage(message)
+            .catch(_ => {
+                isSuccess = false;
+                errorMessage = 'Can not save message.';
+            });
+    }
+
+    await sendResponse(response, isSuccess, errorMessage, { });
 });
 
 app.post('/getMessages', async function (request, response) {
@@ -212,12 +218,22 @@ app.post('/getMessages', async function (request, response) {
 
     let messagesWithMeta;
     let messages;
+    let user;
+
     const { messagesIds } = await chatsCollection
         .findChat(chatId)
         .catch(_ => {
             isSuccess = false;
             errorMessage = `Can find chat with id: ${chatId}.`;
         });
+    if (isSuccess) {
+        user = await usersCollection
+            .findUser(userId)
+            .catch(_ => {
+                isSuccess = false;
+                errorMessage = 'Can not find user.';
+            });
+    }
     if (isSuccess) {
         messagesWithMeta = await messagesCollection
             .getMessages(messagesIds)
@@ -226,28 +242,21 @@ app.post('/getMessages', async function (request, response) {
                 errorMessage = 'Can not read messages by ids.';
             });
     }
+
+    const isAdminOfCurrentChat = checkIsAdminOfCurrentChat(user, chatId);
+
     if (isSuccess) {
-        messages = messagesWithMeta.map(messageWithMeta => {
-            return {
+        messages = messagesWithMeta
+            .map(messageWithMeta => ({
                 id: messageWithMeta.id,
                 test: messageWithMeta.text,
                 ownerId: messageWithMeta.ownerId,
                 isDeleted: messageWithMeta.isDeleted
-            };
-        });
+            })
+            ).filter(message => hasAccessToReedMessage(userId, message, isAdminOfCurrentChat));
     }
 
-    if (isSuccess) {
-        await response.json({
-            messages: messages,
-            success: true
-        });
-    } else {
-        await response.json({
-            success: false,
-            error: errorMessage
-        });
-    }
+    await sendResponse(response, isSuccess, errorMessage, { messages: messages });
 });
 
 app.post('/searchUser', function (request, response) {
@@ -267,3 +276,33 @@ app.post('/searchUser', function (request, response) {
         }
     }).exec().then(x => response.send({ ser: x }));
 });
+
+function hasAccessToWriteMessages (userId, chat) {
+    return chat.usersIds.some(x => x === userId);
+}
+
+function hasAccessToDeleteMessage (userId, message) {
+    return message.ownerId === userId;
+}
+
+function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {
+    return isAdminOfCurrentChat || !message.isDeleted || message.ownerId === userId;
+}
+
+function checkIsAdminOfCurrentChat (user, chatId) {
+    return user.chatId === chatId && user.isAdmin;
+}
+
+async function sendResponse (response, isSuccess, errorMessage, outputValue) {
+    if (isSuccess) {
+        await response.json({
+            ...outputValue,
+            success: true
+        });
+    } else {
+        await response.json({
+            success: false,
+            error: errorMessage
+        });
+    }
+}

@@ -3,7 +3,7 @@ import { Chat } from '../../entities/chatEntity';
 export class ChatsCollection {
     async createChat (userCreator) {
         const chat = new Chat();
-        chat.userIds.push(userCreator);
+        chat.usersIds.push(userCreator);
         await chat.save();
         return chat.id;
     }

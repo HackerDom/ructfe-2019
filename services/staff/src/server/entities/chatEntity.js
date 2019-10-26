@@ -6,7 +6,7 @@ autoIncrement.initialize(mongoose.connection);
 const chatSchema = new mongoose.Schema({
     id: String,
     messagesIds: Array,
-    userIds: Array
+    usersIds: Array
 });
 
 chatSchema.index({
