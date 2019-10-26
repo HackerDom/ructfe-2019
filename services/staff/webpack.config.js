@@ -11,6 +11,9 @@ module.exports = (env) => {
         stats: { modules: false },
         entry: { main: './src/client/index.jsx' },
         resolve: { extensions: ['.js', '.jsx'] },
+        devServer: {
+            port: 3000
+        },
         output: {
             path: path.join(__dirname, bundleOutputDir),
             filename: 'index_bundle.js'

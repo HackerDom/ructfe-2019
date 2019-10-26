@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --mode development",
     "start": "nodemon --exec babel-node ./scripts/start.js",
+    "watch": "webpack --watch --mode development",
     "test": "test"
   },
   "author": "",

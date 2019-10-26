@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Home } from './components/Home/Home';
+import { RoutePage } from './components/Route/RoutePage';
 
 ReactDOM.render(
-    <Home />,
+    <RoutePage />,
     document.getElementById('root')
 );
