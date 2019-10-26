@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { RoutePage } from './components/Route/RoutePage';
+import { RouteComponent } from './components/Route/RouteComponent';
 
 ReactDOM.render(
-    <RoutePage />,
+    <RouteComponent />,
     document.getElementById('root')
 );
