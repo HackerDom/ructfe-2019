@@ -4,11 +4,10 @@
 
 import express from 'express';
 import bodyParser from 'body-parser';
-
 import { User } from './entities/userEntity';
-// import { Chat } from './entities/chatEntity';
 import { UsersCollection } from './DB/collections/UsersCollection';
 import { ChatsCollection } from './DB/collections/ChatCollection';
+import { MessagesCollection } from './DB/collections/MessagesCollection';
 import { DatabaseController } from './DatabaseController';
 import path from 'path';
 
@@ -19,8 +18,9 @@ const staticPath = path.join(__dirname, '../../dist/');
 app.use(express.static(staticPath));
 
 export const databaseController = new DatabaseController();
-const usersCollections = new UsersCollection();
-const chatsCollections = new ChatsCollection();
+const usersCollection = new UsersCollection();
+const chatsCollection = new ChatsCollection();
+const messagesCollection = new MessagesCollection();
 
 app.get('/', function (request, response) {
     response.render('index.html', { root: path.join(__dirname, staticPath) });
@@ -37,7 +37,7 @@ app.post('/addUser', function (request, response) {
     // }
     const userModel = request.body.user;
 
-    usersCollections
+    usersCollection
         .saveUser(userModel)
         .then(_ => response.json({ success: true }))
         .catch(_ => response.json({ success: false }));
@@ -50,7 +50,7 @@ app.post('/editUser', async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
-    const oldUser = await usersCollections
+    const oldUser = await usersCollection
         .findUser(userId)
         .catch(e => {
             isSuccess = false;
@@ -58,7 +58,7 @@ app.post('/editUser', async function (request, response) {
         });
 
     if (isSuccess) {
-        await usersCollections
+        await usersCollection
             .editUser(oldUser, fields)
             .catch(e => {
                 isSuccess = false;
@@ -83,14 +83,14 @@ app.post('/createChat', async function (request, response) {
     let errorMessage = '';
     let chatId;
 
-    const user = await usersCollections
+    const user = await usersCollection
         .findUser(userId)
         .catch(e => {
             isSuccess = false;
             errorMessage = 'Can not find user.';
         });
     if (isSuccess) {
-        chatId = await chatsCollections
+        chatId = await chatsCollection
             .createChat(userId)
             .catch(e => {
                 isSuccess = false;
@@ -98,7 +98,7 @@ app.post('/createChat', async function (request, response) {
             });
     }
     if (isSuccess) {
-        await usersCollections
+        await usersCollection
             .addFieldsToUser(user, {
                 chatId: chatId,
                 isAdmin: true
@@ -129,7 +129,7 @@ app.post('/joinChat', async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
-    const chat = await chatsCollections
+    const chat = await chatsCollection
         .findChat(chatId)
         .catch(_ => {
             isSuccess = false;
@@ -138,7 +138,7 @@ app.post('/joinChat', async function (request, response) {
     chat.userIds.push(userId);
 
     if (isSuccess) {
-        await chatsCollections.saveChat(chat)
+        await chatsCollection.saveChat(chat)
             .catch(_ => {
                 isSuccess = false;
                 errorMessage = 'Can not save updated chat.';
@@ -158,12 +158,96 @@ app.post('/joinChat', async function (request, response) {
     }
 });
 
-app.post('sendMessage', async function (request, response) {
-    const messageText = request.body.message.text;
-    const chatId = request.body.message.chatId;
-    const messageId = request.body.message.messageId;
+app.post('/sendMessage', async function (request, response) {
+    let isSuccess = true;
+    let errorMessage = '';
 
+    const messageText = request.body.messageText;
+    const chatId = request.body.chatId;
+    const userId = request.body.userId;
 
+    let chat;
+    const messageId = await messagesCollection
+        .createMessage(userId, messageText)
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = 'Can not create message.';
+        });
+    if (isSuccess) {
+        chat = await chatsCollection
+            .findChat(chatId)
+            .catch(_ => {
+                isSuccess = false;
+                errorMessage = `Can not find chat with id: ${chatId}.`;
+            });
+    }
+    if (isSuccess) {
+        chat.messagesIds.push(messageId);
+        await chatsCollection
+            .saveChat(chat)
+            .catch(_ => {
+                isSuccess = false;
+                errorMessage = 'Can not save chat.';
+            });
+    }
+
+    if (isSuccess) {
+        await response.json({
+            success: true
+        });
+    } else {
+        await response.json({
+            success: false,
+            error: errorMessage
+        });
+    }
+});
+
+app.post('/getMessages', async function (request, response) {
+    let isSuccess = true;
+    let errorMessage = '';
+
+    const chatId = request.body.chatId;
+    const userId = request.body.userId;
+
+    let messagesWithMeta;
+    let messages;
+    const { messagesIds } = await chatsCollection
+        .findChat(chatId)
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = `Can find chat with id: ${chatId}.`;
+        });
+    if (isSuccess) {
+        messagesWithMeta = await messagesCollection
+            .getMessages(messagesIds)
+            .catch(_ => {
+                isSuccess = false;
+                errorMessage = 'Can not read messages by ids.';
+            });
+    }
+    if (isSuccess) {
+        messages = messagesWithMeta.map(messageWithMeta => {
+            return {
+                id: messageWithMeta.id,
+                test: messageWithMeta.text,
+                ownerId: messageWithMeta.ownerId,
+                isDeleted: messageWithMeta.isDeleted
+            };
+        });
+    }
+
+    if (isSuccess) {
+        await response.json({
+            messages: messages,
+            success: true
+        });
+    } else {
+        await response.json({
+            success: false,
+            error: errorMessage
+        });
+    }
 });
 
 app.post('/searchUser', function (request, response) {
