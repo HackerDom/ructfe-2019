@@ -28,5 +28,6 @@
         "eqeqeq": ["error", "always"],
         "no-unused-vars": "off",
         "strict": "error"
-    }
+    },
+    "parser": "babel-eslint"
 }
