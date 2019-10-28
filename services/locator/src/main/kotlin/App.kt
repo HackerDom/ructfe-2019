@@ -1,17 +1,21 @@
 import freemarker.cache.ClassTemplateLoader
-import io.ktor.application.*
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.features.StatusPages
 import io.ktor.freemarker.FreeMarker
 import io.ktor.freemarker.FreeMarkerContent
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.files
 import io.ktor.http.content.static
 import io.ktor.http.content.staticRootFolder
 import io.ktor.request.receiveChannel
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.response.respond
+import io.ktor.response.respondRedirect
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.hex
@@ -22,7 +26,6 @@ import managers.UserManager
 import messages.RegisterData
 import messages.UserPair
 import java.io.File
-import java.security.MessageDigest
 
 data class AuthSession(
     val username: String
@@ -64,7 +67,14 @@ fun main() {
                 val session = call.sessions.get<AuthSession>()
                 session?.username?.let {
                     val user = manager.userByName(it)
-                    call.respond(FreeMarkerContent("index.ftl", mapOf("user" to user)))
+                    user?.let {
+                        val info = manager.info(user).initializeInstance()
+                        val templateMap = mapOf(
+                            "user" to user,
+                            "info" to info
+                        )
+                        call.respond(FreeMarkerContent("index.ftl", templateMap))
+                    }
                 } ?: call.respondRedirect("/login_page")
             }
             post("/login") {

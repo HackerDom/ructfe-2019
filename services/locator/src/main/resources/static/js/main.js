@@ -26,19 +26,19 @@ function setRegisterHandlers() {
     const form = $("#sbm-frm");
     const usernameField = $("#usnm");
     const passwordField = $("#pswd");
-    const powerField = $("#power");
     const colorField = $("#color");
+    const rawInfoContentField = $("#raw-content");
 
     form.on("submit", function (ev) {
         const username = usernameField.val();
         const password = passwordField.val();
-        const power = powerField.val();
         const color = colorField.val().substr(1, 6);
+        const rawInfoContent = rawInfoContentField.val();
         const data = JSON.stringify({
             "name": username,
             "password": password,
-            "power": parseInt(power),
-            "color": color
+            "color": color,
+            "rawInfoContent": rawInfoContent,
         });
         $.post("/register", data)
             .fail(function (data) {

@@ -46,5 +46,6 @@ dependencies {
     compile group: 'redis.clients', name: 'jedis', version: '3.1.0'
     compile "io.ktor:ktor-server-sessions:$ktor_version"
     compile "io.ktor:ktor-freemarker:$ktor_version"
+    compile group: 'org.javassist', name: 'javassist', version: '3.26.0-GA'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

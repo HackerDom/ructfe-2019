@@ -11,7 +11,7 @@ object Users : IntIdTable() {
     val coordinates = integer("coordinates")
     val passwordHash = binary("passwordHash", 32)
     val color = varchar("color", length = 6)
-    val power = integer("power")
+    val info = reference("info", Infos)
 }
 
 
@@ -21,6 +21,8 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var name by Users.name
     var coordinates by Users.coordinates
     var passwordHash by Users.passwordHash
+
+    var info by Info referencedOn Users.info
 //    val sent by Message referrersOn Messages.sender
 //    val received by Message referrersOn Messages.receiver
 
@@ -31,9 +33,8 @@ class User(id: EntityID<Int>) : IntEntity(id) {
         get() = ((coordinates / 256) % 256 - 128).toByte()
 
     var color by Users.color
-    var power by Users.power
 
     override fun toString(): String {
-        return "User(name=$name, coordinates=($coordinateX, $coordinateY), color=$color, power=$power)"
+        return "User(name=$name, coordinates=($coordinateX, $coordinateY), color=$color)"
     }
 }

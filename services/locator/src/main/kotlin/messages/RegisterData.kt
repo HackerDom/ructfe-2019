@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 class RegisterData(
     val name: String,
     val password: String,
-    val power: Int,
-    val color: String
+    val color: String,
+    val rawInfoContent: String
 )

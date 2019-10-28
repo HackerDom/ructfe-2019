@@ -1,5 +1,7 @@
-import models.*
-import org.jetbrains.exposed.sql.*
+import models.Infos
+import models.Users
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
@@ -10,6 +12,6 @@ fun init() {
         user = "root", password = "12341234"
     )
     transaction {
-        SchemaUtils.create(Users)
+        SchemaUtils.create(Users, Infos)
     }
 }
