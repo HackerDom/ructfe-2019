@@ -22,6 +22,22 @@ export class UsersCollection {
         });
     }
 
+    async findUserByUsername (username) {
+        return User.findOne({ username: username }, (err, user) => {
+            if (err) {
+                return null;
+            } else {
+                return user;
+            }
+        }).then(user => {
+            if (!user) {
+                throw new Error('Can not find user in mongo db');
+            } else {
+                return user;
+            }
+        });
+    }
+
     async editUser (oldUserModel, newFields) {
         for (const key in newFields) {
             if (oldUserModel[key]) {

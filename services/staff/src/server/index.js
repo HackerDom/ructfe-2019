@@ -8,45 +8,120 @@ import { User } from './entities/userEntity';
 import { UsersCollection } from './DB/collections/UsersCollection';
 import { ChatsCollection } from './DB/collections/ChatCollection';
 import { MessagesCollection } from './DB/collections/MessagesCollection';
-import { DatabaseController } from './DatabaseController';
 import path from 'path';
+import uuid from 'uuid/v4';
+import passport from 'passport';
+import mongoose from 'mongoose';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
-export const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-const staticPath = path.join(__dirname, '../../dist/');
-app.use(express.static(staticPath));
+const LocalStrategy = require('passport-local').Strategy;
+const MongoStore = require('connect-mongo')(session);
 
-export const databaseController = new DatabaseController();
+const sessionsSecretKey = uuid();
+const mongoPort = 27017;
+const databaseName = 'staff-db';
+const mongoUrl = `mongodb://localhost:${mongoPort}/${databaseName}`;
+
+startMongoDb(mongoUrl);
+
 const usersCollection = new UsersCollection();
 const chatsCollection = new ChatsCollection();
 const messagesCollection = new MessagesCollection();
+
+passport.use(new LocalStrategy(
+    async function (username, password, done) {
+        const user = await usersCollection.findUserByUsername(username);
+        if (!user) {
+            return done(null, false, { message: 'Unknown User' });
+        }
+        if (user.password !== password) {
+            return done(null, false, { message: 'Invalid password' });
+        }
+        return done(null, user);
+    }
+));
+passport.use(new LocalStrategy(
+    { usernameField: 'username' },
+    async (username, password, done) => {
+        const user = await usersCollection
+            .findUserByUsername(username)
+            .catch(() => undefined);
+        if (user && username === user.username && password === user.password) {
+            return done(null, user);
+        }
+    }
+));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    const user = await usersCollection.findUser(id);
+    done(null, { username: user.username, id: user.id, biography: user.biography });
+});
+
+export const app = express();
+const staticPath = path.join(__dirname, '../../dist/');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(staticPath));
+app.use(session({
+    store: new MongoStore({
+        url: mongoUrl
+    }),
+    secret: sessionsSecretKey,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24
+    }
+}));
+app.use(passport.initialize());
+app.use(passport.session(sessionsSecretKey));
+app.use(cookieParser());
+
+export function startMongoDb (mongoUrl) {
+    const mongooseOptions = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: true,
+        useCreateIndex: true
+    };
+
+    mongoose.connect(mongoUrl, mongooseOptions)
+        .then(_ => console.log(`Mongo db listening on port ${mongoPort}.`))
+        .catch(e => console.log(`Failed to start Mongo db.\n${e}`));
+}
+
+app.post('/register', async function (req, res) {
+    const newUser = new User({
+        username: req.body.username,
+        password: req.body.password,
+        biography: req.body.biography
+    });
+    const user = await usersCollection.saveUser(newUser);
+    await res.json(user);
+});
+
+app.post('/login', passport.authenticate('local'), async (request, response) => {
+    await sendResponse(response);
+});
+
+app.get('/user', async (request, response) => {
+    const user = request.user;
+    await sendResponse(response, user, Boolean(user), 'Can not find user');
+});
 
 app.get('/', function (request, response) {
     response.render('index.html', { root: path.join(__dirname, staticPath) });
 });
 
-app.post('/addUser', function (request, response) {
-    // if (!validateUser(request.body.user)) {
-    //     response.status(400).send(
-    //         {
-    //             success: false,
-    //             error: 'Field user was not valid.',
-    //             failedObject: request.body.user
-    //         });
-    // }
-    const userModel = request.body.user;
-
-    usersCollection
-        .saveUser(userModel)
-        .then(_ => response.json({ success: true }))
-        .catch(_ => response.json({ success: false }));
-});
-
 app.post('/editUser', async function (request, response) {
-    const userId = request.body.userId; // test
+    const userId = request.user.id;
     const fields = request.body.fields;
-
     let isSuccess = true;
     let errorMessage = '';
 
@@ -66,11 +141,11 @@ app.post('/editUser', async function (request, response) {
             });
     }
 
-    await sendResponse(response, isSuccess, errorMessage, { });
+    await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
 app.post('/createChat', async function (request, response) {
-    const userId = request.body.userId; // test
+    const userId = request.user.id; // test
 
     let isSuccess = true;
     let errorMessage = '';
@@ -102,11 +177,11 @@ app.post('/createChat', async function (request, response) {
             });
     }
 
-    await sendResponse(response, isSuccess, errorMessage, { chatId });
+    await sendResponse(response, { chatId }, isSuccess, errorMessage);
 });
 
 app.post('/joinChat', async function (request, response) {
-    const userId = request.body.userId; // test
+    const userId = request.user.id; // test
     const chatId = request.body.chatId;
 
     let isSuccess = true;
@@ -128,7 +203,7 @@ app.post('/joinChat', async function (request, response) {
             });
     }
 
-    await sendResponse(response, isSuccess, errorMessage, { chatId });
+    await sendResponse(response, { chatId }, isSuccess, errorMessage);
 });
 
 app.post('/sendMessage', async function (request, response) {
@@ -137,7 +212,7 @@ app.post('/sendMessage', async function (request, response) {
 
     const messageText = request.body.messageText;
     const chatId = request.body.chatId;
-    const userId = request.body.userId;
+    const userId = request.user.id;
 
     let chat;
 
@@ -149,8 +224,7 @@ app.post('/sendMessage', async function (request, response) {
                 errorMessage = `Can not find chat with id: ${chatId}.`;
             });
     }
-
-    if (hasAccessToWriteMessages(userId, chat)) {
+    if (!hasAccessToWriteMessages(userId, chat.usersIds)) {
         isSuccess = false;
         errorMessage = 'You can not send messages in this chat.';
     }
@@ -172,7 +246,7 @@ app.post('/sendMessage', async function (request, response) {
             });
     }
 
-    await sendResponse(response, isSuccess, errorMessage, { });
+    await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
 app.post('/deleteMessage', async function (request, response) {
@@ -206,7 +280,7 @@ app.post('/deleteMessage', async function (request, response) {
             });
     }
 
-    await sendResponse(response, isSuccess, errorMessage, { });
+    await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
 app.post('/getMessages', async function (request, response) {
@@ -214,7 +288,7 @@ app.post('/getMessages', async function (request, response) {
     let errorMessage = '';
 
     const chatId = request.body.chatId;
-    const userId = request.body.userId;
+    const userId = request.user.id;
 
     let messagesWithMeta;
     let messages;
@@ -249,14 +323,14 @@ app.post('/getMessages', async function (request, response) {
         messages = messagesWithMeta
             .map(messageWithMeta => ({
                 id: messageWithMeta.id,
-                test: messageWithMeta.text,
+                text: messageWithMeta.text,
                 ownerId: messageWithMeta.ownerId,
                 isDeleted: messageWithMeta.isDeleted
             })
             ).filter(message => hasAccessToReedMessage(userId, message, isAdminOfCurrentChat));
     }
 
-    await sendResponse(response, isSuccess, errorMessage, { messages: messages });
+    await sendResponse(response, { messages: messages }, isSuccess, errorMessage);
 });
 
 app.post('/searchUser', function (request, response) {
@@ -277,8 +351,8 @@ app.post('/searchUser', function (request, response) {
     }).exec().then(x => response.send({ ser: x }));
 });
 
-function hasAccessToWriteMessages (userId, chat) {
-    return chat.usersIds.some(x => x === userId);
+function hasAccessToWriteMessages (userId, usersIds) {
+    return usersIds.some(x => String(x) === String(userId));
 }
 
 function hasAccessToDeleteMessage (userId, message) {
@@ -293,7 +367,7 @@ function checkIsAdminOfCurrentChat (user, chatId) {
     return user.chatId === chatId && user.isAdmin;
 }
 
-async function sendResponse (response, isSuccess, errorMessage, outputValue) {
+async function sendResponse (response, outputValue = {}, isSuccess = true, errorMessage = '') {
     if (isSuccess) {
         await response.json({
             ...outputValue,
