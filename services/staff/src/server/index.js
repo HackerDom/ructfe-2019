@@ -18,7 +18,6 @@ import cookieParser from 'cookie-parser';
 
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
-const wrap = require('async-middleware').wrap;
 
 const sessionsSecretKey = uuid();
 const mongoHost = process.env.MONGO_HOST || 'localhost';
@@ -248,7 +247,7 @@ app.post('/deleteMessage', async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
-    const userId = await request.body.user.id;
+    const userId = await request.user.id;
     const messageId = request.body.messageId;
 
     const message = await messagesCollection

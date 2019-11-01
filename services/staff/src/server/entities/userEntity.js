@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.index({
     id: 1,
-    login: 1
+    username: 1
 }, {
     unique: true
 });
