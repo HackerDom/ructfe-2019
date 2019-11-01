@@ -17,6 +17,7 @@ import cookieParser from 'cookie-parser';
 
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
+const wrap = require('async-middleware').wrap;
 
 const sessionsSecretKey = uuid();
 const mongoPort = 27017;
@@ -81,6 +82,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session(sessionsSecretKey));
 app.use(cookieParser());
+app.use(wrap((req, res) => {
+    return Promise.reject(new Error('Unknown error'));
+}));
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500)
+        .end('error');
+});
 
 export function startMongoDb (mongoUrl) {
     const mongooseOptions = {
@@ -119,7 +128,7 @@ app.get('/', function (request, response) {
 });
 
 app.post('/editUser', async function (request, response) {
-    const userId = request.user.id;
+    const userId = await request.user.id;
     const fields = request.body.fields;
     let isSuccess = true;
     let errorMessage = '';
@@ -144,7 +153,7 @@ app.post('/editUser', async function (request, response) {
 });
 
 app.post('/createChat', async function (request, response) {
-    const userId = request.user.id; // test
+    const userId = await request.user.id;
 
     let isSuccess = true;
     let errorMessage = '';
@@ -180,7 +189,7 @@ app.post('/createChat', async function (request, response) {
 });
 
 app.post('/joinChat', async function (request, response) {
-    const userId = request.user.id; // test
+    const userId = await request.user.id;
     const chatId = request.body.chatId;
 
     let isSuccess = true;
@@ -211,7 +220,7 @@ app.post('/sendMessage', async function (request, response) {
 
     const messageText = request.body.messageText;
     const chatId = request.body.chatId;
-    const userId = request.user.id;
+    const userId = await request.user.id;
 
     let chat;
 
@@ -252,7 +261,7 @@ app.post('/deleteMessage', async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
-    const userId = request.body.userId;
+    const userId = await request.body.user.id;
     const messageId = request.body.messageId;
 
     const message = await messagesCollection
@@ -287,7 +296,7 @@ app.post('/getMessages', async function (request, response) {
     let errorMessage = '';
 
     const chatId = request.body.chatId;
-    const userId = request.user.id;
+    const userId = await request.user.id;
 
     let messagesWithMeta;
     let messages;
