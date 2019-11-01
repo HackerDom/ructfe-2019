@@ -21,8 +21,7 @@ const MongoStore = require('connect-mongo')(session);
 const sessionsSecretKey = uuid();
 const mongoPort = 27017;
 const databaseName = 'staff-db';
-const mongoUrl = `mongodb://localhost:${mongoPort}/${databaseName}`;
-
+const mongoUrl = `mongodb://mongo:${mongoPort}/${databaseName}`;
 startMongoDb(mongoUrl);
 
 const usersCollection = new UsersCollection();
