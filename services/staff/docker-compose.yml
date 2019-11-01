@@ -1,6 +1,10 @@
 version: "2"
 services:
   app:
+    environment:
+      - EXPRESS_PORT=3000
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
     container_name: app
     restart: always
     build: .

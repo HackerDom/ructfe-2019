@@ -2,12 +2,13 @@
 
 'use strict';
 
-import express from 'express';
-import bodyParser from 'body-parser';
 import { User } from './entities/userEntity';
 import { UsersCollection } from './DB/collections/UsersCollection';
 import { ChatsCollection } from './DB/collections/ChatCollection';
 import { MessagesCollection } from './DB/collections/MessagesCollection';
+
+import express from 'express';
+import bodyParser from 'body-parser';
 import path from 'path';
 import uuid from 'uuid/v4';
 import passport from 'passport';
@@ -20,11 +21,11 @@ const MongoStore = require('connect-mongo')(session);
 const wrap = require('async-middleware').wrap;
 
 const sessionsSecretKey = uuid();
-const mongoPort = 27017;
+const mongoHost = process.env.MONGO_HOST || 'localhost';
+const mongoPort = process.env.MONGO_PORT || 27017;
 const databaseName = 'staff-db';
-const mongoUrl = `mongodb://mongo:${mongoPort}/${databaseName}`;
+const mongoUrl = `mongodb://${mongoHost}:${mongoPort}/${databaseName}`;
 startMongoDb(mongoUrl);
-
 const usersCollection = new UsersCollection();
 const chatsCollection = new ChatsCollection();
 const messagesCollection = new MessagesCollection();
@@ -39,17 +40,6 @@ passport.use(new LocalStrategy(
             return done(null, false, { message: 'Invalid password' });
         }
         return done(null, user);
-    }
-));
-passport.use(new LocalStrategy(
-    { usernameField: 'username' },
-    async (username, password, done) => {
-        const user = await usersCollection
-            .findUserByUsername(username)
-            .catch(() => undefined);
-        if (user && username === user.username && password === user.password) {
-            return done(null, user);
-        }
     }
 ));
 
@@ -82,13 +72,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session(sessionsSecretKey));
 app.use(cookieParser());
-app.use(wrap((req, res) => {
-    return Promise.reject(new Error('Unknown error'));
-}));
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(500)
-        .end('error');
+    res.status(500).end('Internal server error.');
 });
 
 export function startMongoDb (mongoUrl) {
@@ -111,7 +97,7 @@ app.post('/register', async function (req, res) {
         biography: req.body.biography
     });
     const user = await usersCollection.saveUser(newUser);
-    await res.json(user);
+    await res.json({ isSuccess: true });
 });
 
 app.post('/login', passport.authenticate('local'), async (request, response) => {
