@@ -1,10 +1,12 @@
+using Household.DataBase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Household
 {
@@ -22,10 +24,37 @@ namespace Household
         {
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
+
+            services.AddCors();
+
+            services.AddSwaggerGen(c =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                //c.IncludeXmlComments(GetXmlCommentsPath());
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Apishka", Version = "v1"});
+                //c.SwaggerDoc("v1", new OpenApiInfo {Title = IdentityServerConfig.ApiFriendlyName, Version = "v1"});
+
+                //c.OperationFilter<AuthorizeCheckOperationFilter>();
+                //c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //{
+                //    Type = SecuritySchemeType.OAuth2,
+                //    Flows = new OpenApiOAuthFlows
+                //    {
+                //        Password = new OpenApiOAuthFlow
+                //        {
+                //            TokenUrl = new Uri("/connect/token", UriKind.Relative),
+                //            Scopes = new Dictionary<string, string>()
+                //            {
+                //                {IdentityServerConfig.ApiName, IdentityServerConfig.ApiFriendlyName}
+                //            }
+                //        }
+                //    }
+                //});
             });
+
+            services.AddDbContext<DataBaseContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext")));
+            //options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,7 +71,18 @@ namespace Household
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.DocumentTitle = "Swagger UI - QuickApp";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Apishka Name V1");
+                //c.OAuthClientId("OAuthClientId value");
+                ////c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{IdentityServerConfig.ApiFriendlyName} V1");
+                ////c.OAuthClientId(IdentityServerConfig.SwaggerClientID);
+                //c.OAuthClientSecret("no_password"); //Leaving it blank doesn't work
+            });
+
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {

@@ -26,3 +26,11 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
+
+## Installing deps
+
+`ructfe-2019\services\Household\Household\ClientApp\src> npm install`
+(use `npm clear cache --force`, if npm can't find packages)
+
+In folder with `Household.csproj`
+`ructfe-2019\services\Household\Household> dotnet restore`
