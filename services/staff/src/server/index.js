@@ -130,9 +130,15 @@ app.get('/', function (request, response) {
     response.render('index.html', { root: path.join(__dirname, staticPath) });
 });
 
-app.post('/editUser', async function (request, response) {
+app.post('/editUser', checkAuthentication, async function (request, response) {
     const userId = await request.user.id;
     const fields = request.body.fields;
+
+    const isValid = Boolean(fields);
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
 
     let isSuccess = true;
     let errorMessage = '';
@@ -200,9 +206,16 @@ app.post('/createChat', checkAuthentication, async function (request, response) 
     await sendResponse(response, { chatId }, isSuccess, errorMessage);
 });
 
-app.post('/joinChat', async function (request, response) {
+app.post('/joinChat', checkAuthentication, async function (request, response) {
     const userId = await request.user.id;
     const chatId = request.body.chatId;
+
+    const isValid = fieldsAreExist(chatId);
+
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
 
     let isSuccess = true;
     let errorMessage = '';
@@ -244,13 +257,19 @@ app.get('/chats', async function (request, response) {
     await sendResponse(response, { chats }, isSuccess, errorMessage);
 });
 
-app.post('/sendMessage', async function (request, response) {
+app.post('/sendMessage', checkAuthentication, async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
     const messageText = request.body.messageText;
     const chatId = request.body.chatId;
     const userId = await request.user.id;
+
+    const isValid = fieldsAreExist(messageText, chatId);
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
 
     let chat;
 
@@ -287,12 +306,17 @@ app.post('/sendMessage', async function (request, response) {
     await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
-app.post('/deleteMessage', async function (request, response) {
+app.post('/deleteMessage', checkAuthentication, async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
     const userId = await request.user.id;
     const messageId = request.body.messageId;
+    const isValid = fieldsAreExist(messageId);
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
 
     const message = await messagesCollection
         .getMessage(messageId)
@@ -321,12 +345,18 @@ app.post('/deleteMessage', async function (request, response) {
     await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
-app.post('/getMessages', async function (request, response) {
+app.post('/getMessages', checkAuthentication, async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
     const chatId = request.body.chatId;
     const userId = await request.user.id;
+
+    const isValid = fieldsAreExist(chatId);
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
 
     let messagesWithMeta;
     let messages;
@@ -338,6 +368,7 @@ app.post('/getMessages', async function (request, response) {
             isSuccess = false;
             errorMessage = `Can find chat with id: ${chatId}.`;
         });
+
     if (isSuccess) {
         user = await usersCollection
             .findUser(userId)
@@ -356,7 +387,6 @@ app.post('/getMessages', async function (request, response) {
     }
 
     const isAdminOfCurrentChat = checkIsAdminOfCurrentChat(user, chatId);
-
     if (isSuccess) {
         messages = messagesWithMeta
             .map(messageWithMeta => ({
@@ -398,11 +428,11 @@ function hasAccessToDeleteMessage (userId, message) {
 }
 
 function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {
-    return isAdminOfCurrentChat || !message.isDeleted || message.ownerId === userId;
+    return isAdminOfCurrentChat || !message.isDeleted || String(message.ownerId) === String(userId);
 }
 
 function checkIsAdminOfCurrentChat (user, chatId) {
-    return user.chatId === chatId && user.isAdmin;
+    return String(user.chatId) === String(chatId) && user.isAdmin;
 }
 
 async function sendResponse (response, outputValue = {}, isSuccess = true, errorMessage = '', statusCode = 200) {
