@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/config"
+	"github.com/HackerDom/ructfe-2019/services/radio/webpack"
 )
 
 func ServeWithTemplateAndStatusCode(w http.ResponseWriter, r *http.Request, templateName string, code int) {
@@ -17,9 +18,15 @@ func ServeWithTemplateAndStatusCode(w http.ResponseWriter, r *http.Request, temp
 		log.Println(err)
 		return
 	}
+
+	tmplFuncs := template.FuncMap{
+		"webpack_asset_path": webpack.WebpackAssetPathFunc,
+		"webpack_asset":      webpack.WebpackAssetFunc,
+	}
+
 	filepath := path.Join(conf.TemplatePath, templateName)
 	var tmpl *template.Template
-	tmpl, err = template.ParseFiles(filepath)
+	tmpl, err = template.New(templateName).Funcs(tmplFuncs).ParseFiles(filepath)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		log.Println(err)
@@ -35,7 +42,7 @@ func ServeWithTemplateAndStatusCode(w http.ResponseWriter, r *http.Request, temp
 	}
 }
 
-func ServeWithTemplate(w http.ResponseWriter, r *http.Request, templateName string) {
+func ServeWithTemplateName(w http.ResponseWriter, r *http.Request, templateName string) {
 	ServeWithTemplateAndStatusCode(w, r, templateName, http.StatusOK)
 }
 

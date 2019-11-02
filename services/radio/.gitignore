@@ -1,2 +1,5 @@
 /.build
 /static/build
+/node_modules
+/.docker
+/docker-compose.yml

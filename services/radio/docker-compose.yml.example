@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+  radio:
+    image: ctf/radio:latest
+    depends_on:
+      - redis
+    ports:
+      - "4553:4553"
+  redis:
+    image: redis:5-alpine
