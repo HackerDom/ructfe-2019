@@ -38,6 +38,18 @@ export class UsersCollection {
         });
     }
 
+    async checkUserInDatabase (username) {
+        return User.findOne({ username: username }, (err, user) => {
+            if (err) {
+                return null;
+            } else {
+                return user;
+            }
+        }).then(user => {
+            return Boolean(user);
+        });
+    }
+
     async editUser (oldUserModel, newFields) {
         for (const key in newFields) {
             if (oldUserModel[key]) {

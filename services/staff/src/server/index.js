@@ -1,11 +1,10 @@
 #!/usr/bin/env nodejs
 
-'use strict';
-
 import { User } from './entities/userEntity';
 import { UsersCollection } from './DB/collections/UsersCollection';
 import { ChatsCollection } from './DB/collections/ChatCollection';
 import { MessagesCollection } from './DB/collections/MessagesCollection';
+import { fieldsAreExist } from './validations';
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -89,16 +88,33 @@ export function startMongoDb (mongoUrl) {
         .catch(e => console.log(`Failed to start Mongo db.\n${e}`));
 }
 
-app.post('/register', async function (req, res) {
+app.post('/register', async function (request, response) {
     const newUser = new User({
-        username: req.body.username,
-        password: req.body.password,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        biography: req.body.biography
+        username: request.body.username ? request.body.username.toString() : null,
+        password: request.body.password ? request.body.password.toString() : null,
+        firstName: request.body.firstName ? request.body.firstName.toString() : null,
+        lastName: request.body.lastName ? request.body.lastName : null,
+        biography: request.body.biography.toString() ? request.body.biography : null
     });
+    const isValid = fieldsAreExist(
+        newUser.username,
+        newUser.password,
+        newUser.firstName,
+        newUser.lastName,
+        newUser.biography);
+
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
+
+    const userExist = await usersCollection.checkUserInDatabase(request.body.username);
+    if (userExist) {
+        await sendResponse(response, {}, false, 'User with this name is already exist', 400);
+        return;
+    }
     await usersCollection.saveUser(newUser);
-    await res.json({ isSuccess: true });
+    await sendResponse(response);
 });
 
 app.post('/login', passport.authenticate('local'), async (request, response) => {
@@ -363,14 +379,14 @@ function checkIsAdminOfCurrentChat (user, chatId) {
     return user.chatId === chatId && user.isAdmin;
 }
 
-async function sendResponse (response, outputValue = {}, isSuccess = true, errorMessage = '') {
+async function sendResponse (response, outputValue = {}, isSuccess = true, errorMessage = '', statusCode = 200) {
     if (isSuccess) {
         await response.json({
             ...outputValue,
             success: true
         });
     } else {
-        await response.json({
+        await response.status(statusCode).json({
             success: false,
             error: errorMessage
         });

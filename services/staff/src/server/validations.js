@@ -7,3 +7,15 @@ export function validateUser (user) {
     }
     return false;
 }
+
+export function fieldsAreExist (...fieldsValues) {
+    let isSuccess = Boolean(fieldsValues);
+
+    for (const fieldValue of fieldsValues) {
+        if (!fieldValue) {
+            isSuccess = false;
+        }
+    }
+
+    return isSuccess;
+}
