@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Household.DataBase;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Household.DataBaseModels;
-using Household.Models;
 using Household.ViewModels;
-using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
+#pragma warning disable 1591
 
 namespace Household.Controllers
 {
@@ -17,14 +13,19 @@ namespace Household.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly DataBaseContext _dataBase;
+        private readonly DataBaseContext dataBase;
 
         public ProductsController(DataBaseContext dataBase)
         {
-            _dataBase = dataBase;
+            this.dataBase = dataBase;
         }
 
-        // GET: api/Products
+        /// <summary>
+        /// Список доступных продуктов
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<Page<Product>>> GetProducts(int skip = 0, int take = 100)
         {
@@ -33,8 +34,9 @@ namespace Household.Controllers
                 return BadRequest("Parameter take should be greater then 0");
 
 
-            var items = await _dataBase.Products.Skip(skip).Take(take).ToArrayAsync().ConfigureAwait(false);
-            var totalCount = await _dataBase.Products.CountAsync().ConfigureAwait(false);
+            var items = await dataBase.Products.Skip(skip).Take(take).ToArrayAsync().ConfigureAwait(false);
+            var totalCount = await dataBase.Products.CountAsync().ConfigureAwait(false);
+
             var page = new Page<Product>
             {
                 Skip = skip,
@@ -49,7 +51,7 @@ namespace Household.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _dataBase.Products.FindAsync(id).ConfigureAwait(false);
+            var product = await dataBase.Products.FindAsync(id).ConfigureAwait(false);
 
             if (product == null)
             {
@@ -70,11 +72,11 @@ namespace Household.Controllers
                 return BadRequest();
             }
 
-            _dataBase.Entry(product).State = EntityState.Modified;
+            dataBase.Entry(product).State = EntityState.Modified;
 
             try
             {
-                await _dataBase.SaveChangesAsync();
+                await dataBase.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -97,31 +99,32 @@ namespace Household.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            _dataBase.Products.Add(product);
-            await _dataBase.SaveChangesAsync();
+            dataBase.Products.Add(product);
+            await dataBase.SaveChangesAsync().ConfigureAwait(false);
 
             return CreatedAtAction("GetProduct", new {id = product.Id}, product);
+            // return await GetProduct(product.Id).ConfigureAwait(false);
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Product>> DeleteProduct(int id)
         {
-            var product = await _dataBase.Products.FindAsync(id);
+            var product = await dataBase.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            _dataBase.Products.Remove(product);
-            await _dataBase.SaveChangesAsync();
+            dataBase.Products.Remove(product);
+            await dataBase.SaveChangesAsync();
 
             return product;
         }
 
         private bool ProductExists(int id)
         {
-            return _dataBase.Products.Any(e => e.Id == id);
+            return dataBase.Products.Any(e => e.Id == id);
         }
     }
 }
