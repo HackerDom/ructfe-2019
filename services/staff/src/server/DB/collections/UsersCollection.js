@@ -69,7 +69,8 @@ export class UsersCollection {
     }
 
     async findByPattern (pattern) {
-        User.find(pattern, (err, users) => {
+        return User.find(pattern, (err, users) => {
+            console.log(users);
             if (!err) {
                 if (!users) {
                     return users;

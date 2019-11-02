@@ -104,7 +104,7 @@ app.post('/register', async function (request, response) {
         newUser.biography);
 
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -122,8 +122,36 @@ app.post('/login', passport.authenticate('local'), async (request, response) => 
 });
 
 app.get('/user', async (request, response) => {
-    const user = request.user;
-    await sendResponse(response, user, Boolean(user), 'Can not find user');
+    const userId = request.query.userId;
+    let isSuccess = true;
+    let errorMessage = '';
+    const isValid = fieldsAreExist(userId);
+    if (!isValid) {
+        await sendResponseOnInvalidRequestFields(response);
+        return;
+    }
+    const user = await usersCollection.findUser(userId)
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = 'Can not find user';
+        });
+    if (isSuccess) {
+        await sendResponse(
+            response,
+            {
+                id: user.id,
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName
+            });
+    } else {
+        await sendResponse(
+            response,
+            {},
+            isSuccess,
+            errorMessage,
+            404);
+    }
 });
 
 app.get('/', function (request, response) {
@@ -136,7 +164,7 @@ app.post('/editUser', checkAuthentication, async function (request, response) {
 
     const isValid = Boolean(fields);
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -166,10 +194,10 @@ app.post('/createChat', checkAuthentication, async function (request, response) 
     const userId = await request.user.id;
     const chatName = request.body.chatName;
 
-    const isValid = fieldsAreExist(chatName);
+    const isValid = fieldsAreExist(chatName.toString());
 
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -209,11 +237,12 @@ app.post('/createChat', checkAuthentication, async function (request, response) 
 app.post('/joinChat', checkAuthentication, async function (request, response) {
     const userId = await request.user.id;
     const chatId = request.body.chatId;
+    const inviteLink = request.body.inviteLink;
 
-    const isValid = fieldsAreExist(chatId);
+    const isValid = fieldsAreExist(chatId.toString(), inviteLink.toString());
 
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -226,7 +255,14 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
             isSuccess = false;
             errorMessage = 'Can not find chat.';
         });
-    chat.usersIds.push(userId);
+
+    if (isSuccess && String(chat.inviteLink) !== String(inviteLink)) {
+        await sendResponse(response, { }, false, 'Invalid invite link', 403);
+    }
+
+    if (isSuccess) {
+        chat.usersIds.push(userId);
+    }
 
     if (isSuccess) {
         await chatsCollection.saveChat(chat)
@@ -237,6 +273,41 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
     }
 
     await sendResponse(response, { chatId }, isSuccess, errorMessage);
+});
+
+app.get('/inviteLink', checkAuthentication, async function (request, response) {
+    const chatId = request.query.chatId;
+    const isValid = fieldsAreExist(chatId);
+    const userId = request.user.id;
+
+    if (!isValid) {
+        await sendResponseOnInvalidRequestFields(response);
+        return;
+    }
+
+    let isSuccess = true;
+    let errorMessage = '';
+
+    const chat = await chatsCollection
+        .findChat(chatId)
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = 'Can not find chat.';
+        });
+
+    if (isSuccess && !chat.usersIds.some(id => id === userId)) {
+        await sendResponse(response, { }, false, 'You have not access to this chat', 403);
+        return;
+    }
+    console.log(chat);
+
+    await sendResponse(response,
+        {
+            inviteLink: chat.inviteLink,
+            chatId: chat.id
+        },
+        isSuccess,
+        errorMessage);
 });
 
 app.get('/chats', async function (request, response) {
@@ -267,7 +338,7 @@ app.post('/sendMessage', checkAuthentication, async function (request, response)
 
     const isValid = fieldsAreExist(messageText, chatId);
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -314,7 +385,7 @@ app.post('/deleteMessage', checkAuthentication, async function (request, respons
     const messageId = request.body.messageId;
     const isValid = fieldsAreExist(messageId);
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -345,16 +416,16 @@ app.post('/deleteMessage', checkAuthentication, async function (request, respons
     await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
-app.post('/getMessages', checkAuthentication, async function (request, response) {
+app.get('/messages', checkAuthentication, async function (request, response) {
     let isSuccess = true;
     let errorMessage = '';
 
-    const chatId = request.body.chatId;
+    const chatId = request.query.chatId;
     const userId = await request.user.id;
 
     const isValid = fieldsAreExist(chatId);
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponseOnInvalidRequestFields(response);
         return;
     }
 
@@ -362,12 +433,17 @@ app.post('/getMessages', checkAuthentication, async function (request, response)
     let messages;
     let user;
 
-    const { messagesIds } = await chatsCollection
+    const chat = await chatsCollection
         .findChat(chatId)
         .catch(_ => {
             isSuccess = false;
             errorMessage = `Can find chat with id: ${chatId}.`;
         });
+
+    if (isSuccess && !chat.usersIds.some(x => x === userId)) {
+        await sendResponse(response, { }, false, 'You have not access to this chat', 403);
+        return;
+    }
 
     if (isSuccess) {
         user = await usersCollection
@@ -379,7 +455,7 @@ app.post('/getMessages', checkAuthentication, async function (request, response)
     }
     if (isSuccess) {
         messagesWithMeta = await messagesCollection
-            .getMessages(messagesIds)
+            .getMessages(chat.messagesIds)
             .catch(_ => {
                 isSuccess = false;
                 errorMessage = 'Can not read messages by ids.';
@@ -404,14 +480,14 @@ app.post('/getMessages', checkAuthentication, async function (request, response)
 app.post('/searchUser', async function (request, response) {
     const isValid = request.body.query && fieldsAreExist(request.body.query.firstName, request.body.query.lastName);
     if (!isValid) {
-        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        await sendResponse(response, {}, false, 'Request\'s fields is not valid', 400);
         return;
     }
     const query = request.body.query;
     const foundedUsers = await usersCollection.findByPattern(query);
-
+    console.log(foundedUsers);
     await sendResponse(response,
-        foundedUsers? foundedUsers.map(user => ({ id: user.id, username: user.username })):[]
+        foundedUsers ? foundedUsers.map(user => ({ id: user.id, username: user.username })) : []
     );
 });
 
@@ -445,10 +521,19 @@ async function sendResponse (response, outputValue = {}, isSuccess = true, error
     }
 }
 
+async function sendResponseOnInvalidRequestFields (response) {
+    await sendResponse(response, {}, false, 'Request\'s fields is not valid', 400);
+}
+
 async function checkAuthentication (request, response, next) {
     if (request.isAuthenticated()) {
         next();
     } else {
-        await sendResponse(response, {}, false, 'Auth required', 403);
+        await sendResponse(
+            response,
+            {},
+            false,
+            'You have not been authorised',
+            401);
     }
 }
