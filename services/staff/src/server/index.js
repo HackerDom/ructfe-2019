@@ -401,22 +401,18 @@ app.post('/getMessages', checkAuthentication, async function (request, response)
     await sendResponse(response, { messages: messages }, isSuccess, errorMessage);
 });
 
-app.post('/searchUser', function (request, response) {
+app.post('/searchUser', async function (request, response) {
+    const isValid = request.body.query && fieldsAreExist(request.body.query.firstName, request.body.query.lastName);
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
     const query = request.body.query;
-    User.findOne(query, (err, user) => {
-        if (!err) {
-            if (user) {
-                response.json({
-                    success: true,
-                    user: user
-                });
-            } else {
-                response.json({ success: false });
-            }
-        } else {
-            throw err;
-        }
-    }).exec().then(x => response.send({ ser: x }));
+    const foundedUsers = await usersCollection.findByPattern(query);
+
+    await sendResponse(response,
+        foundedUsers? foundedUsers.map(user => ({ id: user.id, username: user.username })):[]
+    );
 });
 
 function hasAccessToWriteMessages (userId, usersIds) {

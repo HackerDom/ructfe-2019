@@ -67,4 +67,21 @@ export class UsersCollection {
 
         return oldUserModel.save();
     }
+
+    async findByPattern (pattern) {
+        User.find(pattern, (err, users) => {
+            if (!err) {
+                if (!users) {
+                    return users;
+                }
+                if (Array.isArray(users)) {
+                    return users;
+                } else {
+                    return [users];
+                }
+            } else {
+                throw err;
+            }
+        });
+    }
 }
