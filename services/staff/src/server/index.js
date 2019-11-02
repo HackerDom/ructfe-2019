@@ -142,7 +142,8 @@ app.get('/user', async (request, response) => {
                 id: user.id,
                 username: user.username,
                 firstName: user.firstName,
-                lastName: user.lastName
+                lastName: user.lastName,
+                biography: user.biography
             });
     } else {
         await sendResponse(
