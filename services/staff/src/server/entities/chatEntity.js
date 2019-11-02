@@ -5,6 +5,8 @@ autoIncrement.initialize(mongoose.connection);
 
 const chatSchema = new mongoose.Schema({
     id: String,
+    name: String,
+    inviteLink: String,
     messagesIds: Array,
     usersIds: Array
 });

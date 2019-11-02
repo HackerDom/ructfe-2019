@@ -156,8 +156,16 @@ app.post('/editUser', async function (request, response) {
     await sendResponse(response, {}, isSuccess, errorMessage);
 });
 
-app.post('/createChat', async function (request, response) {
+app.post('/createChat', checkAuthentication, async function (request, response) {
     const userId = await request.user.id;
+    const chatName = request.body.chatName;
+
+    const isValid = fieldsAreExist(chatName);
+
+    if (!isValid) {
+        await sendResponse(response, {}, false, 'Request fields is not valid', 400);
+        return;
+    }
 
     let isSuccess = true;
     let errorMessage = '';
@@ -171,7 +179,7 @@ app.post('/createChat', async function (request, response) {
         });
     if (isSuccess) {
         chatId = await chatsCollection
-            .createChat(userId)
+            .createChat(userId, chatName)
             .catch(e => {
                 isSuccess = false;
                 errorMessage = 'Can not create chat.';
@@ -216,6 +224,24 @@ app.post('/joinChat', async function (request, response) {
     }
 
     await sendResponse(response, { chatId }, isSuccess, errorMessage);
+});
+
+app.get('/chats', async function (request, response) {
+    let isSuccess = true;
+    let errorMessage = '';
+
+    const chats = await chatsCollection
+        .getChats()
+        .catch(_ => {
+            isSuccess = false;
+            errorMessage = 'Can not find chats.';
+        }).then(x => {
+            if (typeof x === 'object') {
+                return [x];
+            }
+            return x;
+        }).then(x => x.map(chat => ({ id: chat.id, name: chat.name, usersIds: chat.usersIds })));
+    await sendResponse(response, { chats }, isSuccess, errorMessage);
 });
 
 app.post('/sendMessage', async function (request, response) {
@@ -390,5 +416,13 @@ async function sendResponse (response, outputValue = {}, isSuccess = true, error
             success: false,
             error: errorMessage
         });
+    }
+}
+
+async function checkAuthentication (request, response, next) {
+    if (request.isAuthenticated()) {
+        next();
+    } else {
+        await sendResponse(response, {}, false, 'Auth required', 403);
     }
 }
