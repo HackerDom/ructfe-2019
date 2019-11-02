@@ -486,9 +486,8 @@ app.post('/searchUser', async function (request, response) {
     }
     const query = request.body.query;
     const foundedUsers = await usersCollection.findByPattern(query);
-    console.log(foundedUsers);
     await sendResponse(response,
-        foundedUsers ? foundedUsers.map(user => ({ id: user.id, username: user.username })) : []
+        foundedUsers ? { users: foundedUsers.map(user => ({ id: user.id, username: user.username })) } : []
     );
 });
 
