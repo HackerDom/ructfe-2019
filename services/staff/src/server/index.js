@@ -116,6 +116,7 @@ app.get('/', function (request, response) {
 app.post('/editUser', async function (request, response) {
     const userId = await request.user.id;
     const fields = request.body.fields;
+
     let isSuccess = true;
     let errorMessage = '';
 

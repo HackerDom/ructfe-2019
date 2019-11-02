@@ -4,7 +4,10 @@ import autoIncrement from 'mongoose-auto-increment';
 autoIncrement.initialize(mongoose.connection);
 
 const userSchema = new mongoose.Schema({
-    username: String,
+    firstName: String,
+    lastName: String,
+    login: String,
+    salt: String,
     password: String,
     biography: String,
     chatId: String,
