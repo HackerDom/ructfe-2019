@@ -1,0 +1,14 @@
+.formContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.form {
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 160px;
+}

@@ -93,9 +93,11 @@ app.post('/register', async function (req, res) {
     const newUser = new User({
         username: req.body.username,
         password: req.body.password,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         biography: req.body.biography
     });
-    const user = await usersCollection.saveUser(newUser);
+    await usersCollection.saveUser(newUser);
     await res.json({ isSuccess: true });
 });
 

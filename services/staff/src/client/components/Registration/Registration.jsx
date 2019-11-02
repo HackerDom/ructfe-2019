@@ -8,6 +8,11 @@ export function Registration () {
         <article className={s.formContainer}>
             <section className={s.form}>
                 <TextField
+                    label="Login"
+                    variant="outlined"
+                    onChange={register.changeUsername}
+                />
+                <TextField
                     label="First name"
                     variant="outlined"
                     onChange={register.changeFirstName}
