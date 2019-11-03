@@ -7,6 +7,7 @@ using FluentAssertions;
 using Household;
 using Household.DataBaseModels;
 using Household.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -16,15 +17,25 @@ using NUnit.Framework;
 
 namespace HouseholdTests.ProductsTests
 {
-    public class TestWebApplication
+    public class TestEnvironment
     {
-        private readonly WebApplicationFactory<Startup> factory;
+        private readonly TestWebApplicationFactory factory;
         public TestClient Client { get; }
 
-        public TestWebApplication()
+        public TestEnvironment()
         {
-            factory = new WebApplicationFactory<Startup>();
+            factory = new TestWebApplicationFactory();
+            
             Client = new TestClient(factory.CreateDefaultClient());
+        }
+
+        public class TestWebApplicationFactory : WebApplicationFactory<Startup>
+        {
+            protected override void ConfigureWebHost(IWebHostBuilder builder)
+            {
+                builder = Program.CreateWebHostBuilder(null);
+                base.ConfigureWebHost(builder);
+            }
         }
 
         public class TestClient
@@ -60,14 +71,13 @@ namespace HouseholdTests.ProductsTests
     [TestFixture]
     public class ProductControllerFunctionalTests
     {
-        private TestWebApplication env;
+        private TestEnvironment env;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            env = new TestWebApplication();
+            env = new TestEnvironment();
         }
-
 
         [Test]
         public async Task Should_create_product_and_retrieve_it()

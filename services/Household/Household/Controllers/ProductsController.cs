@@ -1,23 +1,29 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Household.DataBase;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Household.DataBaseModels;
 using Household.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+
 #pragma warning disable 1591
 
 namespace Household.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly DataBaseContext dataBase;
+        private readonly HouseholdDbContext dataBase;
+        private readonly IMapper mapper;
 
-        public ProductsController(DataBaseContext dataBase)
+        public ProductsController(HouseholdDbContext dataBase, IMapper mapper)
         {
             this.dataBase = dataBase;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -27,29 +33,28 @@ namespace Household.Controllers
         /// <param name="take"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<Page<Product>>> GetProducts(int skip = 0, int take = 100)
+        public async Task<ActionResult<Page<ProductViewModel>>> GetProducts(int skip = 0, int take = 100)
         {
             // TODO: проверка параметров
             if (take < 1)
                 return BadRequest("Parameter take should be greater then 0");
 
-
             var items = await dataBase.Products.Skip(skip).Take(take).ToArrayAsync().ConfigureAwait(false);
             var totalCount = await dataBase.Products.CountAsync().ConfigureAwait(false);
 
-            var page = new Page<Product>
+            var page = new Page<ProductViewModel>
             {
                 Skip = skip,
                 Take = take,
                 TotalCount = totalCount,
-                Items = items
+                Items = items.Select(GetViewModel).ToArray()
             };
             return page;
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
             var product = await dataBase.Products.FindAsync(id).ConfigureAwait(false);
 
@@ -58,14 +63,14 @@ namespace Household.Controllers
                 return NotFound();
             }
 
-            return product;
+            return GetViewModel(product);
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, ProductViewModel product)
         {
             if (id != product.Id)
             {
@@ -97,18 +102,18 @@ namespace Household.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<ProductViewModel>> PostProduct(ProductViewModel productViewModel)
         {
+            var product = GetDataModel(productViewModel);
             dataBase.Products.Add(product);
             await dataBase.SaveChangesAsync().ConfigureAwait(false);
 
-            return CreatedAtAction("GetProduct", new {id = product.Id}, product);
-            // return await GetProduct(product.Id).ConfigureAwait(false);
+            return CreatedAtAction("GetProduct", new {id = product.Id}, GetViewModel(product));
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Product>> DeleteProduct(int id)
+        public async Task<ActionResult<ProductViewModel>> DeleteProduct(int id)
         {
             var product = await dataBase.Products.FindAsync(id);
             if (product == null)
@@ -119,12 +124,24 @@ namespace Household.Controllers
             dataBase.Products.Remove(product);
             await dataBase.SaveChangesAsync();
 
-            return product;
+            return GetViewModel(product);
         }
 
         private bool ProductExists(int id)
         {
             return dataBase.Products.Any(e => e.Id == id);
+        }
+
+        private ProductViewModel GetViewModel(Product productDataModel)
+        {
+            var productViewModel = mapper.Map<ProductViewModel>(productDataModel);
+            return productViewModel;
+        }
+
+        private Product GetDataModel(ProductViewModel productViewModel)
+        {
+            var productDataModel = mapper.Map<Product>(productViewModel);
+            return productDataModel;
         }
     }
 }

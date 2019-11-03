@@ -1,12 +1,16 @@
 ﻿using Household.DataBaseModels;
+using Household.Models;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Household.DataBase
 {
-    public class DataBaseContext : DbContext
+    public class HouseholdDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public DataBaseContext(DbContextOptions<DataBaseContext> options)
-            : base(options)
+        public HouseholdDbContext(DbContextOptions<HouseholdDbContext> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
             Database.EnsureCreated(); // создаем бд с новой схемой
         }
