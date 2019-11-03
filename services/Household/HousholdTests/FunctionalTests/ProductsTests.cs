@@ -1,75 +1,14 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
-using Household;
 using Household.DataBaseModels;
 using Household.ViewModels;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Headers;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
+using HouseholdTests.Infrastructure;
 using NUnit.Framework;
 
-
-namespace HouseholdTests.ProductsTests
+namespace HouseholdTests.FunctionalTests
 {
-    public class TestEnvironment
-    {
-        private readonly TestWebApplicationFactory factory;
-        public TestClient Client { get; }
-
-        public TestEnvironment()
-        {
-            factory = new TestWebApplicationFactory();
-            
-            Client = new TestClient(factory.CreateDefaultClient());
-        }
-
-        public class TestWebApplicationFactory : WebApplicationFactory<Startup>
-        {
-            protected override void ConfigureWebHost(IWebHostBuilder builder)
-            {
-                builder = Program.CreateWebHostBuilder(null);
-                base.ConfigureWebHost(builder);
-            }
-        }
-
-        public class TestClient
-        {
-            private readonly HttpClient innerClient;
-
-            public TestClient(HttpClient innerClient)
-            {
-                this.innerClient = innerClient;
-            }
-
-            public async Task<T> Get<T>(string uri)
-            {
-                var response = await innerClient.GetAsync(uri);
-
-                var r = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(r);
-            }
-
-            public async Task<T> Post<T>(string uri, T content)
-            {
-                var c = JsonConvert.SerializeObject(content);
-
-                var request = new StringContent(c, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var response = await innerClient.PostAsync(uri, request);
-
-                var r = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(r);
-            }
-        }
-    }
-
     [TestFixture]
-    public class ProductControllerFunctionalTests
+    public class ProductsTests
     {
         private TestEnvironment env;
 
@@ -148,7 +87,6 @@ namespace HouseholdTests.ProductsTests
                 Name = "Лук", Calories = 30, Carbohydrate = 10, Fat = 0, Protein = 0
             }
         };
-
 
         private async Task PostTestProductsToServer()
         {
