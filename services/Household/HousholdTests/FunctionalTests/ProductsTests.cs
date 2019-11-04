@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Household.DataBaseModels;
 using Household.ViewModels;
@@ -30,28 +31,33 @@ namespace HouseholdTests.FunctionalTests
                 Protein = 0.1
             };
 
-            var createdResult = await env.Client.Post("/api/Products", product).ConfigureAwait(false);
-            var retrievedResult =
-                await env.Client.Get<Product>($"/api/Products/{createdResult.Id}").ConfigureAwait(false);
+            var createResult = await env.Client.Post("/api/Products", product).ConfigureAwait(false);
+            createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            retrievedResult.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
+            var getResult = await env.Client.Get<Product>($"/api/Products/{createResult.Value.Id}").ConfigureAwait(false);
+            getResult.EnsureStatusCode(HttpStatusCode.OK);
+
+            getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
         }
 
 
         [Test]
         public async Task Should_create_several_product_and_retrieve_list()
         {
-            var oldProducts = await env.Client.Get<Page<Product>>("api/products").ConfigureAwait(false);
+            var getPreviousProducts = await env.Client.Get<Page<Product>>("api/products").ConfigureAwait(false);
+            getPreviousProducts.EnsureStatusCode(HttpStatusCode.OK);
+            var previousProducts = getPreviousProducts.Value;
 
             await PostTestProductsToServer();
 
-            var productList = await env.Client.Get<Page<Product>>($"api/products?skip={oldProducts.TotalCount}")
-                .ConfigureAwait(false);
+            var getProducts = await env.Client.Get<Page<Product>>($"api/products?skip={previousProducts.TotalCount}").ConfigureAwait(false);
+            getProducts.EnsureStatusCode(HttpStatusCode.OK);
+            var productsList = getProducts.Value;
 
-            productList.Skip.Should().Be(oldProducts.TotalCount);
-            productList.Take.Should().Be(100);
-            productList.TotalCount.Should().Be(oldProducts.TotalCount + testProducts.Length);
-            productList.Items.Should().BeEquivalentTo(testProducts, options => options.Excluding(p => p.Id));
+            productsList.Skip.Should().Be(previousProducts.TotalCount);
+            productsList.Take.Should().Be(100);
+            productsList.TotalCount.Should().Be(previousProducts.TotalCount + testProducts.Length);
+            productsList.Items.Should().BeEquivalentTo(testProducts, options => options.Excluding(p => p.Id));
         }
 
         //[Test]
@@ -92,8 +98,8 @@ namespace HouseholdTests.FunctionalTests
         {
             foreach (var product in testProducts)
             {
-                var createdResult = await env.Client.Post("api/products", product).ConfigureAwait(false);
-                //createdResult.EnsureResponseCode(HttpStatusCode.Created);
+                var createResult = await env.Client.Post("api/products", product).ConfigureAwait(false);
+                createResult.EnsureStatusCode(HttpStatusCode.Created);
             }
         }
     }
