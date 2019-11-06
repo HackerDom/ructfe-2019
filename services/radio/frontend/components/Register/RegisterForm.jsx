@@ -43,6 +43,7 @@ class RegisterForm extends React.Component {
             <div className='register-form__username'>
                 <Input id='username' name='username' type="text"
                     inputAttrs={{
+                        placeholder: 'Username',
                         value: username,
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
@@ -53,6 +54,7 @@ class RegisterForm extends React.Component {
             <div className='register-form__password'>
                 <PasswordInput id='password1' name='password1'
                     inputAttrs={{
+                        placeholder: 'Password',
                         value: password1,
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
@@ -63,6 +65,7 @@ class RegisterForm extends React.Component {
             <div className='register-form__password'>
                 <PasswordInput id='password2' name='password2'
                     inputAttrs={{
+                        placeholder: 'Repeat password',
                         value: password2,
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
@@ -71,7 +74,7 @@ class RegisterForm extends React.Component {
                     }}/>
             </div>
             <div className='register-form__submit'>
-                <Button title='Submit' modifiers={['submit']} onClick={() => {
+                <Button title='Sign Up' modifiers={['submit']} onClick={() => {
                     registerUser({ username, password1, password2 });
                 }} />
             </div>

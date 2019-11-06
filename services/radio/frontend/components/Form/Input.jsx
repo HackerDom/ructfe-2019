@@ -62,19 +62,19 @@ export default class Input extends React.Component {
             hasErrors
         } = this.props;
         const endlessType = isHidden ? 'hidden' : type;
-        const classNames = ['form_input', ...classes];
+        const classNames = ['form-input', ...classes];
         if (isHidden) {
-            classNames.push('form_input--hidden');
+            classNames.push('form-input--hidden');
         }
         if ((errors && errors.length > 0) || hasErrors) {
-            classNames.push('form_input--error');
+            classNames.push('form-input--error');
         }
         return <div className={classNames.join(' ')}>
-            <div className='form_input__inner'>
-                { !isHidden && label && <label htmlFor={id} className='form_input_label' dangerouslySetInnerHTML={{ __html: label }}></label> }
+            <div className='form-input__inner'>
+                { !isHidden && label && <label htmlFor={id} className='form-input-label' dangerouslySetInnerHTML={{ __html: label }}></label> }
                 <input id={id} type={endlessType} name={name}
                     onKeyPress={onKeyPress.bind(this)}
-                    className='form_input__input'
+                    className='form-input__input'
                     ref={this.inputRef}
                     onChange={onChange.bind(this)} {...inputAttrs}/>
                 { !isHidden && errors && errors.length > 0 && <Errors errors={errors} />}

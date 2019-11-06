@@ -8,10 +8,10 @@ export default class Nav extends React.Component {
 
     render() {
         return <nav className='radio-nav'>
-            <Link to='/' className='radio-nav__item radio-nav-item'>Главная</Link>
+            <Link to='/' className='radio-nav__item radio-nav-item'>Main</Link>
             <Spring />
-            <Link to='/signin/' className='radio-nav__item radio-nav-item'>Войти</Link>
-            <Link to='/signup/' className='radio-nav__item radio-nav-item radio-nav-item--with-border'>Регистрация</Link>
+            <Link to='/signin/' className='radio-nav__item radio-nav-item'>Sign in</Link>
+            <Link to='/signup/' className='radio-nav__item radio-nav-item radio-nav-item--with-border'>Sign up</Link>
         </nav>;
     }
 }

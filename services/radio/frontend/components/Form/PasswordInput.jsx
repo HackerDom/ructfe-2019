@@ -55,23 +55,23 @@ export default class PasswordInput extends React.Component {
             withGenerator
         } = this.props;
 
-        const classNames = ['form_input', 'form_input_password', ...classes];
+        const classNames = ['form-input', 'form-input-password', ...classes];
         if (errors && errors.length > 0) {
             classNames.push('form_input_password--error');
         }
 
         return <div className={classNames.join(' ')}>
-            <div className='form_input__inner'>
-                { label && <label htmlFor={id} className='form_input_label' dangerouslySetInnerHTML={{ __html: label }}></label> }
-                <div className='form_input_password_wrapper'>
+            <div className='form-input__inner'>
+                { label && <label htmlFor={id} className='form-input-label' dangerouslySetInnerHTML={{ __html: label }}></label> }
+                <div className='form-input-password_wrapper'>
                     <input id={id} type='text' name={name}
                         onKeyPress={onKeyPress.bind(this)}
-                        className='form_input__input'
+                        className='form-input__input'
                         onChange={onChange.bind(this)}
                         ref={this.passwordInputRef}
                         {...inputAttrs}/>
                     { withGenerator && <div
-                        className='form_input_password_wrapper__generator icon-password'
+                        className='form-input-password-wrapper__generator icon-password'
                         onClick={this.generatePassword.bind(this)}>
                     </div> }
                 </div>
