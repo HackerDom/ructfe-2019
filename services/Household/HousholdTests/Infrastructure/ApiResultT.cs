@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
-using System.Reflection;
 using FluentAssertions;
+using HouseholdTests.Utils;
 
 namespace HouseholdTests.Infrastructure
 {
@@ -20,22 +19,16 @@ namespace HouseholdTests.Infrastructure
             Value = value;
         }
 
-        public void EnsureStatusCode(HttpStatusCode created)
+        public void EnsureStatusCode(HttpStatusCode code)
         {
             try
             {
-                StatusCode.Should().Be(created);
+                StatusCode.Should().Be(code);
             }
             catch (Exception e)
             {
-                var type = e.GetType();
-                var field = type.GetFields(
-                    BindingFlags.NonPublic |
-                    BindingFlags.Instance).First();
-
-                field?.SetValue(e,
-                    e.Message.Substring(0, e.Message.Length - 1) +
-                    $" and received message '{Message}'.");
+                e.ChangeMessage(e.Message.Substring(0, e.Message.Length - 1) +
+                                $" and received message '{Message}'.");
                 throw;
             }
         }

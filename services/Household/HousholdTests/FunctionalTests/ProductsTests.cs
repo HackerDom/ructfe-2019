@@ -22,6 +22,8 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_create_product_and_retrieve_it()
         {
+            var user = await env.RegisterNewUser().ConfigureAwait(false);
+
             var product = new Product
             {
                 Name = "Морковь",
@@ -31,10 +33,10 @@ namespace HouseholdTests.FunctionalTests
                 Protein = 0.1
             };
 
-            var createResult = await env.Client.Post("/api/Products", product).ConfigureAwait(false);
+            var createResult = await user.Client.Post("/api/Products", product).ConfigureAwait(false);
             createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            var getResult = await env.Client.Get<Product>($"/api/Products/{createResult.Value.Id}").ConfigureAwait(false);
+            var getResult = await user.Client.Get<Product>($"/api/Products/{createResult.Value.Id}").ConfigureAwait(false);
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
             getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
