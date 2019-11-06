@@ -1,10 +1,11 @@
 using System.IO;
 using AutoMapper;
 using Household.DataBase;
-using Household.Models;
+using Household.DataBaseModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +39,7 @@ namespace Household
             //.AddCookieAuthentication();
 
             services.AddAuthentication()
+                //.AddIdentityCookies();
                 .AddIdentityServerJwt();
 
             services.AddCors();
@@ -46,7 +48,8 @@ namespace Household
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
 
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorPagesOptions(options => options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute()));
 
             services.AddSwaggerGen(c =>
             {
@@ -125,7 +128,7 @@ namespace Household
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";// To learn more about options for serving an Angular SPA from ASP.NET Core, see https://go.microsoft.com/fwlink/?linkid=864501
+                spa.Options.SourcePath = "ClientApp"; // To learn more about options for serving an Angular SPA from ASP.NET Core, see https://go.microsoft.com/fwlink/?linkid=864501
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");

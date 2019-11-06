@@ -15,6 +15,7 @@ namespace Household.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [IgnoreAntiforgeryToken(Order = 1001)]
     public class ProductsController : ControllerBase
     {
         private readonly HouseholdDbContext dataBase;
@@ -106,7 +107,7 @@ namespace Household.Controllers
         {
             var product = GetDataModel(productViewModel);
             dataBase.Products.Add(product);
-            await dataBase.SaveChangesAsync().ConfigureAwait(false);
+            await dataBase.SaveChangesAsync();
 
             return CreatedAtAction("GetProduct", new {id = product.Id}, GetViewModel(product));
         }

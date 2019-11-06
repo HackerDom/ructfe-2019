@@ -12,6 +12,7 @@ namespace Household.DataBase
         public HouseholdDbContext(DbContextOptions<HouseholdDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
+            //Database.EnsureDeleted();
             Database.EnsureCreated(); // создаем бд с новой схемой
         }
 
@@ -22,10 +23,6 @@ namespace Household.DataBase
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
         }
     }
 }
