@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"reflect"
 	"strings"
 
 	"github.com/go-playground/locales/en"
@@ -19,13 +20,18 @@ type RadioValidationErrors struct {
 }
 
 func validateErrors2RadioValidationErrors(s interface{}) *RadioValidationErrors {
+	validate := validator.New()
 	en := en.New()
 	uni = ut.New(en, en)
-
-	var trans ut.Translator
-	trans, _ = uni.GetTranslator("en")
-	validate := validator.New()
+	trans, _ := uni.GetTranslator("en")
 	en_translations.RegisterDefaultTranslations(validate, trans)
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		if name == "-" {
+			return ""
+		}
+		return name
+	})
 	err := validate.Struct(s)
 
 	if err == nil {
@@ -51,11 +57,20 @@ func validateErrors2RadioValidationErrors(s interface{}) *RadioValidationErrors 
 }
 
 type SignUpForm struct {
-	Username  string `json:"username" validate:"required,min=10,max=32"`
-	Password1 string `json:"password1" validate:"required,min=6,max=64"`
-	Password2 string `json:"password2" validate:"required,min=6,max=64"`
+	Username         string `json:"username" validate:"required,min=10,max=32"`
+	Password         string `json:"password" validate:"required,min=6,max=64"`
+	RepeatedPassword string `json:"repeated-password" validate:"required,min=6,max=64"`
 }
 
 func (t SignUpForm) Validate() *RadioValidationErrors {
+	return validateErrors2RadioValidationErrors(t)
+}
+
+type SignInForm struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+func (t SignInForm) Validate() *RadioValidationErrors {
 	return validateErrors2RadioValidationErrors(t)
 }

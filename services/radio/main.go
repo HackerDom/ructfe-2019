@@ -10,7 +10,9 @@ import (
 	"time"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/config"
+	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/HackerDom/ructfe-2019/services/radio/routes"
+	"github.com/jinzhu/gorm"
 )
 
 func main() {
@@ -32,6 +34,12 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
+	var db *gorm.DB
+	db, err = models.InitDB()
+	if err != nil {
+		log.Fatalf("Can't connect to db, reason: %v", err)
+	}
+	defer db.Close()
 	log.Printf("Server starts listening to addr %v", *addr)
 
 	go func() {
