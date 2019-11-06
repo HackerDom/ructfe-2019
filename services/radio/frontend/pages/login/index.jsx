@@ -1,11 +1,12 @@
 import React from 'react';
 import Layout from '../../layouts/layout';
+import LoginForm from '../../components/Login/LoginForm';
 
-export default class RegisterPage extends React.Component {
+export default class LoginPage extends React.Component {
     render() {
         return <Layout>
-            <div className='register-page'>
-                Login page
+            <div className='login-page'>
+                <LoginForm />
             </div>
         </Layout>;
     }

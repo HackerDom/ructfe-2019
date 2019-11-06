@@ -31,9 +31,7 @@ export default class RadioApp extends React.Component {
         const thunk = thunkMiddleware;
 
         const middlewares = [thunk];
-        if (props.initialProps.isDebug) {
-            middlewares.push(loggerMiddleware);
-        }
+        middlewares.push(loggerMiddleware);
         this.store = createStore(
             makeReducers(props.initialProps, history),
             applyMiddleware(

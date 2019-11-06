@@ -24,7 +24,7 @@ export default class PasswordInput extends React.Component {
         inputAttrs: {},
         onKeyPress: () => {},
         classes: [],
-        onPasswordGenerate: true,
+        onPasswordGenerate: () => {},
         withGenerator: true
     }
 

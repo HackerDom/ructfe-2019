@@ -8,3 +8,11 @@ services:
       - "4553:4553"
   redis:
     image: redis:5-alpine
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: radio
+      POSTGRES_PASSWORD: radio
+      POSTGRES_DB: radio
+    volumes:
+      - ./.docker/pg:/var/lib/postgresql/data

@@ -2,7 +2,10 @@ import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 
-const attachedReducers = [];
+const attachedReducers = [
+    'login',
+    'register',
+];
 
 const normalizeModuleName = (moduleName) => moduleName.split('/').map((item, i) => {
     if (i === 0) {
