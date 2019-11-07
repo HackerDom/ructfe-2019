@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Household.DataBase;
@@ -36,9 +37,11 @@ namespace Household.Controllers
         [HttpGet]
         public async Task<ActionResult<Page<ProductViewModel>>> GetProducts(int skip = 0, int take = 100)
         {
-            // TODO: проверка параметров
             if (take < 1)
                 return BadRequest("Parameter take should be greater then 0");
+            if (skip < 0)
+                return BadRequest("Parameter skip should be greater or equal to 0");
+            take = Math.Min(take, 100);
 
             var items = await dataBase.Products.Skip(skip).Take(take).ToArrayAsync().ConfigureAwait(false);
             var totalCount = await dataBase.Products.CountAsync().ConfigureAwait(false);
