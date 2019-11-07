@@ -43,10 +43,23 @@ namespace Household.ViewModels
             //CreateMap<Customer, CustomerViewModel>()
             //    .ReverseMap();
 
-            CreateMap<Product, ProductViewModel>()
-                .ReverseMap();
-            CreateMap<ProductViewModel, Product>()
-                .ReverseMap();
+            CreateMap<Product, ProductViewModel>();
+            CreateMap<ProductViewModel, Product>();
+
+            CreateMap<Ingredient, IngredientViewModel>();
+            CreateMap<IngredientViewModel, Ingredient>();
+
+            CreateMap<Dish, DishViewModel>()
+                .ForMember(dvm => dvm.PortionProtein,
+                    map => map.MapFrom(dish => dish.Protein))
+                .ForMember(dvm => dvm.PortionFat,
+                    map => map.MapFrom(dish => dish.Fat))
+                .ForMember(dvm => dvm.PortionCarbohydrate,
+                    map => map.MapFrom(dish => dish.Carbohydrate))
+                .ForMember(dvm => dvm.PortionCalories,
+                    map => map.MapFrom(dish => dish.Calories));
+
+            CreateMap<DishViewModel, Dish>();
 
             //CreateMap<Order, OrderViewModel>()
             //    .ReverseMap();

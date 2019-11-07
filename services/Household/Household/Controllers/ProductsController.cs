@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Household.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [IgnoreAntiforgeryToken(Order = 1001)]
@@ -67,38 +67,6 @@ namespace Household.Controllers
             return GetViewModel(product);
         }
 
-        // PUT: api/Products/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, ProductViewModel product)
-        {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
-            dataBase.Entry(product).State = EntityState.Modified;
-
-            try
-            {
-                await dataBase.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Products
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -112,26 +80,6 @@ namespace Household.Controllers
             return CreatedAtAction("GetProduct", new {id = product.Id}, GetViewModel(product));
         }
 
-        // DELETE: api/Products/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<ProductViewModel>> DeleteProduct(int id)
-        {
-            var product = await dataBase.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            dataBase.Products.Remove(product);
-            await dataBase.SaveChangesAsync();
-
-            return GetViewModel(product);
-        }
-
-        private bool ProductExists(int id)
-        {
-            return dataBase.Products.Any(e => e.Id == id);
-        }
 
         private ProductViewModel GetViewModel(Product productDataModel)
         {

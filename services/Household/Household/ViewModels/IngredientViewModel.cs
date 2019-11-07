@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Household.ViewModels
+﻿namespace Household.ViewModels
 {
     public class IngredientViewModel
     {
+        public int ProductId { get; set; }
+        public double Weight { get; set; }
     }
 }

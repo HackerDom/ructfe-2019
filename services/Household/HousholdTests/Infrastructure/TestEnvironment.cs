@@ -57,7 +57,10 @@ namespace HouseholdTests.Infrastructure
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder = Program.CreateWebHostBuilder(null);
+            // Add test configuration
+            var configPath = Path.Combine(Directory.GetCurrentDirectory(), "test_appsettings.json");
+            builder.ConfigureAppConfiguration((context, conf) => { conf.AddJsonFile(configPath); });
+
             base.ConfigureWebHost(builder);
         }
     }

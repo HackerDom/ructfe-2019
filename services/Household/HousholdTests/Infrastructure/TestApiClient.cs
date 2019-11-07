@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using HouseholdTests.Utils;
 using Newtonsoft.Json;
@@ -16,6 +17,7 @@ namespace HouseholdTests.Infrastructure
         public TestApiClient(HttpClient innerClient)
         {
             this.innerClient = innerClient;
+            innerClient.Timeout = Timeout.InfiniteTimeSpan;
         }
 
         public async Task<ApiResult<T>> Get<T>(string uri)
@@ -35,7 +37,7 @@ namespace HouseholdTests.Infrastructure
             return apiResult;
         }
 
-        public async Task<ApiResult<string>> Post(string uri, KeyValuePair<string,string>[] formContent)
+        public async Task<ApiResult<string>> Post(string uri, KeyValuePair<string, string>[] formContent)
         {
             var request = new FormUrlEncodedContent(formContent);
 

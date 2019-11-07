@@ -1,5 +1,4 @@
 ﻿using Household.DataBaseModels;
-using Household.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +17,24 @@ namespace Household.DataBase
 
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Dish> Dishes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Ingredient>()
+                .HasKey(t => new {t.DishId, t.ProductId});
+
+            builder.Entity<Ingredient>()
+                .HasOne(i => i.Product)
+                .WithMany(p => p.Ingredients)
+                .HasForeignKey(i => i.ProductId);
+
+            builder.Entity<Ingredient>()
+                .HasOne(i => i.Dish)
+                .WithMany(d => d.Ingredients)
+                .HasForeignKey(i => i.DishId);
+
             base.OnModelCreating(builder);
         }
     }

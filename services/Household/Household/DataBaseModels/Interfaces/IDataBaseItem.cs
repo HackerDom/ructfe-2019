@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Household.Models
+namespace Household.DataBaseModels.Interfaces
 {
     public interface IDataBaseItem
     {
