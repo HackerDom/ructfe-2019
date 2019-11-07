@@ -18,9 +18,10 @@ import (
 func main() {
 	waitTimeout := flag.Duration("graceful-timeout", time.Second*15, "The duration for which the server gracefully wait")
 	addr := flag.String("addr", ":4553", "Address for binding service")
+	configFile := flag.String("config-file", "config.yaml", "Config filename")
 	flag.Parse()
 
-	_, err := config.GetConfig()
+	_, err := config.InitConfig(*configFile)
 	if err != nil {
 		log.Fatalf("Can't get config, reason: %v", err)
 	}

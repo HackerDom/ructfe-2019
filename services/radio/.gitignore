@@ -3,3 +3,5 @@
 /node_modules
 /.docker
 /docker-compose.yml
+/config.yaml
+/secrets/db_password

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/HackerDom/ructfe-2019/services/radio/config"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -15,8 +16,16 @@ var db *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
 	var err error
-	pgConnectionString := fmt.Sprintf("host=%s user=%s dbname=%s password=%s", "localhost", "radio", "radio", "radio")
-	db, err = gorm.Open("posrgres", pgConnectionString)
+	conf := config.GetConfig()
+	pgConnectionString := fmt.Sprintf(
+		"host=%s user=%s dbname=%s password=%s sslmode=%s",
+		conf.DB.Host,
+		conf.DB.User,
+		conf.DB.Database,
+		conf.DB.Password,
+		conf.DB.SSLMode,
+	)
+	db, err = gorm.Open("postgres", pgConnectionString)
 	if err != nil {
 		return db, err
 	}

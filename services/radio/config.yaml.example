@@ -1,0 +1,8 @@
+db:
+  host: localhost
+  user: radio
+  database: radio
+  ssl_mode: disable
+paths:
+  template_path: "views"
+  static_path: "static"

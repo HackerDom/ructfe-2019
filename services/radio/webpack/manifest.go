@@ -12,12 +12,8 @@ var manifest map[string]string
 
 func ReadManifest() (map[string]string, error) {
 	var err error
-	var conf *config.Config
-	conf, err = config.GetConfig()
-	if err != nil {
-		return nil, err
-	}
-	manifestPath := path.Join(conf.StaticPath, "build", "manifest.json")
+	conf := config.GetConfig()
+	manifestPath := path.Join(conf.Paths.StaticPath, "build", "manifest.json")
 	var data []byte
 	readedManifest := make(map[string]string)
 	data, err = ioutil.ReadFile(manifestPath)

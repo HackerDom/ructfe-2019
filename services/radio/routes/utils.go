@@ -1,4 +1,4 @@
-package utils
+package routes
 
 import (
 	"log"
@@ -12,19 +12,13 @@ import (
 
 func ServeWithTemplateAndStatusCode(w http.ResponseWriter, r *http.Request, templateName string, code int) {
 	var err error
-	var conf *config.Config
-	conf, err = config.GetConfig()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
+	conf := config.GetConfig()
 	tmplFuncs := template.FuncMap{
 		"webpack_asset_path": webpack.WebpackAssetPathFunc,
 		"webpack_asset":      webpack.WebpackAssetFunc,
 	}
 
-	filepath := path.Join(conf.TemplatePath, templateName)
+	filepath := path.Join(conf.Paths.TemplatePath, templateName)
 	var tmpl *template.Template
 	tmpl, err = template.New(templateName).Funcs(tmplFuncs).ParseFiles(filepath)
 	if err != nil {

@@ -6,12 +6,11 @@ import (
 	"net/http"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
-	"github.com/HackerDom/ructfe-2019/services/radio/utils"
 	"github.com/gorilla/mux"
 )
 
 func webHandler(w http.ResponseWriter, r *http.Request) {
-	utils.ServeWithTemplateName(w, r, "index.html")
+	ServeWithTemplateName(w, r, "index.html")
 }
 
 func registerUserHandler(w http.ResponseWriter, r *http.Request) {
