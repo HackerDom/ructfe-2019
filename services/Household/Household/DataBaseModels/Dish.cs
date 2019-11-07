@@ -5,7 +5,7 @@ using Household.DataBaseModels.Interfaces;
 
 namespace Household.DataBaseModels
 {
-    public class Dish : IDataBaseItem, IHaveNutritionalValue
+    internal class Dish : IDataBaseItem, IHaveNutritionalValue
     {
         public int Id { get; set; }
         public string Name { get; set; }

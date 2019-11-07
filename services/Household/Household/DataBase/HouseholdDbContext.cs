@@ -15,11 +15,9 @@ namespace Household.DataBase
             Database.EnsureCreated(); // создаем бд с новой схемой
         }
 
-
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Dish> Dishes { get; set; }
-
-
+        internal DbSet<Product> Products { get; set; }
+        internal DbSet<Dish> Dishes { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Ingredient>()

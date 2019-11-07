@@ -1,6 +1,6 @@
 ﻿namespace Household.DataBaseModels.Interfaces
 {
-    public interface IHaveNutritionalValue
+    internal interface IHaveNutritionalValue
     {
         double Protein { get; }
         double Fat { get; }

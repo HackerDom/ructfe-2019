@@ -3,7 +3,7 @@ using Household.DataBaseModels.Interfaces;
 
 namespace Household.DataBaseModels
 {
-    public class Ingredient : IDataBaseItem, IHaveNutritionalValue
+    internal class Ingredient : IDataBaseItem, IHaveNutritionalValue
     {
         public double Weight { get; set; }
 

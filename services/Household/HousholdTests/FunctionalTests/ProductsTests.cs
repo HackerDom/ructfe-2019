@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Household.DataBaseModels;
 using Household.ViewModels;
 using HouseholdTests.Infrastructure;
 using NUnit.Framework;
@@ -24,7 +23,7 @@ namespace HouseholdTests.FunctionalTests
         {
             var user = await env.RegisterNewUser().ConfigureAwait(false);
 
-            var product = new Product
+            var product = new ProductViewModel
             {
                 Name = "Морковь",
                 Calories = 10,
@@ -36,7 +35,7 @@ namespace HouseholdTests.FunctionalTests
             var createResult = await user.Client.Post("/api/Products", product).ConfigureAwait(false);
             createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            var getResult = await user.Client.Get<Product>($"/api/Products/{createResult.Value.Id}").ConfigureAwait(false);
+            var getResult = await user.Client.Get<ProductViewModel>($"/api/Products/{createResult.Value.Id}").ConfigureAwait(false);
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
             getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
@@ -46,13 +45,13 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_create_several_product_and_retrieve_list()
         {
-            var getPreviousProducts = await env.Client.Get<Page<Product>>("api/products").ConfigureAwait(false);
+            var getPreviousProducts = await env.Client.Get<Page<ProductViewModel>>("api/products").ConfigureAwait(false);
             getPreviousProducts.EnsureStatusCode(HttpStatusCode.OK);
             var previousProducts = getPreviousProducts.Value;
 
             await PostTestProductsToServer();
 
-            var getProducts = await env.Client.Get<Page<Product>>($"api/products?skip={previousProducts.TotalCount}").ConfigureAwait(false);
+            var getProducts = await env.Client.Get<Page<ProductViewModel>>($"api/products?skip={previousProducts.TotalCount}").ConfigureAwait(false);
             getProducts.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getProducts.Value;
 
@@ -76,21 +75,21 @@ namespace HouseholdTests.FunctionalTests
 
         //}
 
-        private readonly Product[] testProducts = new[]
+        private readonly ProductViewModel[] testProducts = new[]
         {
-            new Product
+            new ProductViewModel
             {
                 Name = "Помидор", Calories = 20, Carbohydrate = 10, Fat = 0, Protein = 0.1
             },
-            new Product
+            new ProductViewModel
             {
                 Name = "Яйцо", Calories = 140, Carbohydrate = 2, Fat = 9, Protein = 11
             },
-            new Product
+            new ProductViewModel
             {
                 Name = "Картофель", Calories = 80, Carbohydrate = 10, Fat = 0, Protein = 0.1
             },
-            new Product
+            new ProductViewModel
             {
                 Name = "Лук", Calories = 30, Carbohydrate = 10, Fat = 0, Protein = 0
             }

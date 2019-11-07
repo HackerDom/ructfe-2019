@@ -3,7 +3,7 @@ using Household.DataBaseModels;
 
 namespace Household.ViewModels
 {
-    public class AutoMapperProfile : Profile
+    internal class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
         {

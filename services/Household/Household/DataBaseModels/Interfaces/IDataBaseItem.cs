@@ -2,7 +2,7 @@
 
 namespace Household.DataBaseModels.Interfaces
 {
-    public interface IDataBaseItem
+    internal interface IDataBaseItem
     {
         string CreatedBy { get; set; }
         string UpdatedBy { get; set; }
