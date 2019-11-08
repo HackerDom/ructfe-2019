@@ -68,20 +68,15 @@ export class UsersCollection {
         return oldUserModel.save();
     }
 
-    async findByPattern (pattern) {
-        return User.find(pattern, (err, users) => {
-            console.log(users);
+    async findByNameAndLastName (pattern) {
+        return User.findOne(pattern, (err, user) => {
             if (!err) {
-                if (!users) {
-                    return users;
+                if (!user) {
+                    return user;
                 }
-                if (Array.isArray(users)) {
-                    return users;
-                } else {
-                    return [users];
-                }
+                return user;
             } else {
-                throw err;
+                return null;
             }
         });
     }

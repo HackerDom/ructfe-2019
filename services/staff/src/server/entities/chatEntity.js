@@ -22,4 +22,9 @@ chatSchema.plugin(autoIncrement.plugin, {
     field: 'id'
 });
 
+chatSchema.plugin(autoIncrement.plugin, {
+    model: 'Chat',
+    field: 'inviteLink'
+});
+
 export const Chat = mongoose.model('Chat', chatSchema);

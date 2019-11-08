@@ -6,7 +6,6 @@ export class ChatsCollection {
         const chat = new Chat();
         chat.usersIds.push(userCreator);
         chat.name = name;
-        chat.inviteLink = uuid();
         await chat.save();
         return chat.id;
     }

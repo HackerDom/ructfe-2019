@@ -480,15 +480,28 @@ app.get('/messages', checkAuthentication, async function (request, response) {
 
 app.post('/searchUser', async function (request, response) {
     const isValid = request.body.query && fieldsAreExist(request.body.query.firstName, request.body.query.lastName);
+    let isSuccess = true;
     if (!isValid) {
         await sendResponse(response, {}, false, 'Request\'s fields is not valid', 400);
         return;
     }
     const query = request.body.query;
-    const foundedUsers = await usersCollection.findByPattern(query);
-    await sendResponse(response,
-        foundedUsers ? { users: foundedUsers.map(user => ({ id: user.id, username: user.username })) } : []
-    );
+    const foundedUser = await usersCollection
+        .findByNameAndLastName({ firstName: query.firstName, lastName: query.lastName })
+        .catch(_ => {
+            isSuccess = false;
+        });
+    if (!isSuccess) {
+        await sendResponseOnInternalError(response);
+        return;
+    }
+    const userInfo = foundedUser ? {
+        username: foundedUser.username,
+        firstName: foundedUser.firstName,
+        lastName: foundedUser.lastName,
+        biography: foundedUser.biography
+    } : {};
+    await sendResponse(response, userInfo);
 });
 
 function hasAccessToWriteMessages (userId, usersIds) {
@@ -523,6 +536,10 @@ async function sendResponse (response, outputValue = {}, isSuccess = true, error
 
 async function sendResponseOnInvalidRequestFields (response) {
     await sendResponse(response, {}, false, 'Request\'s fields is not valid', 400);
+}
+
+async function sendResponseOnInternalError (response) {
+    await sendResponse(response, {}, false, '', 500);
 }
 
 async function checkAuthentication (request, response, next) {
