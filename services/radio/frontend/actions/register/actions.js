@@ -6,7 +6,7 @@ import {
     REGISTER_USER_WITH_ERRORS,
 } from './actionTypes';
 
-export const registerUser = ({ username, password1, password2 }) => async (dispatch) => {
+export const registerUser = ({ username, password, repeated_password }) => async (dispatch) => {
     dispatch({ type: REGISTER_USER_IN_PROGRESS });
     const response = await fetch('/frontend-api/register/', {
         headers: {
@@ -14,8 +14,8 @@ export const registerUser = ({ username, password1, password2 }) => async (dispa
         },
         body: JSON.stringify({
             username,
-            password1,
-            password2
+            password,
+            repeated_password
         }),
         method: 'POST',
         credentials: 'same-origin',

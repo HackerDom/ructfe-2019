@@ -10,7 +10,7 @@ export default () => {
         errors: {}
     };
     return (state = defaultState, action) => {
-        switch (state) {
+        switch (action.type) {
         case REGISTER_USER_IN_PROGRESS: {
             return {
                 ...state,
@@ -26,9 +26,10 @@ export default () => {
             };
         }
         case REGISTER_USER_WITH_ERRORS: {
+            const { errors } = action.data;
             return {
                 ...state,
-                errors: action.data,
+                errors,
                 inProgress: false
             };
         }

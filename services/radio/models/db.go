@@ -34,3 +34,7 @@ func InitDB() (*gorm.DB, error) {
 	dbInstance.SetConnMaxLifetime(maxConnectionLifetime)
 	return db, err
 }
+
+func MigrateDb() {
+	db.AutoMigrate(&User{})
+}

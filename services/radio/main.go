@@ -15,18 +15,15 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func main() {
-	waitTimeout := flag.Duration("graceful-timeout", time.Second*15, "The duration for which the server gracefully wait")
-	addr := flag.String("addr", ":4553", "Address for binding service")
-	configFile := flag.String("config-file", "config.yaml", "Config filename")
-	flag.Parse()
+var (
+	waitTimeout = flag.Duration("graceful-timeout", time.Second*15, "The duration for which the server gracefully wait")
+	onlyMigrate = flag.Bool("migrate", false, "Only migrate db")
+	addr        = flag.String("addr", ":4553", "Address for binding service")
+	configFile  = flag.String("config-file", "config.yaml", "Config filename")
+)
 
-	_, err := config.InitConfig(*configFile)
-	if err != nil {
-		log.Fatalf("Can't get config, reason: %v", err)
-	}
+func startServer() {
 	r := routes.MakeRouter()
-
 	server := &http.Server{
 		Handler: r,
 		Addr:    *addr,
@@ -35,12 +32,6 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
-	var db *gorm.DB
-	db, err = models.InitDB()
-	if err != nil {
-		log.Fatalf("Can't connect to db, reason: %v", err)
-	}
-	defer db.Close()
 	log.Printf("Server starts listening to addr %v", *addr)
 
 	go func() {
@@ -62,5 +53,25 @@ func main() {
 	server.Shutdown(ctx)
 
 	log.Println("Shutting down")
+}
+
+func main() {
+	flag.Parse()
+
+	_, err := config.InitConfig(*configFile)
+	if err != nil {
+		log.Fatalf("Can't get config, reason: %v", err)
+	}
+	var db *gorm.DB
+	db, err = models.InitDB()
+	if err != nil {
+		log.Fatalf("Can't connect to db, reason: %v", err)
+	}
+	defer db.Close()
+	if *onlyMigrate {
+		models.MigrateDb()
+	} else {
+		startServer()
+	}
 	os.Exit(0)
 }

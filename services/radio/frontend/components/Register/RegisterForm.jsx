@@ -12,7 +12,12 @@ import { registerUser } from '../../actions/register/actions';
 
 class RegisterForm extends React.Component {
     static propTypes = {
-        registerUser: PropTypes.func
+        registerUser: PropTypes.func,
+        errors: PropTypes.shape({
+            username: PropTypes.string,
+            password: PropTypes.string,
+            repeated_password: PropTypes.string,
+        })
     }
 
     constructor(props) {
@@ -20,8 +25,8 @@ class RegisterForm extends React.Component {
 
         this.state = {
             username: '',
-            password1: '',
-            password2: ''
+            password: '',
+            repeated_password: ''
         };
     }
 
@@ -34,14 +39,15 @@ class RegisterForm extends React.Component {
     }
 
     render() {
-        const { registerUser } = this.props;
+        const { registerUser, errors } = this.props;
         const {
-            username, password1, password2
+            username, password, repeated_password
         } = this.state;
 
         return <div className='register-form'>
             <div className='register-form__username'>
                 <Input id='username' name='username' type="text"
+                    errors={errors.username}
                     inputAttrs={{
                         placeholder: 'Username',
                         value: username,
@@ -52,37 +58,41 @@ class RegisterForm extends React.Component {
                     }}/>
             </div>
             <div className='register-form__password'>
-                <PasswordInput id='password1' name='password1'
+                <PasswordInput id='password' name='password'
+                    errors={errors.password}
                     inputAttrs={{
                         placeholder: 'Password',
-                        value: password1,
+                        value: password,
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
-                            this.onInputHandler('password1', password1, e);
+                            this.onInputHandler('password', password, e);
                         }
                     }}/>
             </div>
             <div className='register-form__password'>
-                <PasswordInput id='password2' name='password2'
+                <PasswordInput id='repeated_password' name='repeated_password'
+                    errors={errors.repeated_password}
                     inputAttrs={{
                         placeholder: 'Repeat password',
-                        value: password2,
+                        value: repeated_password,
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
-                            this.onInputHandler('password2', password2, e);
+                            this.onInputHandler('repeated_password', repeated_password, e);
                         }
                     }}/>
             </div>
             <div className='register-form__submit'>
                 <Button title='Sign Up' modifiers={['submit']} onClick={() => {
-                    registerUser({ username, password1, password2 });
+                    registerUser({ username, password, repeated_password });
                 }} />
             </div>
         </div>;
     }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  errors: state.register.errors
+});
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     registerUser
 }, dispatch);

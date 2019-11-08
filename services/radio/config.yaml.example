@@ -1,5 +1,5 @@
 db:
-  host: localhost
+  host: db
   user: radio
   database: radio
   ssl_mode: disable

@@ -59,7 +59,7 @@ func validateErrors2RadioValidationErrors(s interface{}) *RadioValidationErrors 
 type SignUpForm struct {
 	Username         string `json:"username" validate:"required,min=10,max=32"`
 	Password         string `json:"password" validate:"required,min=6,max=64"`
-	RepeatedPassword string `json:"repeated-password" validate:"required,min=6,max=64"`
+	RepeatedPassword string `json:"repeated_password" validate:"required,min=6,max=64"`
 }
 
 func (t SignUpForm) Validate() *RadioValidationErrors {
