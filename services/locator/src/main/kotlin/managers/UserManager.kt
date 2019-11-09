@@ -10,10 +10,11 @@ import java.security.MessageDigest
 import java.util.*
 import kotlin.random.Random
 
+@ExperimentalStdlibApi
 class UserManager {
     private val hasher = MessageDigest.getInstance("SHA-256")
 
-    fun createNewUser(regData: RegisterData) = transaction {
+    fun createNewUser(regData: RegisterData): Int = transaction {
         val (schema, content) = regData.rawInfoContent.split(":")
         val info = Info.new {
             this.schema = Base64.getDecoder().decode(schema)
@@ -26,7 +27,7 @@ class UserManager {
             this.coordinates = Random.nextInt(0, 255) * 256 + Random.nextInt(0, 255)
             this.color = regData.color
             this.info = info
-        }
+        }.id.value
     }
 
     fun isUserExists(name: String): Boolean = transaction {
@@ -34,13 +35,13 @@ class UserManager {
     }
 
     fun validate(userPair: UserPair): Boolean = transaction {
-        User.find { Users.name eq userPair.name }.firstOrNull()?.let { dbUser ->
+        User.find { Users.id eq userPair.id }.firstOrNull()?.let { dbUser ->
             hasher.digest(userPair.password.toByteArray())!!.contentEquals(dbUser.passwordHash)
         } ?: false
     }
 
-    fun userByName(name: String): User? = transaction {
-        User.find { Users.name eq name }.firstOrNull()
+    fun userById(id: Int): User? = transaction {
+        User.findById(id)
     }
 
     val users: List<User>

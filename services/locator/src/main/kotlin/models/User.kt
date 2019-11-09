@@ -1,5 +1,6 @@
 package models
 
+import messages.UserPosData
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -15,6 +16,7 @@ object Users : IntIdTable() {
 }
 
 
+@ExperimentalStdlibApi
 class User(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<User>(Users)
 
@@ -23,16 +25,18 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var passwordHash by Users.passwordHash
 
     var info by Info referencedOn Users.info
-//    val sent by Message referrersOn Messages.sender
-//    val received by Message referrersOn Messages.receiver
 
     val coordinateX: Byte
-        get() = (coordinates % 256 - 128).toByte()
+        get() = (coordinates % 256).toByte()
 
     val coordinateY: Byte
-        get() = ((coordinates / 256) % 256 - 128).toByte()
+        get() = ((coordinates / 256) % 256).toByte()
 
     var color by Users.color
+
+    fun toPosData(): UserPosData {
+        return UserPosData(coordinateX.toInt() + 128, coordinateY.toInt() + 128, color, id.value)
+    }
 
     override fun toString(): String {
         return "User(name=$name, coordinates=($coordinateX, $coordinateY), color=$color)"

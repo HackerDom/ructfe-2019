@@ -4,12 +4,14 @@ import io.ktor.application.install
 import io.ktor.features.StatusPages
 import io.ktor.freemarker.FreeMarker
 import io.ktor.freemarker.FreeMarkerContent
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.files
 import io.ktor.http.content.static
 import io.ktor.http.content.staticRootFolder
 import io.ktor.request.receiveChannel
 import io.ktor.response.respond
+import io.ktor.response.respondBytes
 import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -25,10 +27,11 @@ import kotlinx.serialization.json.Json
 import managers.UserManager
 import messages.RegisterData
 import messages.UserPair
+import messages.UserPosData
 import java.io.File
 
 data class AuthSession(
-    val username: String
+    val uid: Int
 )
 
 
@@ -65,8 +68,8 @@ fun main() {
             }
             get("/") {
                 val session = call.sessions.get<AuthSession>()
-                session?.username?.let {
-                    val user = manager.userByName(it)
+                session?.uid?.let { uid ->
+                    val user = manager.userById(uid)
                     user?.let {
                         val info = manager.info(user).initializeInstance()
                         val templateMap = mapOf(
@@ -81,7 +84,7 @@ fun main() {
                 val content = call.receiveChannel().toByteArray().decodeToString()
                 val userPair = Json.parse(UserPair.serializer(), content)
                 if (manager.validate(userPair)) {
-                    call.sessions.set(AuthSession(userPair.name))
+                    call.sessions.set(AuthSession(userPair.id))
                     call.respondRedirect("/")
                 } else {
                     call.respond(HttpStatusCode.BadRequest)
@@ -96,8 +99,8 @@ fun main() {
                         "Username ${regData.name} already exist"
                     )
                 } else {
-                    manager.createNewUser(regData)
-                    call.sessions.set(AuthSession(regData.name))
+                    val newUserId = manager.createNewUser(regData)
+                    call.sessions.set(AuthSession(newUserId))
                     call.respondRedirect("/")
                 }
             }
@@ -109,6 +112,20 @@ fun main() {
             }
             get("/draw") {
                 call.respond(FreeMarkerContent("draw.ftl", emptyMap<String, String>()))
+            }
+            get("/users") {
+                val session = call.sessions.get<AuthSession>()
+                session?.uid?.let { uid ->
+                    val user = manager.userById(uid)
+                    user?.let {
+                        val rawUsers = manager.users.map { usr ->
+                            Json.stringify(UserPosData.serializer(), usr.toPosData())
+                        }
+                            .toString()
+                            .encodeToByteArray()
+                        call.respondBytes(rawUsers, ContentType("application", "json"))
+                    }
+                } ?: call.respondRedirect("/login_page")
             }
         }
     }

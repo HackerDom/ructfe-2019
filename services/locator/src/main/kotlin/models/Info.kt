@@ -21,7 +21,7 @@ class Info(id: EntityID<Int>) : IntEntity(id) {
     var content by Infos.content.transform({ SerialBlob(it) }, { it.toByteArray() })
 
     fun initializeInstance(): Any {
-        val clazz = RuntimeClassLoader.loadClass(id.value, schema)
+        val clazz = RuntimeClassLoader.loadClass(schema)
         return clazz.getConstructor(ByteArray::class.java).newInstance(content)
     }
 }
