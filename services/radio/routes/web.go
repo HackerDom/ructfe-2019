@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
+	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/gorilla/mux"
 )
 
@@ -15,21 +16,29 @@ func webHandler(w http.ResponseWriter, r *http.Request) {
 
 func registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var signupForm forms.SignUpForm
+	var signUpForm forms.SignUpForm
 	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&signupForm)
+	err = decoder.Decode(&signUpForm)
 	if err != nil {
 		w.WriteHeader(400)
 		return
 	}
-	rve := signupForm.Validate()
+	rve := signUpForm.Validate()
+	encoder := json.NewEncoder(w)
 	if rve != nil {
 		w.WriteHeader(400)
-		encoder := json.NewEncoder(w)
 		encoder.Encode(rve)
 		return
 	}
-	log.Printf("register handler data %v", &signupForm)
+	var user *models.User
+	user, err = models.RegisterUser(signUpForm)
+	if err != nil {
+		w.WriteHeader(400)
+		rve = forms.Error2RadioValidationErrors(err)
+		encoder.Encode(rve)
+		return
+	}
+	encoder.Encode(user)
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
