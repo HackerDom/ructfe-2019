@@ -38,7 +38,12 @@ namespace Household.Controllers
                 return BadRequest("Parameter skip should be greater or equal to 0");
             take = Math.Min(take, 100);
 
-            var items = await dataBase.Dishes.Skip(skip).Take(take).ToArrayAsync().ConfigureAwait(false);
+            var items = await dataBase.Dishes
+                .Include(d => d.Ingredients)
+                .ThenInclude(ing => ing.Product)
+                .Skip(skip).Take(take)
+                .ToArrayAsync().ConfigureAwait(false);
+
             var totalCount = await dataBase.Dishes.CountAsync().ConfigureAwait(false);
 
             var page = new Page<DishViewModel>
@@ -69,8 +74,6 @@ namespace Household.Controllers
         }
 
         // POST: api/Dishes
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<DishViewModel>> PostDish(DishViewModel dishViewModel)
         {

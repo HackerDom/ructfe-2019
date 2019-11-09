@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Household.DataBaseModels;
 
 namespace Household.ViewModels
@@ -60,6 +61,16 @@ namespace Household.ViewModels
                     map => map.MapFrom(dish => dish.Calories));
 
             CreateMap<DishViewModel, Dish>();
+
+            CreateMap<Menu, MenuViewModel>()
+                .ForMember(mvm => mvm.DishIds,
+                    map => map.MapFrom(menu =>
+                        menu.DishesInMenu.Select(dishInMenu => dishInMenu.Dish.Id)));
+            CreateMap<MenuViewModel, Menu>()
+                .ForMember(mvm => mvm.DishesInMenu,
+                    map => map.MapFrom(menu =>
+                        menu.DishIds.Select(dish => new DishInMenu {DishId = dish})));
+
 
             //CreateMap<Order, OrderViewModel>()
             //    .ReverseMap();

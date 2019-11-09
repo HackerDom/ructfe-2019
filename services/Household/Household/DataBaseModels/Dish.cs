@@ -18,6 +18,7 @@ namespace Household.DataBaseModels
         public double PortionWeight { get; set; }
 
         public List<Ingredient> Ingredients { get; set; }
+        public List<DishInMenu> Menus { get; set; }
 
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }

@@ -17,11 +17,13 @@ namespace Household.DataBase
 
         internal DbSet<Product> Products { get; set; }
         internal DbSet<Dish> Dishes { get; set; }
-        
+        internal DbSet<Menu> Menus { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Product and Dish relation
             builder.Entity<Ingredient>()
-                .HasKey(t => new {t.DishId, t.ProductId});
+                .HasKey(t => new {t.ProductId, t.DishId});
 
             builder.Entity<Ingredient>()
                 .HasOne(i => i.Product)
@@ -32,6 +34,20 @@ namespace Household.DataBase
                 .HasOne(i => i.Dish)
                 .WithMany(d => d.Ingredients)
                 .HasForeignKey(i => i.DishId);
+
+            // Dish and Menu relation
+            builder.Entity<DishInMenu>()
+                .HasKey(t => new {t.DishId, t.MenuId});
+
+            builder.Entity<DishInMenu>()
+                .HasOne(i => i.Dish)
+                .WithMany(p => p.Menus)
+                .HasForeignKey(i => i.DishId);
+
+            builder.Entity<DishInMenu>()
+                .HasOne(i => i.Menu)
+                .WithMany(d => d.DishesInMenu)
+                .HasForeignKey(i => i.MenuId);
 
             base.OnModelCreating(builder);
         }

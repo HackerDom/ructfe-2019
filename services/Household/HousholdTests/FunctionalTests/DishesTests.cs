@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Household.ViewModels;
 using HouseholdTests.Infrastructure;
+using HouseholdTests.Utils;
 using NUnit.Framework;
 
 namespace HouseholdTests.FunctionalTests
@@ -105,6 +107,46 @@ namespace HouseholdTests.FunctionalTests
             dish.PortionFat.Should().Be(12);
             dish.PortionCarbohydrate.Should().Be(38);
             dish.PortionCalories.Should().Be(420);
+        }
+
+        [Test]
+        public async Task Should_get_list_of_dishes()
+        {
+            // arrange
+            var user = await env.RegisterNewUser();
+
+            var getPreviousProducts = await env.Client.Get<Page<DishViewModel>>("api/Dishes").ConfigureAwait(false);
+            getPreviousProducts.EnsureStatusCode(HttpStatusCode.OK);
+            var previousDishes = getPreviousProducts.Value;
+
+            var products = Enumerable.Range(0, 10).Select(a => Generator.GetRandomProduct()).ToArray();
+            await RegisterProducts(user.Client, products);
+
+            var dishes = Enumerable.Range(0, 5).Select(a => Generator.GetRandomDish(products)).ToArray();
+            foreach (var dish in dishes)
+            {
+                var createResult = await user.Client.Post("/api/Dishes", dish);
+                createResult.EnsureStatusCode(HttpStatusCode.Created);
+                dish.Id = createResult.Value.Id;
+            }
+
+            // act
+            var getDishes = await env.Client.Get<Page<DishViewModel>>(
+                $"api/Dishes?skip={previousDishes.TotalCount}").ConfigureAwait(false);
+            getDishes.EnsureStatusCode(HttpStatusCode.OK);
+            var productsList = getDishes.Value;
+
+            // assert
+            productsList.Skip.Should().Be(previousDishes.TotalCount);
+            productsList.Take.Should().Be(100);
+            productsList.TotalCount.Should().Be(previousDishes.TotalCount + dishes.Length);
+            productsList.Items.Should().BeEquivalentTo(dishes,
+                options => options
+                    .Excluding(dish => dish.Id)
+                    .Excluding(dish => dish.PortionCalories)
+                    .Excluding(dish => dish.PortionProtein)
+                    .Excluding(dish => dish.PortionFat)
+                    .Excluding(dish => dish.PortionCarbohydrate));
         }
 
         private static async Task RegisterProducts(TestApiClient client, IEnumerable<ProductViewModel> products)
