@@ -83,12 +83,12 @@ fun main() {
             post("/login") {
                 val content = call.receiveChannel().toByteArray().decodeToString()
                 val userPair = Json.parse(UserPair.serializer(), content)
-                if (manager.validate(userPair)) {
-                    call.sessions.set(AuthSession(userPair.id))
+                manager.validate(userPair)?.let { user ->
+                    call.sessions.set(AuthSession(user.id.value))
                     call.respondRedirect("/")
-                } else {
-                    call.respond(HttpStatusCode.BadRequest)
+                    return@post
                 }
+                call.respond(HttpStatusCode.BadRequest)
             }
             post("/register") {
                 val content = call.receiveChannel().toByteArray().decodeToString()

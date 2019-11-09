@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserPair(
-    val id: Int,
+    val name: String,
     val password: String
 )

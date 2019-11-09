@@ -34,10 +34,11 @@ class UserManager {
         !User.find { Users.name eq name }.empty()
     }
 
-    fun validate(userPair: UserPair): Boolean = transaction {
-        User.find { Users.id eq userPair.id }.firstOrNull()?.let { dbUser ->
+    fun validate(userPair: UserPair): User? = transaction {
+        User.find { Users.name eq userPair.name }.firstOrNull()?.let { dbUser ->
             hasher.digest(userPair.password.toByteArray())!!.contentEquals(dbUser.passwordHash)
-        } ?: false
+            dbUser
+        }
     }
 
     fun userById(id: Int): User? = transaction {
