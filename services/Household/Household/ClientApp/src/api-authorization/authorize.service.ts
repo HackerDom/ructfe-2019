@@ -65,9 +65,7 @@ export class AuthorizeService {
   // 1) We try to see if we can authenticate the user silently. This happens
   //    when the user is already logged in on the IdP and is done using a hidden iframe
   //    on the client.
-  // 2) We try to authenticate the user using a PopUp Window. This might fail if there is a
-  //    Pop-Up blocker or the user has disabled PopUps.
-  // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
+  // 2) We redirect the browser to the IdP to perform a traditional
   //    redirect flow.
   public async signIn(state: any): Promise<IAuthenticationResult> {
     await this.ensureUserManagerInitialized();
@@ -77,32 +75,15 @@ export class AuthorizeService {
       this.userSubject.next(user.profile);
       return this.success(state);
     } catch (silentError) {
-      // User might not be authenticated, fallback to popup authentication
+      // User might not be authenticated, fallback to redirect
       console.log('Silent authentication error: ', silentError);
 
       try {
-        if (this.popUpDisabled) {
-          throw new Error('Popup disabled. Change \'authorize.service.ts:AuthorizeService.popupDisabled\' to false to enable it.');
-        }
-        user = await this.userManager.signinPopup(this.createArguments());
-        this.userSubject.next(user.profile);
-        return this.success(state);
-      } catch (popupError) {
-        if (popupError.message === 'Popup window closed') {
-          // The user explicitly cancelled the login action by closing an opened popup.
-          return this.error('The user closed the window.');
-        } else if (!this.popUpDisabled) {
-          console.log('Popup authentication error: ', popupError);
-        }
-
-        // PopUps might be blocked by the user, fallback to redirect
-        try {
-          await this.userManager.signinRedirect(this.createArguments(state));
-          return this.redirect();
-        } catch (redirectError) {
-          console.log('Redirect authentication error: ', redirectError);
-          return this.error(redirectError);
-        }
+        await this.userManager.signinRedirect(this.createArguments(state));
+        return this.redirect();
+      } catch (redirectError) {
+        console.log('Redirect authentication error: ', redirectError);
+        return this.error(redirectError);
       }
     }
   }
@@ -121,23 +102,11 @@ export class AuthorizeService {
 
   public async signOut(state: any): Promise<IAuthenticationResult> {
     try {
-      if (this.popUpDisabled) {
-        throw new Error('Popup disabled. Change \'authorize.service.ts:AuthorizeService.popupDisabled\' to false to enable it.');
-      }
-
-      await this.ensureUserManagerInitialized();
-      await this.userManager.signoutPopup(this.createArguments());
-      this.userSubject.next(null);
-      return this.success(state);
-    } catch (popupSignOutError) {
-      console.log('Popup signout error: ', popupSignOutError);
-      try {
-        await this.userManager.signoutRedirect(this.createArguments(state));
-        return this.redirect();
-      } catch (redirectSignOutError) {
-        console.log('Redirect signout error: ', popupSignOutError);
-        return this.error(redirectSignOutError);
-      }
+      await this.userManager.signoutRedirect(this.createArguments(state));
+      return this.redirect();
+    } catch (redirectSignOutError) {
+        console.log('Redirect signout error: ', redirectSignOutError);
+      return this.error(redirectSignOutError);
     }
   }
 

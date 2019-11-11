@@ -1,17 +1,17 @@
-using System.IO;
 using AutoMapper;
 using Household.DataBase;
 using Household.DataBaseModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+
+#pragma warning disable 1591
 
 namespace Household
 {
@@ -32,14 +32,18 @@ namespace Household
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<HouseholdDbContext>();
-            //.AddSignInManager<HouseholdSignInManager>();
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            });
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, HouseholdDbContext>();
-            //.AddCookieAuthentication();
 
             services.AddAuthentication()
-                //.AddIdentityCookies();
                 .AddIdentityServerJwt();
 
             services.AddCors();
@@ -48,34 +52,7 @@ namespace Household
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
 
-            services.AddRazorPages()
-                .AddRazorPagesOptions(options => options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute()));
-
-            services.AddSwaggerGen(c =>
-            {
-                c.IncludeXmlComments(GetXmlCommentsPath());
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Apishka", Version = "v1"});
-                {
-                    //c.SwaggerDoc("v1", new OpenApiInfo {Title = IdentityServerConfig.ApiFriendlyName, Version = "v1"});
-
-                    //c.OperationFilter<AuthorizeCheckOperationFilter>();
-                    //c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                    //{
-                    //    Type = SecuritySchemeType.OAuth2,
-                    //    Flows = new OpenApiOAuthFlows
-                    //    {
-                    //        Password = new OpenApiOAuthFlow
-                    //        {
-                    //            TokenUrl = new Uri("/connect/token", UriKind.Relative),
-                    //            Scopes = new Dictionary<string, string>()
-                    //            {
-                    //                {IdentityServerConfig.ApiName, IdentityServerConfig.ApiFriendlyName}
-                    //            }
-                    //        }
-                    //    }
-                    //});
-                }
-            });
+            services.AddRazorPages();
 
             services.AddAutoMapper(typeof(Startup));
         }
@@ -91,36 +68,29 @@ namespace Household
             else
             {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                //app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             }
 
-            app.UseRouting();
+            app.UseRouting(); // 1
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.DocumentTitle = "Swagger UI - QuickApp";
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Apishka Name V1");
-                {
-                    //c.OAuthClientId("OAuthClientId value");
-                    ////c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{IdentityServerConfig.ApiFriendlyName} V1");
-                    ////c.OAuthClientId(IdentityServerConfig.SwaggerClientID);
-                    //c.OAuthClientSecret("no_password"); //Leaving it blank doesn't work
-                }
-            });
-
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(); // not secure 
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
             }
 
+            // 2
+            // The authentication middleware that is responsible for validating
+            // the request credentials and setting the user on the request context
             app.UseAuthentication();
-            app.UseIdentityServer();
+
+            // 3
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            // 3.5? The IdentityServer middleware that exposes the Open ID Connect endpoints
+            app.UseIdentityServer();
+
+            app.UseEndpoints(endpoints => // 4
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
@@ -134,14 +104,6 @@ namespace Household
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
-        }
-
-        private string GetXmlCommentsPath()
-        {
-            var dllFilePath = typeof(Startup).Assembly.Location;
-            var directoryPath = Path.GetDirectoryName(dllFilePath);
-            var fileName = Path.GetFileNameWithoutExtension(dllFilePath) + ".xml";
-            return Path.GetFullPath(fileName, directoryPath);
         }
     }
 }

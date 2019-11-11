@@ -49,7 +49,7 @@ namespace HouseholdTests.Utils
         }
 
 
-        private static string GetRandomString(int length = 10)
+        public static string GetRandomString(int length = 10)
         {
             var buffer = new byte[length * 2];
             random.NextBytes(buffer);

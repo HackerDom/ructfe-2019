@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 namespace Household.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    [IgnoreAntiforgeryToken(Order = 1001)]
     public class LoginModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

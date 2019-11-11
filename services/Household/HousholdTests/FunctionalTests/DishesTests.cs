@@ -115,7 +115,7 @@ namespace HouseholdTests.FunctionalTests
             // arrange
             var user = await env.RegisterNewUser();
 
-            var getPreviousProducts = await env.Client.Get<Page<DishViewModel>>("api/Dishes").ConfigureAwait(false);
+            var getPreviousProducts = await user.Client.Get<Page<DishViewModel>>("api/Dishes").ConfigureAwait(false);
             getPreviousProducts.EnsureStatusCode(HttpStatusCode.OK);
             var previousDishes = getPreviousProducts.Value;
 
@@ -131,7 +131,7 @@ namespace HouseholdTests.FunctionalTests
             }
 
             // act
-            var getDishes = await env.Client.Get<Page<DishViewModel>>(
+            var getDishes = await user.Client.Get<Page<DishViewModel>>(
                 $"api/Dishes?skip={previousDishes.TotalCount}").ConfigureAwait(false);
             getDishes.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getDishes.Value;

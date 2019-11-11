@@ -13,10 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Household.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    [IgnoreAntiforgeryToken(Order = 1001)]
     public class ProductsController : ControllerBase
     {
         private readonly HouseholdDbContext dataBase;
@@ -71,8 +70,6 @@ namespace Household.Controllers
         }
 
         // POST: api/Products
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<ProductViewModel>> PostProduct(ProductViewModel productViewModel)
         {

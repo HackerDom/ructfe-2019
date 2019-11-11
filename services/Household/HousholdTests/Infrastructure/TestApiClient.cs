@@ -12,6 +12,11 @@ namespace HouseholdTests.Infrastructure
 {
     public class TestApiClient
     {
+        public static implicit operator HttpClient(TestApiClient client)
+        {
+            return client.innerClient;
+        }
+
         private readonly HttpClient innerClient;
 
         public TestApiClient(HttpClient innerClient)
@@ -20,14 +25,14 @@ namespace HouseholdTests.Infrastructure
             innerClient.Timeout = Timeout.InfiniteTimeSpan;
         }
 
-        public async Task<ApiResult<T>> Get<T>(string uri)
+        public async Task<ApiResult<T>> Get<T>(string uri) where T : class
         {
             var response = await innerClient.GetAsync(uri);
             var apiResult = await HandleResponse<T>(response);
             return apiResult;
         }
 
-        public async Task<ApiResult<T>> Post<T>(string uri, T content)
+        public async Task<ApiResult<T>> Post<T>(string uri, T content) where T : class
         {
             var requestContent = JsonConvert.SerializeObject(content);
             var request = new StringContent(requestContent, Encoding.UTF8, MediaTypeNames.Application.Json);
@@ -46,7 +51,7 @@ namespace HouseholdTests.Infrastructure
             return apiResult;
         }
 
-        private async Task<ApiResult<T>> HandleResponse<T>(HttpResponseMessage response)
+        private async Task<ApiResult<T>> HandleResponse<T>(HttpResponseMessage response) where T : class
         {
             T value = default;
             if (response.Content != null)
@@ -58,13 +63,18 @@ namespace HouseholdTests.Infrastructure
                 }
                 catch (Exception e) when (e is JsonReaderException || e is JsonSerializationException)
                 {
+                    if (typeof(T) == "".GetType())
+                    {
+                        return new ApiResult<T>(response, stringContent as T);
+                    }
+
                     e.ChangeMessage($"Failed to deserialize service response as type '{typeof(T)}': '{stringContent}'.\n"
                                     + e.Message);
                     throw;
                 }
             }
 
-            var apiResult = new ApiResult<T>(response.StatusCode, response.ReasonPhrase, value);
+            var apiResult = new ApiResult<T>(response, value);
             return apiResult;
         }
     }

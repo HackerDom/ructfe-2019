@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Household.DataBase;
 using Household.DataBaseModels;
 using Household.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Household.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DishesController : ControllerBase

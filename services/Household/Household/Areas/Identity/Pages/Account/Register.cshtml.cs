@@ -22,7 +22,6 @@ namespace Household.Areas.Identity.Pages.Account
     [AllowAnonymous]
     [UsedImplicitly]
     [IgnoreAntiforgeryToken(Order = 1001)]
-    //[Consumes("application/x-www-form-urlencoded", "application/json")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> signInManager;

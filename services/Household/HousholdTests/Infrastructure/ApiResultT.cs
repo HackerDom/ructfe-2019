@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using FluentAssertions;
 using HouseholdTests.Utils;
 
@@ -7,15 +8,15 @@ namespace HouseholdTests.Infrastructure
 {
     public class ApiResult<T>
     {
-        public HttpStatusCode StatusCode { get; }
-
-        public string Message { get; }
+        public HttpStatusCode StatusCode => response.StatusCode;
+        public string Message => response.ReasonPhrase;
         public T Value { get; }
 
-        public ApiResult(HttpStatusCode statusCode, string message, T value = default)
+        private readonly HttpResponseMessage response;
+
+        public ApiResult(HttpResponseMessage response, T value = default)
         {
-            StatusCode = statusCode;
-            Message = message;
+            this.response = response;
             Value = value;
         }
 

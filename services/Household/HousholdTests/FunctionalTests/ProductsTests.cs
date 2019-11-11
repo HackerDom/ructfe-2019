@@ -45,13 +45,15 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_create_several_product_and_retrieve_list()
         {
-            var getPreviousProducts = await env.Client.Get<Page<ProductViewModel>>("api/products").ConfigureAwait(false);
+            var user = await env.RegisterNewUser().ConfigureAwait(false);
+
+            var getPreviousProducts = await user.Client.Get<Page<ProductViewModel>>("api/products").ConfigureAwait(false);
             getPreviousProducts.EnsureStatusCode(HttpStatusCode.OK);
             var previousProducts = getPreviousProducts.Value;
 
-            await PostTestProductsToServer();
+            await PostTestProductsToServer(user);
 
-            var getProducts = await env.Client.Get<Page<ProductViewModel>>($"api/products?skip={previousProducts.TotalCount}").ConfigureAwait(false);
+            var getProducts = await user.Client.Get<Page<ProductViewModel>>($"api/products?skip={previousProducts.TotalCount}").ConfigureAwait(false);
             getProducts.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getProducts.Value;
 
@@ -95,11 +97,11 @@ namespace HouseholdTests.FunctionalTests
             }
         };
 
-        private async Task PostTestProductsToServer()
+        private async Task PostTestProductsToServer(TestUser user)
         {
             foreach (var product in testProducts)
             {
-                var createResult = await env.Client.Post("api/products", product).ConfigureAwait(false);
+                var createResult = await user.Client.Post("api/products", product).ConfigureAwait(false);
                 createResult.EnsureStatusCode(HttpStatusCode.Created);
             }
         }
