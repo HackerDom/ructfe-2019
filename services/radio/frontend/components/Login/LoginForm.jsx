@@ -43,6 +43,7 @@ class RegisterForm extends React.Component {
                 <Input id='username' name='username' type="text"
                     inputAttrs={{
                         value: username,
+                        placeholder: "Username",
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
                             this.onInputHandler('username', username, e);
@@ -50,9 +51,10 @@ class RegisterForm extends React.Component {
                     }}/>
             </div>
             <div className='register-form__password'>
-                <PasswordInput id='password1' name='password1'
+                <PasswordInput id='password' name='password'
                     inputAttrs={{
                         value: password,
+                        placeholder: "Password",
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
                             this.onInputHandler('password', password, e);

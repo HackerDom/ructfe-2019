@@ -52,6 +52,25 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		encoder.Encode(forms.Error2RadioValidationErrors(err))
 		return
 	}
+	var user *models.User
+	var rve *forms.RadioValidationErrors
+	user, err = models.SignInUser(signInForm)
+	if err != nil {
+		w.WriteHeader(400)
+		rve = forms.Error2RadioValidationErrors(err)
+		encoder.Encode(rve)
+		return
+	}
+	session, err := store.Get(r, "user-session")
+	session.Values["user_id"] = user.ID
+	err = session.Save(r, w)
+	if err != nil {
+		w.WriteHeader(400)
+		rve = forms.Error2RadioValidationErrors(err)
+		encoder.Encode(rve)
+		return
+	}
+	encoder.Encode(user)
 }
 
 func makeWebRouter(mainRouter *mux.Router) {

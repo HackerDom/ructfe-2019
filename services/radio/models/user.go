@@ -27,3 +27,13 @@ func RegisterUser(signUpForm forms.SignUpForm) (user *User, err error) {
 	err = forms.ErrorArray2Error(db.Create(user).GetErrors())
 	return
 }
+
+func SignInUser(signInForm forms.SignInForm) (user *User, err error) {
+	user = &User{}
+	err = forms.ErrorArray2Error(db.Where("username = ?", signInForm.Username).First(user).GetErrors())
+	if err != nil {
+		return
+	}
+	err = utils.ComparePassword(user.Password, signInForm.Password)
+	return
+}

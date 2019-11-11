@@ -24,9 +24,21 @@ type DBConfig struct {
 	SSLMode  string `yaml:"ssl_mode"`
 }
 
+type RedisConfig struct {
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
+	DB   string `yaml:"db"`
+}
+
+type CoreConfig struct {
+	SessionKey string `yaml:"-"`
+}
+
 type Config struct {
-	Paths PathConfig `yaml:"paths"`
-	DB    DBConfig   `yaml:"db"`
+	Paths PathConfig  `yaml:"paths"`
+	DB    DBConfig    `yaml:"db"`
+	Redis RedisConfig `yaml:"redis"`
+	Core  CoreConfig  `yaml:"-"`
 }
 
 func makeConfig(appPath string, configName string) (*Config, error) {
@@ -41,6 +53,10 @@ func makeConfig(appPath string, configName string) (*Config, error) {
 	config.Paths.TemplatePath = path.Join(appPath, config.Paths.TemplatePath)
 	config.Paths.StaticPath = path.Join(appPath, config.Paths.StaticPath)
 	config.DB.Password, err = utils.ReadSecret("db_password")
+	if err != nil {
+		return config, err
+	}
+	config.Core.SessionKey, err = utils.ReadSecret("session_key")
 	return config, err
 }
 

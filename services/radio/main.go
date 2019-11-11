@@ -13,6 +13,7 @@ import (
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/HackerDom/ructfe-2019/services/radio/routes"
 	"github.com/jinzhu/gorm"
+	redistore "gopkg.in/boj/redistore.v1"
 )
 
 var (
@@ -23,6 +24,12 @@ var (
 )
 
 func startServer() {
+	var store *redistore.RediStore
+	var err error
+	if store, err = routes.InitSessionStore(); err != nil {
+		log.Fatalf("Can't init session store, reason: %v", err)
+	}
+	defer store.Close()
 	r := routes.MakeRouter()
 	server := &http.Server{
 		Handler: r,
