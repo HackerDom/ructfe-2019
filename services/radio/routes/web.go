@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
@@ -18,13 +17,14 @@ func registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var signUpForm forms.SignUpForm
 	decoder := json.NewDecoder(r.Body)
+	encoder := json.NewEncoder(w)
 	err = decoder.Decode(&signUpForm)
 	if err != nil {
 		w.WriteHeader(400)
+		encoder.Encode(forms.Error2RadioValidationErrors(err))
 		return
 	}
 	rve := signUpForm.Validate()
-	encoder := json.NewEncoder(w)
 	if rve != nil {
 		w.WriteHeader(400)
 		encoder.Encode(rve)
@@ -43,14 +43,15 @@ func registerUserHandler(w http.ResponseWriter, r *http.Request) {
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var d map[string]string
+	var signInForm forms.SignInForm
 	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&d)
+	encoder := json.NewEncoder(w)
+	err = decoder.Decode(&signInForm)
 	if err != nil {
 		w.WriteHeader(400)
+		encoder.Encode(forms.Error2RadioValidationErrors(err))
 		return
 	}
-	log.Printf("Login handler data %v", d)
 }
 
 func makeWebRouter(mainRouter *mux.Router) {
