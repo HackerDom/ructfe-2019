@@ -1,5 +1,6 @@
 import requests
-import json
+
+from utils.parse_response import parse_response
 
 
 class UsersApi:
@@ -8,10 +9,8 @@ class UsersApi:
 
     def register(self, user):
         response = requests.post(f'{self.service_url}/register', json=user)
-        response_json = response.content.decode()
-        response_data = json.loads(response_json)
-        # if not response_data.success:
-        #     raise Exception('Request was not success')
+
+        return parse_response(response.content, response.status_code)
 
     def login(self, session: requests.Session, username, password):
         response = session.post(
@@ -20,21 +19,15 @@ class UsersApi:
                 "username": username,
                 "password": password
             })
-        response_json = response.content
-        if response.status_code >= 300:
-            raise Exception('Request was not success')
-        response_data = json.loads(response_json.decode())
-        if not response_data["success"]:
-            raise Exception('Request was not success')
+
+        return parse_response(response.content, response.status_code)
 
     def get_user(self, user_id):
         response = requests.get(
             f'{self.service_url}/user',
             params={'userId': user_id})
-        response_json = response.content.decode()
-        response_data = json.loads(response_json)
 
-        return response_data
+        return parse_response(response.content, response.status_code)
 
     def search(self, first_name, last_name):
         response = requests.post(
@@ -45,14 +38,8 @@ class UsersApi:
                     "lastName": last_name
                 }
             })
-        response_json = response.content
-        if response.status_code >= 300:
-            raise Exception('Request was not success')
-        response_data = json.loads(response_json.decode())
-        if not response_data["success"]:
-            raise Exception('Request was not success')
 
-        return response_data
+        return parse_response(response.content, response.status_code)
 
     def edit_user(self, session, fields):
         response = session.post(
@@ -60,11 +47,5 @@ class UsersApi:
             json={
                 "fields": fields
             })
-        response_json = response.content
-        if response.status_code >= 300:
-            raise Exception('Request was not success')
-        response_data = json.loads(response_json.decode())
-        if not response_data["success"]:
-            raise Exception('Request was not success')
 
-        return response_data
+        return parse_response(response.content, response.status_code)

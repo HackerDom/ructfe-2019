@@ -1,5 +1,6 @@
 import requests
-import json
+
+from utils.parse_response import parse_response
 
 
 class ChatsApi:
@@ -12,11 +13,4 @@ class ChatsApi:
             json={
                 "chatName": chat_name,
             })
-        response_json = response.content
-        if response.status_code >= 300:
-            raise Exception('Request was not success')
-        response_data = json.loads(response_json.decode())
-        if not response_data["success"]:
-            raise Exception('Request was not success')
-
-        return response_data
+        return parse_response(response.content, response.status_code)
