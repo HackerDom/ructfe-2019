@@ -16,8 +16,8 @@ class UsersApi:
         response = session.post(
             f'{self.service_url}/login',
             json={
-                "username": username,
-                "password": password
+                'username': username,
+                'password': password
             })
 
         return parse_response(response.content, response.status_code)
@@ -33,9 +33,9 @@ class UsersApi:
         response = requests.post(
             f'{self.service_url}/searchUser',
             json={
-                "query": {
-                    "firstName": first_name,
-                    "lastName": last_name
+                'query': {
+                    'firstName': first_name,
+                    'lastName': last_name
                 }
             })
 
@@ -45,7 +45,7 @@ class UsersApi:
         response = session.post(
             f'{self.service_url}/editUser',
             json={
-                "fields": fields
+                'fields': fields
             })
 
         return parse_response(response.content, response.status_code)

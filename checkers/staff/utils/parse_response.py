@@ -3,7 +3,8 @@ import json
 
 class InvalidResponseException(Exception):
     def __init__(self, message):
-        super(f'Request was not success: {message}')
+        self.message = f'Request was not success: {message}'
+        super()
 
 
 def parse_response(response_str: bytes, status_code):
