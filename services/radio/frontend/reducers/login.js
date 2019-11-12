@@ -10,7 +10,7 @@ export default () => {
         errors: {}
     };
     return (state = defaultState, action) => {
-        switch (action.data) {
+        switch (action.type) {
         case LOGIN_USER_IN_PROGRESS: {
             return {
                 ...state,

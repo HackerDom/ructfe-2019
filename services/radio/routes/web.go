@@ -7,78 +7,68 @@ import (
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
 
-func webHandler(w http.ResponseWriter, r *http.Request) {
+func spaHandler(w http.ResponseWriter, r *http.Request) {
 	ServeWithTemplateName(w, r, "index.html")
 }
 
-func registerUserHandler(w http.ResponseWriter, r *http.Request) {
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	var session *sessions.Session
 	var err error
-	var signUpForm forms.SignUpForm
-	decoder := json.NewDecoder(r.Body)
-	encoder := json.NewEncoder(w)
-	err = decoder.Decode(&signUpForm)
-	if err != nil {
-		w.WriteHeader(400)
-		encoder.Encode(forms.Error2RadioValidationErrors(err))
-		return
+	if session, err = store.Get(r, "user-session"); err == nil {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
 	}
-	rve := signUpForm.Validate()
-	if rve != nil {
-		w.WriteHeader(400)
-		encoder.Encode(rve)
-		return
-	}
-	var user *models.User
-	user, err = models.RegisterUser(signUpForm)
-	if err != nil {
-		w.WriteHeader(400)
-		rve = forms.Error2RadioValidationErrors(err)
-		encoder.Encode(rve)
-		return
-	}
-	encoder.Encode(user)
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var signInForm forms.SignInForm
-	decoder := json.NewDecoder(r.Body)
-	encoder := json.NewEncoder(w)
-	err = decoder.Decode(&signInForm)
-	if err != nil {
+func registerUserHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	var signUpForm forms.SignUpForm
+	if err = dec.Decode(&signUpForm); err != nil {
+		return
+	}
+	if rve := signUpForm.Validate; rve != nil {
 		w.WriteHeader(400)
-		encoder.Encode(forms.Error2RadioValidationErrors(err))
+		enc.Encode(rve)
 		return
 	}
 	var user *models.User
-	var rve *forms.RadioValidationErrors
-	user, err = models.SignInUser(signInForm)
-	if err != nil {
-		w.WriteHeader(400)
-		rve = forms.Error2RadioValidationErrors(err)
-		encoder.Encode(rve)
+	if user, err = models.RegisterUser(signUpForm); err != nil {
+		return
+	}
+	enc.Encode(user)
+	return
+}
+
+func loginHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	var signInForm forms.SignInForm
+	if err = dec.Decode(&signInForm); err != nil {
+		return
+	}
+	var user *models.User
+	if user, err = models.SignInUser(signInForm); err != nil {
 		return
 	}
 	session, err := store.Get(r, "user-session")
 	session.Values["user_id"] = user.ID
-	err = session.Save(r, w)
-	if err != nil {
-		w.WriteHeader(400)
-		rve = forms.Error2RadioValidationErrors(err)
-		encoder.Encode(rve)
+	if err = session.Save(r, w); err != nil {
 		return
 	}
-	encoder.Encode(user)
+	enc.Encode(user)
+	return
 }
 
 func makeWebRouter(mainRouter *mux.Router) {
 	r := mainRouter.PathPrefix("").Subrouter()
-	r.HandleFunc("/", webHandler)
-	r.HandleFunc("/signup/", webHandler)
-	r.HandleFunc("/signin/", webHandler)
 
-	r.HandleFunc("/frontend-api/register/", registerUserHandler).Methods("POST")
-	r.HandleFunc("/frontend-api/login/", loginHandler).Methods("POST")
+	r.HandleFunc("/", spaHandler)
+	r.HandleFunc("/account/", spaHandler)
+	r.HandleFunc("/signup/", spaHandler)
+	r.HandleFunc("/signin/", spaHandler)
+	r.HandleFunc("/logout/", logoutHandler)
+
+	r.HandleFunc("/frontend-api/register/", JsonHandler(registerUserHandler)).Methods("POST")
+	r.HandleFunc("/frontend-api/login/", JsonHandler(loginHandler)).Methods("POST")
 }

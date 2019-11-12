@@ -37,3 +37,9 @@ func SignInUser(signInForm forms.SignInForm) (user *User, err error) {
 	err = utils.ComparePassword(user.Password, signInForm.Password)
 	return
 }
+
+func FindUserByID(userId uint) (user *User, err error) {
+	user = &User{}
+	err = forms.ErrorArray2Error(db.Find(&user, userId).GetErrors())
+	return
+}

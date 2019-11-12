@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { push } from 'connected-react-router';
 
 import {
     REGISTER_USER_IN_PROGRESS,
@@ -26,6 +27,7 @@ export const registerUser = ({ username, password, repeated_password }) => async
             type: REGISTER_USER_SUCCESFULLY,
             data
         });
+        push('/signin/');
     } else {
         const data = await response.json();
         dispatch({

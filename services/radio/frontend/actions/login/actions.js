@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { push } from 'connected-react-router';
 
 import {
     LOGIN_USER_IN_PROGRESS,
@@ -25,6 +26,7 @@ export const loginUser = ({ username, password }) => async (dispatch) => {
             type: LOGIN_USER_SUCCESFULLY,
             data
         });
+        dispatch(push('/'));
     } else {
         const data = await response.json();
         dispatch({
