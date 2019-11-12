@@ -37,4 +37,6 @@ func InitDB() (*gorm.DB, error) {
 
 func MigrateDb() {
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Playlist{})
+	db.AutoMigrate(&Track{})
 }

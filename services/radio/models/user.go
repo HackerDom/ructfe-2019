@@ -8,10 +8,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Username    string `json:"username" gorm:"unique_index;not null;size:64"`
-	Description string `json:"description"`
-	Age         int    `json:"age" gorm:"default:16"`
-	Password    string `json:"-" gorm:"unique_index;not null;size:64"`
+	Username    string     `json:"username" gorm:"unique_index;not null;size:64"`
+	Description string     `json:"description"`
+	Age         int        `json:"age" gorm:"default:16"`
+	Password    string     `json:"-" gorm:"unique_index;not null;size:64"`
+	Playlists   []Playlist `json:"-"`
 }
 
 func RegisterUser(signUpForm forms.SignUpForm) (user *User, err error) {
@@ -38,8 +39,8 @@ func SignInUser(signInForm forms.SignInForm) (user *User, err error) {
 	return
 }
 
-func FindUserByID(userId uint) (user *User, err error) {
+func FindUserByID(userID uint) (user *User, err error) {
 	user = &User{}
-	err = forms.ErrorArray2Error(db.Find(&user, userId).GetErrors())
+	err = forms.ErrorArray2Error(db.Find(&user, userID).GetErrors())
 	return
 }

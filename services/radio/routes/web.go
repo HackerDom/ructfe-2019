@@ -29,7 +29,7 @@ func registerUserHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWr
 	if err = dec.Decode(&signUpForm); err != nil {
 		return
 	}
-	if rve := signUpForm.Validate; rve != nil {
+	if rve := forms.ValidateForm(signUpForm); rve != nil {
 		w.WriteHeader(400)
 		enc.Encode(rve)
 		return
@@ -69,6 +69,6 @@ func makeWebRouter(mainRouter *mux.Router) {
 	r.HandleFunc("/signin/", spaHandler)
 	r.HandleFunc("/logout/", logoutHandler)
 
-	r.HandleFunc("/frontend-api/register/", JsonHandler(registerUserHandler)).Methods("POST")
-	r.HandleFunc("/frontend-api/login/", JsonHandler(loginHandler)).Methods("POST")
+	r.HandleFunc("/frontend-api/register/", JSONHandler(registerUserHandler)).Methods("POST")
+	r.HandleFunc("/frontend-api/login/", JSONHandler(loginHandler)).Methods("POST")
 }

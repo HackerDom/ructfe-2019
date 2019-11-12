@@ -89,3 +89,7 @@ func ErrorArray2Error(errs []error) (err error) {
 	}
 	return
 }
+
+func ValidateForm(form interface{}) *RadioValidationErrors {
+	return validateErrors2RadioValidationErrors(form)
+}

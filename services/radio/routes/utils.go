@@ -81,7 +81,7 @@ func ServeError500(w http.ResponseWriter, r *http.Request) {
 	ServeWithTemplateAndStatusCode(w, r, "500.html", http.StatusInternalServerError)
 }
 
-func JsonHandler(handler func(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) error) func(w http.ResponseWriter, r *http.Request) {
+func JSONHandler(handler func(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) error) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		encoder := json.NewEncoder(w)
