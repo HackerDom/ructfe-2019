@@ -39,6 +39,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+        <PackageReference Include="Security.Cryptography" Version="1.7.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
     </ItemGroup>
 

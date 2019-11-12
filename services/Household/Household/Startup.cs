@@ -1,6 +1,8 @@
 using AutoMapper;
 using Household.DataBase;
 using Household.DataBaseModels;
+using Household.Utils;
+using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,7 +43,10 @@ namespace Household
             });
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, HouseholdDbContext>();
+                .AddApiAuthorization<ApplicationUser, HouseholdDbContext>()
+                .AddSigningCredential(
+                    CertificateLoader.GetECDsaSecurityKey("12345"),
+                    IdentityServerConstants.ECDsaSigningAlgorithm.ES512);
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
