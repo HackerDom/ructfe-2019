@@ -93,8 +93,8 @@ app.post('/register', async function (request, response) {
         username: request.body.username ? request.body.username.toString() : null,
         password: request.body.password ? request.body.password.toString() : null,
         firstName: request.body.firstName ? request.body.firstName.toString() : null,
-        lastName: request.body.lastName ? request.body.lastName : null,
-        biography: request.body.biography.toString() ? request.body.biography : null
+        lastName: request.body.lastName ? request.body.lastName.toString() : null,
+        biography: request.body.biography ? request.body.biography.toString() : null
     });
     const isValid = fieldsAreExist(
         newUser.username,
@@ -523,7 +523,7 @@ function checkIsAdminOfCurrentChat (user, chatId) {
 async function sendResponse (response, outputValue = {}, isSuccess = true, errorMessage = '', statusCode = 200) {
     if (isSuccess) {
         await response.json({
-            ...outputValue,
+            data: outputValue,
             success: true
         });
     } else {
