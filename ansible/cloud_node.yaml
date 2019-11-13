@@ -1,0 +1,4 @@
+- hosts: cloud-node
+  roles:
+    - common
+    - cloud_node

@@ -1,0 +1,16 @@
+[Unit]
+    Description=Trafic dump service
+    After=network.target
+
+[Service]
+    ExecStart=/home/dump/start_dump.sh
+    WorkingDirectory=/home/dump 
+    User=root
+    Group=root
+    Restart=on-failure
+    RestartSec=10s
+    CPUQuota=1600%
+    MemoryLimit=4000M
+
+[Install]
+    WantedBy=multi-user.target
