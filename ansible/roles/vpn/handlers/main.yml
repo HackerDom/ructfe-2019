@@ -13,5 +13,8 @@
 - name: enable and restart antidos
   service: name=antidos enabled=yes state=restarted
 
+- name: enable and restart connectmon
+  service: name=connectmon enabled=yes state=restarted
+
 - name: enable and restart dump
   shell: /bin/bash -c "/bin/systemctl enable dump; /bin/systemctl restart dump"

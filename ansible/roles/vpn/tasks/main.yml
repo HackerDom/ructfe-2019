@@ -6,6 +6,7 @@
       - python3-jinja2
       - fping
       - python3-requests
+      - conntrack
     state: latest
 
 - name: copy prod vpn configs
@@ -35,6 +36,7 @@
     - networkclosed
     - antidos
     - dump
+    - connectmon
 
 - name: create cloud user
   user: name=cloud shell=/bin/bash
@@ -181,3 +183,16 @@
 - name: copy dump systemd service
   copy: src=dump/dump.service dest=/etc/systemd/system/dump.service
   notify: enable and restart dump
+
+- name: copy connectmon systemd service
+  copy: src=connectmon/connectmon.service dest=/etc/systemd/system/connectmon.service
+  notify: enable and restart connectmon
+
+- name: copy connectmon service
+  copy: 
+    src: connectmon/connectmon.py
+    dest: /home/connectmon/connectmon.py
+    owner: connectmon
+    group: connectmon
+    mode: 0755
+  notify: enable and restart connectmon
