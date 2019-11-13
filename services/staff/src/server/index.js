@@ -30,7 +30,7 @@ const messagesCollection = new MessagesCollection();
 
 passport.use(new LocalStrategy(
     async function (username, password, done) {
-        const user = await usersCollection.findUserByUsername(username);
+        const user = await usersCollection.findUserByUsername(username).catch(() => null);
         if (!user) {
             return done(null, false, { message: 'Unknown User' });
         }
@@ -118,7 +118,7 @@ app.post('/register', async function (request, response) {
 });
 
 app.post('/login', passport.authenticate('local'), async (request, response) => {
-    await sendResponse(response);
+    await sendResponse(response, { userId: request.user.id });
 });
 
 app.get('/user', async (request, response) => {
@@ -258,7 +258,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
         });
 
     if (isSuccess && String(chat.inviteLink) !== String(inviteLink)) {
-        await sendResponse(response, { }, false, 'Invalid invite link', 403);
+        await sendResponse(response, {}, false, 'Invalid invite link', 403);
     }
 
     if (isSuccess) {
@@ -297,7 +297,7 @@ app.get('/inviteLink', checkAuthentication, async function (request, response) {
         });
 
     if (isSuccess && !chat.usersIds.some(id => id === userId)) {
-        await sendResponse(response, { }, false, 'You have not access to this chat', 403);
+        await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
     console.log(chat);
@@ -375,7 +375,7 @@ app.post('/sendMessage', checkAuthentication, async function (request, response)
             });
     }
 
-    await sendResponse(response, {}, isSuccess, errorMessage);
+    await sendResponse(response, { messageId: messageId }, isSuccess, errorMessage);
 });
 
 app.post('/deleteMessage', checkAuthentication, async function (request, response) {
@@ -442,7 +442,7 @@ app.get('/messages', checkAuthentication, async function (request, response) {
         });
 
     if (isSuccess && !chat.usersIds.some(x => x === userId)) {
-        await sendResponse(response, { }, false, 'You have not access to this chat', 403);
+        await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
 
