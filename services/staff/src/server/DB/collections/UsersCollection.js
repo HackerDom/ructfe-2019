@@ -51,17 +51,16 @@ export class UsersCollection {
     }
 
     async editUser (oldUserModel, newFields) {
-        for (const key in Object.keys(newFields)) {
+        for (const key of Object.keys(newFields)) {
             if (oldUserModel[key]) {
                 oldUserModel[key] = newFields[key];
             }
         }
-
         return oldUserModel.save();
     }
 
     async addFieldsToUser (oldUserModel, newFields) {
-        for (const key in Object.keys(newFields)) {
+        for (const key of Object.keys(newFields)) {
             oldUserModel[key] = newFields[key];
         }
 
