@@ -1,0 +1,11 @@
+- name: create node_exporter catalog
+  file: path=/root/node_exporter state=directory
+
+- name: node_exporter docker-compose config
+  copy: src=node_exporter.yml dest=/root/node_exporter/docker-compose.yml
+
+- name: ensure compose running
+  docker_compose:
+    project_src: /root/node_exporter
+    state: present
+    restarted: yes
