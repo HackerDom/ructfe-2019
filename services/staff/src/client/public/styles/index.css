@@ -2,6 +2,8 @@ html,
 body
 {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body
@@ -11,13 +13,13 @@ body
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    margin: 0 8px;
 }
 
 .root
 {
     height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 code {

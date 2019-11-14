@@ -70,7 +70,8 @@ module.exports = (env) => {
             new CopyWebpackPlugin([
                 { from: './src/client/public/favicon', to: './favicon' },
                 { from: './src/client/public/manifest', to: './manifest' },
-                { from: './src/client/public/styles', to: './styles' }
+                { from: './src/client/public/styles', to: './styles' },
+                { from: './src/client/public/pictures', to: './pictures' }
             ])
         ] : [
             // Plugins that apply in production builds only
