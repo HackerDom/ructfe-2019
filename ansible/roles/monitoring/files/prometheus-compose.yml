@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "0.0.0.0:9090:9090"
+    volumes:
+      - "/root/prometheus/etc/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "/root/prometheus/etc/servers.yml:/etc/prometheus/servers.yml"
+      - "/root/prometheus/data:/prometheus"

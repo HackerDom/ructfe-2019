@@ -1,0 +1,9 @@
+- name: prometheus
+  include: "prometheus.yml"
+  tags:
+    - prometheus
+
+- name: grafana
+  include: "grafana.yml"
+  tags:
+    - grafana

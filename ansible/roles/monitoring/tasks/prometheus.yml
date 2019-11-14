@@ -1,0 +1,23 @@
+- name: prometheus catalogs
+  file: path={{ item }} state=directory
+  with_items:
+    - /root/prometheus
+    - /root/prometheus/etc
+
+- name: data catalog
+  file: path=/root/prometheus/data state=directory mode=0777
+
+- name: prometheus docker-compose config
+  copy: src=prometheus-compose.yml dest=/root/prometheus/docker-compose.yml
+
+- name: prometheus config
+  copy: src=prometheus-config.yml dest=/root/prometheus/etc/prometheus.yml
+
+- name: prometheus targets
+  template: src=prometheus-servers.j2 dest=/root/prometheus/etc/servers.yml
+
+- name: ensure compose running
+  docker_compose:
+    project_src: /root/prometheus
+    state: present
+    restarted: yes
