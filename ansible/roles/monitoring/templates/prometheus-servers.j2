@@ -4,3 +4,6 @@
 {% for item in groups['cs'] %}
   - {{ hostvars[item]['ansible_host'] }}:9100
 {% endfor %}
+{% for item in groups['vpn'] %}
+  - {{ hostvars[item]['ansible_host'] }}:9100
+{% endfor %}
