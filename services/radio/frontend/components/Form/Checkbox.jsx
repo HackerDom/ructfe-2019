@@ -10,7 +10,7 @@ export default class Checkbox extends React.Component {
         onChange: PropTypes.func,
         onEnterPress: PropTypes.func,
         inputAttrs: PropTypes.shape({}),
-        errors: PropTypes.arrayOf(PropTypes.string)
+        errors: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
     }
 
     static defaultProps = {
@@ -37,7 +37,7 @@ export default class Checkbox extends React.Component {
                     className="form-checkbox-inner__label form-checkbox-label">
                     <div className="form-checkbox-label__content">{children}</div>
                 </label> }
-                { errors && errors.length > 0 && <Errors errors={errors} />}
+                {<Errors errors={errors} />}
             </div>
         </div>;
     }

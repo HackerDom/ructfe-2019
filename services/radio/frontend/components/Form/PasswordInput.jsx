@@ -14,7 +14,7 @@ export default class PasswordInput extends React.Component {
         onKeyPress: PropTypes.func,
         onPasswordGenerate: PropTypes.func,
         classes: PropTypes.arrayOf(PropTypes.string),
-        errors: PropTypes.arrayOf(PropTypes.string),
+        errors: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
         withGenerator: PropTypes.bool
     }
 
@@ -64,7 +64,7 @@ export default class PasswordInput extends React.Component {
             <div className='form-input__inner'>
                 { label && <label htmlFor={id} className='form-input-label' dangerouslySetInnerHTML={{ __html: label }}></label> }
                 <div className='form-input-password_wrapper'>
-                    <input id={id} type='text' name={name}
+                    <input id={id} type='password' name={name}
                         onKeyPress={onKeyPress.bind(this)}
                         className='form-input__input'
                         onChange={onChange.bind(this)}
@@ -75,7 +75,7 @@ export default class PasswordInput extends React.Component {
                         onClick={this.generatePassword.bind(this)}>
                     </div> }
                 </div>
-                { errors && errors.length > 0 && <Errors errors={errors} />}
+                <Errors errors={errors} />
             </div>
         </div>;
     }

@@ -35,7 +35,8 @@
         "import/prefer-default-export": "off",
         "no-restricted-syntax": "off",
         "linebreak-style": "off",
-        "no-shadow": "off"
+        "no-shadow": "off",
+        "no-underscore-dangle": "off"
     },
     "plugins": [
         "import",

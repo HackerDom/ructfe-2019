@@ -10,9 +10,11 @@ import { registerUser } from '../../actions/register/actions';
 
 class RegisterPage extends React.Component {
     render() {
-        return <Layout>
+        return <Layout isCenterByVertical={true}>
             <div className='register-page'>
-                <RegisterForm />
+                <div className='register-page__form'>
+                    <RegisterForm />
+                </div>
             </div>
         </Layout>;
     }

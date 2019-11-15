@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import Button from '../Button/Button';
 import Input from '../Form/Input';
 import PasswordInput from '../Form/PasswordInput';
+import Errors from '../Form/Errors';
 
 import { registerUser } from '../../actions/register/actions';
 
@@ -14,9 +15,9 @@ class RegisterForm extends React.Component {
     static propTypes = {
         registerUser: PropTypes.func,
         errors: PropTypes.shape({
-            username: PropTypes.string,
-            password: PropTypes.string,
-            repeated_password: PropTypes.string,
+            username: PropTypes.arrayOf(PropTypes.string),
+            password: PropTypes.arrayOf(PropTypes.string),
+            repeated_password: PropTypes.arrayOf(PropTypes.string),
         })
     }
 
@@ -45,6 +46,7 @@ class RegisterForm extends React.Component {
         } = this.state;
 
         return <div className='register-form'>
+            <div className='register-form__title'>Create your account</div>
             <div className='register-form__username'>
                 <Input id='username' name='username' type="text"
                     errors={errors.username}
@@ -71,7 +73,7 @@ class RegisterForm extends React.Component {
             </div>
             <div className='register-form__password'>
                 <PasswordInput id='repeated_password' name='repeated_password'
-                    errors={errors.repeated_password}
+                    errors={errors.repeated_password || errors.__all__}
                     inputAttrs={{
                         placeholder: 'Repeat password',
                         value: repeated_password,
@@ -82,7 +84,7 @@ class RegisterForm extends React.Component {
                     }}/>
             </div>
             <div className='register-form__submit'>
-                <Button title='Sign Up' modifiers={['submit']} onClick={() => {
+                <Button title='Sign Up' modifiers={['white', 'register']} onClick={() => {
                     registerUser({ username, password, repeated_password });
                 }} />
             </div>
@@ -91,7 +93,7 @@ class RegisterForm extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  errors: state.register.errors
+    errors: state.register.errors
 });
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     registerUser

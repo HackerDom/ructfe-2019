@@ -14,7 +14,7 @@ export default class Input extends React.Component {
         isHidden: PropTypes.bool,
         onKeyPress: PropTypes.func,
         classes: PropTypes.arrayOf(PropTypes.string),
-        errors: PropTypes.arrayOf(PropTypes.string),
+        errors: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
         hasErrors: PropTypes.bool
     }
 
@@ -71,13 +71,13 @@ export default class Input extends React.Component {
         }
         return <div className={classNames.join(' ')}>
             <div className='form-input__inner'>
-                { !isHidden && label && <label htmlFor={id} className='form-input-label' dangerouslySetInnerHTML={{ __html: label }}></label> }
+                {!isHidden && label && <label htmlFor={id} className='form-input-label' dangerouslySetInnerHTML={{ __html: label }}></label> }
                 <input id={id} type={endlessType} name={name}
                     onKeyPress={onKeyPress.bind(this)}
                     className='form-input__input'
                     ref={this.inputRef}
                     onChange={onChange.bind(this)} {...inputAttrs}/>
-                { !isHidden && errors && errors.length > 0 && <Errors errors={errors} />}
+                {!isHidden && <Errors errors={errors} />}
             </div>
         </div>;
     }
