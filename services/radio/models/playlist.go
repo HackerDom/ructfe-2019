@@ -9,6 +9,7 @@ type Playlist struct {
 	gorm.Model
 	Name        string  `json:"name" gorm:"unique_index;not null;size:256"`
 	Description string  `json:"description"`
+	Private     bool    `json:"private"`
 	Tracks      []Track `json:"-"`
 	UserID      uint    `json:"-"`
 }

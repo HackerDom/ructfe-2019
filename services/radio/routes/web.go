@@ -67,6 +67,9 @@ func makeWebRouter(mainRouter *mux.Router) {
 	r.HandleFunc("/account/", spaHandler)
 	r.HandleFunc("/signup/", spaHandler)
 	r.HandleFunc("/signin/", spaHandler)
+
+	r.HandleFunc("/playlist/{id:[0-9+]}/", spaHandler)
+
 	r.HandleFunc("/logout/", logoutHandler)
 
 	r.HandleFunc("/frontend-api/register/", JSONHandler(registerUserHandler)).Methods("POST")

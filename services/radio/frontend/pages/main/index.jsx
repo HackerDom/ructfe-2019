@@ -1,14 +1,30 @@
 import React from 'react';
-import Layout from '../../layouts/layout';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-export default class MainPage extends React.Component {
-    static propTypes = {}
+import Layout from '../../layouts/layout';
+import Playlist from '../../components/Playlist/Playlist';
+
+class MainPage extends React.Component {
+    static propTypes = {
+        user: PropTypes.shape({}),
+    }
 
     render() {
+        const { user } = this.props;
+
         return <Layout>
-            <div className='main-page'>
+            {!user && <div className='main-page'>
                 main page
-            </div>
+            </div>}
+            {user && <Playlist />}
         </Layout>;
     }
 }
+
+const mapDispatchToProps = () => ({});
+const mapStateToProps = (state) => ({
+    user: state.user.user
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

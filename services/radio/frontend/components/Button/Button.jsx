@@ -13,6 +13,7 @@ export default class Button extends React.Component {
 
     static defaultProps = {
         onClick: () => {},
+        modifiers: [],
         disabled: false
     }
 
