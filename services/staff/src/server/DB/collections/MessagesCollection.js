@@ -20,7 +20,6 @@ export class MessagesCollection {
             if (!message) {
                 throw new Error('Can not find message in mongo db');
             } else {
-                console.log(message);
                 return message;
             }
         });

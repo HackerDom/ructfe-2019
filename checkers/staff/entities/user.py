@@ -1,13 +1,14 @@
+import random
+from chklib import utils
+
+
 class User:
     def __init__(self):
-        username = f'user_{random.randint(0, 10000000)}'
-        first_name = f'firstName_{random.randint(0, 10000000)}'
-        last_name = f'lastName_{random.randint(0, 10000000)}'
-        self.username = username
-        self.password = '123'
-        self.biography = 'awesome bio'
-        self.last_name = last_name
-        self.first_name = first_name
+        self.username = utils.generate_random_text()
+        self.password = utils.generate_random_text()
+        self.biography = utils.generate_random_text()
+        self.last_name = utils.generate_random_text()
+        self.first_name = utils.generate_random_text()
         self.user_id = None
         self.is_admin = False
         self.chat_id = None

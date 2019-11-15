@@ -300,7 +300,6 @@ app.get('/inviteLink', checkAuthentication, async function (request, response) {
         await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
-    console.log(chat);
 
     await sendResponse(response,
         {
