@@ -28,19 +28,63 @@ namespace HouseholdTests.FunctionalTests
 
             var products = new[]
             {
-                new ProductViewModel {Name = "Яблоко", Calories = 42, Carbohydrate = 10, Fat = 1, Protein = 1},
-                new ProductViewModel {Name = "Яйцо куриное", Calories = 42, Carbohydrate = 10, Fat = 1, Protein = 1},
-                new ProductViewModel {Name = "Мука", Calories = 42, Carbohydrate = 10, Fat = 1, Protein = 1},
-                new ProductViewModel {Name = "Сахар", Calories = 42, Carbohydrate = 10, Fat = 1, Protein = 1}
+                new ProductViewModel
+                {
+                    Name = "Яблоко",
+                    Calories = 42,
+                    Carbohydrate = 10,
+                    Fat = 1,
+                    Protein = 1
+                },
+                new ProductViewModel
+                {
+                    Name = "Яйцо куриное",
+                    Calories = 42,
+                    Carbohydrate = 10,
+                    Fat = 1,
+                    Protein = 1
+                },
+                new ProductViewModel
+                {
+                    Name = "Мука",
+                    Calories = 42,
+                    Carbohydrate = 10,
+                    Fat = 1,
+                    Protein = 1
+                },
+                new ProductViewModel
+                {
+                    Name = "Сахар",
+                    Calories = 42,
+                    Carbohydrate = 10,
+                    Fat = 1,
+                    Protein = 1
+                }
             };
             await RegisterProducts(user.Client, products);
 
             var ingredients = new[]
             {
-                new IngredientViewModel {Weight = 400, ProductId = products[0].Id},
-                new IngredientViewModel {Weight = 65, ProductId = products[1].Id},
-                new IngredientViewModel {Weight = 100, ProductId = products[2].Id},
-                new IngredientViewModel {Weight = 40, ProductId = products[3].Id}
+                new IngredientViewModel
+                {
+                    Weight = 400,
+                    ProductId = products[0].Id
+                },
+                new IngredientViewModel
+                {
+                    Weight = 65,
+                    ProductId = products[1].Id
+                },
+                new IngredientViewModel
+                {
+                    Weight = 100,
+                    ProductId = products[2].Id
+                },
+                new IngredientViewModel
+                {
+                    Weight = 40,
+                    ProductId = products[3].Id
+                }
             };
 
             var newDish = new DishViewModel
@@ -76,15 +120,35 @@ namespace HouseholdTests.FunctionalTests
 
             var products = new[]
             {
-                new ProductViewModel {Protein = 20, Fat = 2, Carbohydrate = 8, Calories = 130},
-                new ProductViewModel {Protein = 10, Fat = 5, Carbohydrate = 15, Calories = 145},
+                new ProductViewModel
+                {
+                    Protein = 20,
+                    Fat = 2,
+                    Carbohydrate = 8,
+                    Calories = 130
+                },
+                new ProductViewModel
+                {
+                    Protein = 10,
+                    Fat = 5,
+                    Carbohydrate = 15,
+                    Calories = 145
+                },
             };
             await RegisterProducts(user.Client, products);
 
             var ingredients = new[]
             {
-                new IngredientViewModel {ProductId = products[0].Id, Weight = 50},
-                new IngredientViewModel {ProductId = products[1].Id, Weight = 100}
+                new IngredientViewModel
+                {
+                    ProductId = products[0].Id,
+                    Weight = 50
+                },
+                new IngredientViewModel
+                {
+                    ProductId = products[1].Id,
+                    Weight = 100
+                }
             };
 
             var newDish = new DishViewModel
@@ -115,10 +179,6 @@ namespace HouseholdTests.FunctionalTests
             // arrange
             var user = await env.RegisterNewUser();
 
-            var getPreviousProducts = await user.Client.Get<Page<DishViewModel>>("api/Dishes").ConfigureAwait(false);
-            getPreviousProducts.EnsureStatusCode(HttpStatusCode.OK);
-            var previousDishes = getPreviousProducts.Value;
-
             var products = Enumerable.Range(0, 10).Select(a => Generator.GetRandomProduct()).ToArray();
             await RegisterProducts(user.Client, products);
 
@@ -131,15 +191,15 @@ namespace HouseholdTests.FunctionalTests
             }
 
             // act
-            var getDishes = await user.Client.Get<Page<DishViewModel>>(
-                $"api/Dishes?skip={previousDishes.TotalCount}").ConfigureAwait(false);
+            var getDishes = await user.Client.Get<Page<DishViewModel>>("api/Dishes")
+                .ConfigureAwait(false);
             getDishes.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getDishes.Value;
 
             // assert
-            productsList.Skip.Should().Be(previousDishes.TotalCount);
+            productsList.Skip.Should().Be(0);
             productsList.Take.Should().Be(100);
-            productsList.TotalCount.Should().Be(previousDishes.TotalCount + dishes.Length);
+            productsList.TotalCount.Should().Be(dishes.Length);
             productsList.Items.Should().BeEquivalentTo(dishes,
                 options => options
                     .Excluding(dish => dish.Id)

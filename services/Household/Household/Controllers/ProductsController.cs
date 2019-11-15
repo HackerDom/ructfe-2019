@@ -21,18 +21,14 @@ namespace Household.Controllers
         private readonly HouseholdDbContext dataBase;
         private readonly IMapper mapper;
 
-        public ProductsController(HouseholdDbContext dataBase, IMapper mapper)
+        public ProductsController(
+            HouseholdDbContext dataBase,
+            IMapper mapper)
         {
             this.dataBase = dataBase;
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// Список доступных продуктов
-        /// </summary>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
-        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<Page<ProductViewModel>>> GetProducts(int skip = 0, int take = 100)
         {
@@ -42,8 +38,17 @@ namespace Household.Controllers
                 return BadRequest("Parameter skip should be greater or equal to 0");
             take = Math.Min(take, 100);
 
-            var items = await dataBase.Products.Skip(skip).Take(take).ToArrayAsync().ConfigureAwait(false);
-            var totalCount = await dataBase.Products.CountAsync().ConfigureAwait(false);
+            var userId = GetUserId();
+            var items = await dataBase.Products
+                .Where(p => p.CreatedBy == userId)
+                .Skip(skip).Take(take)
+                .ToArrayAsync()
+                .ConfigureAwait(false);
+
+            var totalCount = await dataBase.Products
+                .Where(p => p.CreatedBy == userId)
+                .CountAsync()
+                .ConfigureAwait(false);
 
             var page = new Page<ProductViewModel>
             {
@@ -55,7 +60,6 @@ namespace Household.Controllers
             return page;
         }
 
-        // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
@@ -66,10 +70,14 @@ namespace Household.Controllers
                 return NotFound();
             }
 
+            if (product.CreatedBy != GetUserId())
+            {
+                return Unauthorized();
+            }
+
             return GetViewModel(product);
         }
 
-        // POST: api/Products
         [HttpPost]
         public async Task<ActionResult<ProductViewModel>> PostProduct(ProductViewModel productViewModel)
         {
@@ -77,9 +85,11 @@ namespace Household.Controllers
             dataBase.Products.Add(product);
             await dataBase.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new {id = product.Id}, GetViewModel(product));
+            return CreatedAtAction("GetProduct", new
+            {
+                id = product.Id
+            }, GetViewModel(product));
         }
-
 
         private ProductViewModel GetViewModel(Product productDataModel)
         {
@@ -90,7 +100,14 @@ namespace Household.Controllers
         private Product GetDataModel(ProductViewModel productViewModel)
         {
             var productDataModel = mapper.Map<Product>(productViewModel);
+            productDataModel.CreatedBy = GetUserId();
+
             return productDataModel;
+        }
+
+        private string GetUserId()
+        {
+            return User.Claims.ToArray()[5].Value;
         }
     }
 }

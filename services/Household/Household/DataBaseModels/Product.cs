@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Household.DataBaseModels.Interfaces;
 
 namespace Household.DataBaseModels
 {
-    internal class Product : IDataBaseItem, IHaveNutritionalValue
+    internal class Product : DataBaseItem, IHaveNutritionalValue
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,10 +14,5 @@ namespace Household.DataBaseModels
         public double Calories { get; set; }
 
         public List<Ingredient> Ingredients { get; set; }
-
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
     }
 }

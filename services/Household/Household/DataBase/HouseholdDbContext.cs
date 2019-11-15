@@ -10,7 +10,7 @@ namespace Household.DataBase
     {
         public HouseholdDbContext(DbContextOptions<HouseholdDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
-        {
+        { 
             //Database.EnsureDeleted();
             Database.EnsureCreated(); // создаем бд с новой схемой
         }
@@ -23,7 +23,11 @@ namespace Household.DataBase
         {
             // Product and Dish relation
             builder.Entity<Ingredient>()
-                .HasKey(t => new {t.ProductId, t.DishId});
+                .HasKey(t => new
+                {
+                    t.ProductId,
+                    t.DishId
+                });
 
             builder.Entity<Ingredient>()
                 .HasOne(i => i.Product)
@@ -37,7 +41,11 @@ namespace Household.DataBase
 
             // Dish and Menu relation
             builder.Entity<DishInMenu>()
-                .HasKey(t => new {t.DishId, t.MenuId});
+                .HasKey(t => new
+                {
+                    t.DishId,
+                    t.MenuId
+                });
 
             builder.Entity<DishInMenu>()
                 .HasOne(i => i.Dish)
@@ -48,6 +56,22 @@ namespace Household.DataBase
                 .HasOne(i => i.Menu)
                 .WithMany(d => d.DishesInMenu)
                 .HasForeignKey(i => i.MenuId);
+
+            builder.Entity<Product>()
+                .Property(b => b.CreatedDate)
+                .HasDefaultValueSql("GETDATE()");
+            builder.Entity<Ingredient>()
+                .Property(b => b.CreatedDate)
+                .HasDefaultValueSql("GETDATE()");
+            builder.Entity<Dish>()
+                .Property(b => b.CreatedDate)
+                .HasDefaultValueSql("GETDATE()");
+            builder.Entity<DishInMenu>()
+                .Property(b => b.CreatedDate)
+                .HasDefaultValueSql("GETDATE()");
+            builder.Entity<Menu>()
+                .Property(b => b.CreatedDate)
+                .HasDefaultValueSql("GETDATE()");
 
             base.OnModelCreating(builder);
         }
