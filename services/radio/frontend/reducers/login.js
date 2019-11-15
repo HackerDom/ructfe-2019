@@ -26,9 +26,10 @@ export default () => {
             };
         }
         case LOGIN_USER_WITH_ERRORS: {
+            const { errors } = action.data;
             return {
                 ...state,
-                errors: action.data,
+                errors,
                 inProgress: false
             };
         }

@@ -10,9 +10,14 @@ import PasswordInput from '../Form/PasswordInput';
 
 import { loginUser } from '../../actions/login/actions';
 
-class RegisterForm extends React.Component {
+class LoginForm extends React.Component {
     static propTypes = {
-        loginUser: PropTypes.func
+        loginUser: PropTypes.func,
+        errors: PropTypes.shape({
+            username: PropTypes.arrayOf(PropTypes.string),
+            password: PropTypes.arrayOf(PropTypes.string),
+            __all__: PropTypes.arrayOf(PropTypes.string)
+        }),
     }
 
     constructor(props) {
@@ -33,17 +38,19 @@ class RegisterForm extends React.Component {
     }
 
     render() {
-        const { loginUser } = this.props;
+        const { loginUser, errors } = this.props;
         const {
             username, password
         } = this.state;
 
         return <div className='register-form'>
+            <div className='register-form__title'>Login, create and share your playlist</div>
             <div className='register-form__username'>
                 <Input id='username' name='username' type="text"
+                    errors={errors.username}
                     inputAttrs={{
                         value: username,
-                        placeholder: "Username",
+                        placeholder: 'Username',
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
                             this.onInputHandler('username', username, e);
@@ -52,9 +59,10 @@ class RegisterForm extends React.Component {
             </div>
             <div className='register-form__password'>
                 <PasswordInput id='password' name='password'
+                    errors={errors.password || errors.__all__}
                     inputAttrs={{
                         value: password,
-                        placeholder: "Password",
+                        placeholder: 'Password',
                         pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
                             this.onInputHandler('password', password, e);
@@ -62,7 +70,7 @@ class RegisterForm extends React.Component {
                     }}/>
             </div>
             <div className='register-form__submit'>
-                <Button title='Submit' modifiers={['submit']} onClick={() => {
+                <Button title='Sign In' modifiers={['white']} onClick={() => {
                     loginUser({ username, password });
                 }} />
             </div>
@@ -70,9 +78,11 @@ class RegisterForm extends React.Component {
     }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+    errors: state.login.errors
+});
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     loginUser
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

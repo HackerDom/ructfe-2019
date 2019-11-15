@@ -1,35 +1,40 @@
 package models
 
 import (
+	"fmt"
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
 	"github.com/jinzhu/gorm"
 )
 
 type Playlist struct {
 	gorm.Model
-	Name        string  `json:"name" gorm:"unique_index;not null;size:256"`
+	Name        string  `json:"name" gorm:"not null;size:256"`
 	Description string  `json:"description"`
 	Private     bool    `json:"private"`
 	Tracks      []Track `json:"-"`
 	UserID      uint    `json:"-"`
 }
 
-func CreatePlaylist(user *User, playlistForm *forms.PlaylistForm) (playlist *Playlist, err error) {
+func PlaylistCreate(user *User, playlistForm forms.PlaylistForm) (playlist *Playlist, err error) {
 	playlist = &Playlist{
 		Name:        playlistForm.Name,
 		Description: playlistForm.Description,
+		Private:     playlistForm.Private,
 		UserID:      user.ID,
 	}
 	err = forms.ErrorArray2Error(db.Create(playlist).GetErrors())
 	return
 }
 
-func ListPlaylist(user *User) (playlists []Playlist, err error) {
+func PlaylistList(user *User) (playlists []Playlist, err error) {
 	err = forms.ErrorArray2Error(db.Where("user_id = ?", user.ID).Find(&playlists).GetErrors())
 	return
 }
 
-func DeletePlaylist(playlistID uint, user *User) (err error) {
-	err = forms.ErrorArray2Error(db.Where("id = ? AND user_id = ?", playlistID, user.ID).GetErrors())
+func PlaylistDelete(playlistID uint, user *User) (err error) {
+	err = forms.ErrorArray2Error(db.Where("id = ? AND user_id = ?", playlistID, user.ID).Delete(&Playlist{}).GetErrors())
+	if err != nil {
+		return fmt.Errorf("Can't delete DB")
+	}
 	return
 }

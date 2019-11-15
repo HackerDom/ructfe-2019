@@ -27,7 +27,7 @@ export const registerUser = ({ username, password, repeated_password }) => async
             type: REGISTER_USER_SUCCESFULLY,
             data
         });
-        push('/signin/');
+        dispatch(push('/signin/'));
     } else {
         const data = await response.json();
         dispatch({

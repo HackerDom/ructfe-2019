@@ -17,7 +17,7 @@ class MainPage extends React.Component {
 
         return <Layout>
             {!user && <div className='main-page'>
-                <div className='main-page__title'>Listen music and radio on the submarine</div>
+                <div className='main-page__title'>Listen to music and radio on the submarine</div>
                 <div className="main-page__wave">
                     <Wave id='main-page-wave' name='wave.mp3'/>
                 </div>

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
 	"github.com/HackerDom/ructfe-2019/services/radio/utils"
 	"github.com/jinzhu/gorm"
@@ -17,25 +19,34 @@ type User struct {
 
 func RegisterUser(signUpForm forms.SignUpForm) (user *User, err error) {
 	var password string
+	user = &User{}
+	db.Where(User{Username: signUpForm.Username}).FirstOrInit(&user)
+	if user.ID != 0 {
+		err = fmt.Errorf("User \"%s\" already exists", signUpForm.Username)
+		return
+	}
 	password, err = utils.MakePassword(signUpForm.Password)
 	if err != nil {
 		return
 	}
-	user = &User{
-		Username: signUpForm.Username,
-		Password: password,
-	}
+	user.Password = password
 	err = forms.ErrorArray2Error(db.Create(user).GetErrors())
 	return
 }
 
 func SignInUser(signInForm forms.SignInForm) (user *User, err error) {
 	user = &User{}
-	err = forms.ErrorArray2Error(db.Where("username = ?", signInForm.Username).First(user).GetErrors())
-	if err != nil {
+	isRecordNotFound := db.Where("username = ?", signInForm.Username).First(&user).RecordNotFound()
+	er := fmt.Errorf("User \"%s\" not found", signInForm.Username)
+	if isRecordNotFound {
+		err = er
 		return
 	}
 	err = utils.ComparePassword(user.Password, signInForm.Password)
+	if err != nil {
+		err = er
+		return
+	}
 	return
 }
 

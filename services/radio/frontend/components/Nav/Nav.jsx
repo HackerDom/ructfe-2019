@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Spring from '../Spring/Spring';
+import Submarine from '../Icon/Submarine';
 
 class Nav extends React.Component {
     static propTypes = {
@@ -15,7 +16,10 @@ class Nav extends React.Component {
         const { user } = this.props;
 
         return <nav className='radio-nav'>
-            <Link to='/' className='radio-nav__item radio-nav-item'>Main</Link>
+            <Link to='/' className='radio-nav__item radio-nav-item logo-nav'>
+                <div className='logo-nav-text'>Radio</div>
+                <Submarine />
+            </Link>
             <Spring />
             {!user && <React.Fragment>
                 <Link to='/signin/' className='radio-nav__item radio-nav-item'>Sign in</Link>

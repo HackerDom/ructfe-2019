@@ -1,0 +1,36 @@
+.playlist-page {
+    margin: 0 20px;
+}
+
+.playlists-block {
+    text-align: center;
+    max-width: 300px;
+    padding: 5px;
+    border: 1px solid @white;
+    &__title {
+        color: @white;
+        font-size: 20px;
+    }
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: @white;
+    padding: 5px;
+    &__name {
+        flex: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}
+
+.playlist-list {
+    color: @white;
+    &__empty,
+    &__instances {
+        padding: 7px 0 5px;
+    }
+}

@@ -37,8 +37,8 @@ export default class Checkbox extends React.Component {
                     className="form-checkbox-inner__label form-checkbox-label">
                     <div className="form-checkbox-label__content">{children}</div>
                 </label> }
-                {<Errors errors={errors} />}
             </div>
+            {<Errors errors={errors} />}
         </div>;
     }
 }

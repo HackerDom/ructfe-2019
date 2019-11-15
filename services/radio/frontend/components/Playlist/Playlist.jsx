@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Button from '../Button/Button';
 import PlaylistForm from './PlaylistForm';
+import PlaylistList from './PlaylistList';
 
 class Playlist extends React.Component {
     static propTypes = {
@@ -28,19 +29,22 @@ class Playlist extends React.Component {
         const { isAddFormOpen } = this.state;
 
         return <div className='playlist-page'>
-            <div className='playlist-page'>Your playlists</div>
-            <div className='playlists'>
-                <div className='playlist-add-button'>
-                    {isAddFormOpen && <div>
-                        <PlaylistForm onReject={() => {
-                            this.setState({ isAddFormOpen: false })
+            <div className='playlists-block'>
+                <div className='playlists-block__title'>Your playlists</div>
+                <div className='playlists'>
+                    <PlaylistList />
+                    {isAddFormOpen && <PlaylistForm onReject={() => {
+                        this.setState({ isAddFormOpen: false });
+                    }} onAccept={() => {
+                        this.setState({ isAddFormOpen: false });
+                    }}/>}
+                    <div className='playlist-add-button'>
+                        <Button title='+ Add playlist' onClick={() => {
+                            this.setState({
+                                isAddFormOpen: true
+                            });
                         }} />
-                    </div>}
-                    <Button title='+ Add playlist' onClick={() => {
-                        this.setState({
-                            isAddFormOpen: true
-                        });
-                    }} />
+                    </div>
                 </div>
             </div>
         </div>;

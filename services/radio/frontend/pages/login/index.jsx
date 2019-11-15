@@ -4,7 +4,7 @@ import LoginForm from '../../components/Login/LoginForm';
 
 export default class LoginPage extends React.Component {
     render() {
-        return <Layout>
+        return <Layout isCenterByVertical={true}>
             <div className='login-page'>
                 <LoginForm />
             </div>

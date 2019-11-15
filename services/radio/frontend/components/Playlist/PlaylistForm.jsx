@@ -8,14 +8,17 @@ import Input from '../Form/Input';
 import Checkbox from '../Form/Checkbox';
 import Button from '../Button/Button';
 
+import { createPlaylist } from '../../actions/playlist/actions';
+
 class PlaylistForm extends React.Component {
     static propTypes = {
         playlist: PropTypes.shape({}),
         errors: PropTypes.shape({
             name: PropTypes.string,
             description: PropTypes.string,
-            private: PropTypes.string,
+            is_private: PropTypes.string,
         }),
+        createPlaylist: PropTypes.func,
         onAccept: PropTypes.func,
         onReject: PropTypes.func,
     }
@@ -31,7 +34,7 @@ class PlaylistForm extends React.Component {
         this.state = {
             name: '',
             description: '',
-            private: false
+            is_private: false
         };
     }
 
@@ -44,11 +47,12 @@ class PlaylistForm extends React.Component {
     }
 
     render() {
-        const { errors, onAccept, onReject } = this.props;
-        const { name, description } = this.state;
+        const {
+            errors, onAccept, onReject, createPlaylist
+        } = this.props;
+        const { name, description, is_private } = this.state;
 
-        return <div className='playlist-add-form'>
-            <div>Create your own playlist and listen to music</div>
+        return <div className='playlist-add-form radio-form'>
             <div className='playlist-add-form__name'>
                 <Input id='name' name='name' type="text"
                     errors={errors.name}
@@ -73,15 +77,17 @@ class PlaylistForm extends React.Component {
                     }}/>
             </div>
             <div className='playlist-add-form__private'>
-                <Checkbox id='private' name='private' onChange={(e) => this.setState({ private: e.target.checked })}>
+                <Checkbox id='private' name='private' onChange={(e) => this.setState({ is_private: e.target.checked })}>
                     Is private?
                 </Checkbox>
             </div>
             <div className='form-buttons'>
-                <Button title='Create' onClick={() => {
-                    onAccept();
+                <Button title='Create' modifiers={['white']} onClick={() => {
+                    createPlaylist({ name, description, is_private }, () => {
+                        onAccept();
+                    });
                 }} />
-                <Button title='Close' onClick={() => {
+                <Button title='Close' modifiers={['white']} onClick={() => {
                     onReject();
                 }}/>
             </div>
@@ -90,8 +96,10 @@ class PlaylistForm extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    errors: state.playlist.errors || {}
+    errors: state.playlist.errors
 });
-const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    createPlaylist
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistForm);
