@@ -1,0 +1,32 @@
+<h1 id="tableLabel">Dishes</h1>
+
+<p *ngIf="totalCount">Available dishes: {{totalCount}}</p>
+
+<p *ngIf="!dishes">
+  <em>Loading...</em>
+</p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="dishes">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Weight</th>
+    <th>Calories</th>
+    <th>Protein</th>
+    <th>Fat</th>
+    <th>Carbohydrate</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let dish of dishes">
+    <td>{{ dish.name }}</td>
+    <td>{{ dish.description }}</td>
+    <td>{{ dish.portionWeight }}</td>
+    <td>{{ dish.portionCalories }}</td>
+    <td>{{ dish.portionProtein }}</td>
+    <td>{{ dish.portionFat }}</td>
+    <td>{{ dish.portionCarbohydrate }}</td>
+  </tr>
+  </tbody>
+</table>

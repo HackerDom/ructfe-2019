@@ -19,8 +19,8 @@
         <app-login-menu></app-login-menu>
         <ul class="navbar-nav flex-grow">
           <li class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }">
+              [routerLinkActive]="['link-active']"
+              [routerLinkActiveOptions]="{ exact: true }">
             <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
@@ -34,9 +34,43 @@
             </a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/products']">
-              Продукты
+            <a class="nav-link text-dark" [routerLink]="['/products/list']">
+              Products
             </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/products/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/products/import']">
+                  Import from nomenclature
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/products/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/dishes/list']">
+              Dishes
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/dishes/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/dishes/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>

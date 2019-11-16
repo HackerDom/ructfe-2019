@@ -9,7 +9,11 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { ProductsComponent } from './products/products.component';
+import { ProductsAddComponent } from './products/add/products-add.component';
+import { ProductsImportComponent } from './products/import/products-import.component';
+import { ProductsListComponent } from './products/list/products-list.component';
+import { DishesAddComponent } from './dishes/add/dishes-add.component';
+import { DishesListComponent } from './dishes/list/dishes-list.component';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
@@ -21,7 +25,11 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    ProductsComponent
+    ProductsAddComponent,
+    ProductsImportComponent,
+    ProductsListComponent,
+    DishesAddComponent,
+    DishesListComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -32,7 +40,11 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-      { path: 'products', component: ProductsComponent, canActivate: [AuthorizeGuard] },
+      { path: 'products/add', component: ProductsAddComponent, canActivate: [AuthorizeGuard] },
+      { path: 'products/import', component: ProductsImportComponent, canActivate: [AuthorizeGuard] },
+      { path: 'products/list', component: ProductsListComponent, canActivate: [AuthorizeGuard] },
+      { path: 'dishes/add', component: DishesAddComponent, canActivate: [AuthorizeGuard] },
+      { path: 'dishes/list', component: DishesListComponent, canActivate: [AuthorizeGuard] },
     ])
   ],
   providers: [

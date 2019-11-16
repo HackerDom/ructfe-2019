@@ -14,3 +14,9 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.btn-normal {
+  color: #000;
+  background-color: #d5d5d5;
+  border-color: #aaa;
+}

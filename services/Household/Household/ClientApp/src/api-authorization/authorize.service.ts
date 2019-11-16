@@ -37,10 +37,6 @@ export interface IUser {
   providedIn: 'root'
 })
 export class AuthorizeService {
-  // By default pop ups are disabled because they don't work properly on Edge.
-  // If you want to enable pop up authentication simply set this flag to false.
-
-  private popUpDisabled = true;
   private userManager: UserManager;
   private userSubject: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
 
@@ -105,7 +101,7 @@ export class AuthorizeService {
       await this.userManager.signoutRedirect(this.createArguments(state));
       return this.redirect();
     } catch (redirectSignOutError) {
-        console.log('Redirect signout error: ', redirectSignOutError);
+      console.log('Redirect signout error: ', redirectSignOutError);
       return this.error(redirectSignOutError);
     }
   }
