@@ -112,6 +112,28 @@ func playlistListHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWr
 	return
 }
 
+func playlistGETHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	var userID uint
+	var ok bool
+	session, err := store.Get(r, "user-session")
+	if userID, ok = session.Values["user_id"].(uint); !ok {
+		return fmt.Errorf("Unknown error")
+	}
+	var user *models.User
+	user, err = models.FindUserByID(userID)
+	var dbID uint64
+	vars := mux.Vars(r)
+	if dbID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	var playlist *models.Playlist
+	if playlist, err = models.PlaylistGet(uint(dbID), user); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	enc.Encode(playlist)
+	return
+}
+
 func playlistDeleteHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	var userID uint
 	var ok bool
@@ -140,7 +162,6 @@ func makeWebRouter(mainRouter *mux.Router) {
 	r.HandleFunc("/account/", spaHandler)
 	r.HandleFunc("/signup/", spaHandler)
 	r.HandleFunc("/signin/", spaHandler)
-
 	r.HandleFunc("/playlist/{id:[0-9]+}/", spaHandler)
 
 	r.HandleFunc("/logout/", logoutHandler)
@@ -149,5 +170,6 @@ func makeWebRouter(mainRouter *mux.Router) {
 	r.HandleFunc("/frontend-api/login/", JSONHandler(loginHandler)).Methods("POST")
 	r.HandleFunc("/frontend-api/playlist/", JSONHandler(playlistCreateHandler)).Methods("POST")
 	r.HandleFunc("/frontend-api/playlist/", JSONHandler(playlistListHandler)).Methods("GET")
+	r.HandleFunc("/frontend-api/playlist/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
 	r.HandleFunc("/frontend-api/playlist/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
 }

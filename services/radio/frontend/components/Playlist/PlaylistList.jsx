@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
+import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -13,6 +14,7 @@ class PlaylistList extends React.Component {
         playlists: PropTypes.arrayOf(PropTypes.shape({})),
         deletePlaylist: PropTypes.func,
         fetchPlaylists: PropTypes.func,
+        push: PropTypes.func,
     }
 
     componentDidMount() {
@@ -23,14 +25,16 @@ class PlaylistList extends React.Component {
     }
 
     render() {
-        const { playlists, deletePlaylist } = this.props;
+        const { playlists, deletePlaylist, push } = this.props;
 
         return <div className='playlist-list'>
             {playlists && playlists.length === 0 && <div className='playlist-list__empty'>
                 You don&apos;t have playlists
             </div>}
             {playlists && playlists.length > 0 && <div className='playlist-list__instances'>
-                {playlists.map((p, i) => <div key={`playlist-item-${i}`} className='playlist-item'>
+                {playlists.map((p, i) => <div key={`playlist-item-${i}`}
+                    onClick={() => { push(`/playlist/${p.ID}/`); }}
+                    className='playlist-item'>
                     <div className='playlist-item__name' title={p.name}>{p.name}</div>
                     <FontAwesomeIcon icon={faTimes} onClick={() => {
                         deletePlaylist(p.ID);
@@ -47,6 +51,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     fetchPlaylists,
     deletePlaylist,
+    push
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistList);

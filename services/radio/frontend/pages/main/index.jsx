@@ -14,7 +14,6 @@ class MainPage extends React.Component {
 
     render() {
         const { user } = this.props;
-
         return <Layout>
             {!user && <div className='main-page'>
                 <div className='main-page__title'>Listen to music and radio on the submarine</div>

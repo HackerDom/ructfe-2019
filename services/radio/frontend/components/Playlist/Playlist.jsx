@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Switch, Route } from 'react-router-dom';
+
 import Button from '../Button/Button';
 import PlaylistForm from './PlaylistForm';
 import PlaylistList from './PlaylistList';
+import PlaylistDetail from './PlaylistDetail';
 
 class Playlist extends React.Component {
     static propTypes = {
@@ -47,6 +50,9 @@ class Playlist extends React.Component {
                     </div>
                 </div>
             </div>
+            <Switch>
+                <Route exact path='/playlist/:id/' component={PlaylistDetail}></Route>
+            </Switch>
         </div>;
     }
 }

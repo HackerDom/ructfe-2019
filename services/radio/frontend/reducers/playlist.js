@@ -7,13 +7,17 @@ import {
     PLAYLISTS_FETCH_WITH_ERRORS,
     PLAYLIST_DELETE_WITH_ERRORS,
     PLAYLIST_DELETE_SUCCESSFULLY,
-    PLAYLIST_DELETE_IN_PROGRESS
+    PLAYLIST_DELETE_IN_PROGRESS,
+    PLAYLIST_FETCH_IN_PROGRESS,
+    PLAYLIST_FETCH_SUCCESSFULLY,
+    PLAYLIST_FETCH_WITH_ERRORS,
 } from '../actions/playlist/actionTypes';
 
 export default () => {
     const defaultState = {
         playlists: null,
         inProgress: false,
+        currentPlaylist: null,
         errors: {}
     };
     return (state = defaultState, action) => {
@@ -64,10 +68,24 @@ export default () => {
         case PLAYLIST_DELETE_SUCCESSFULLY: {
             return {
                 ...state,
-                playlists: state.playlists && state.playlists.filter((p) => p.ID !== action.data.id),
+                playlists: state.playlists && state.playlists.filter(
+                    (p) => p.ID !== action.data.id
+                ),
             };
         }
         case PLAYLIST_DELETE_WITH_ERRORS: {
+            return state;
+        }
+        case PLAYLIST_FETCH_IN_PROGRESS: {
+            return state;
+        }
+        case PLAYLIST_FETCH_SUCCESSFULLY: {
+            return {
+                ...state,
+                currentPlaylist: action.data
+            };
+        }
+        case PLAYLIST_FETCH_WITH_ERRORS: {
             return state;
         }
         default: {

@@ -14,7 +14,6 @@ import MainPage from './main';
 import RegisterPage from './register';
 import LoginPage from './login';
 import AccountPage from './account';
-import PlaylistPage from './playlist'
 
 import makeReducers from '../reducers';
 
@@ -51,8 +50,7 @@ export default class RadioApp extends React.Component {
                     <Route exact path='/signin/*' component={LoginPage}></Route>
                     <Route exact path='/account/*' component={AccountPage}></Route>
 
-                    <Route exact path='/playlist/{id}/' component={PlaylistPage}></Route>
-
+                    <Route exact path='/playlist/:id/' component={MainPage}></Route>
                     <Route exact path='/' component={MainPage}></Route>
                 </Switch>
             </ConnectedRouter>

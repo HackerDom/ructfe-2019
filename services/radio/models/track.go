@@ -1,7 +1,9 @@
 package models
 
 import (
+	"fmt"
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
+	"github.com/HackerDom/ructfe-2019/services/radio/utils"
 	"github.com/jinzhu/gorm"
 )
 
@@ -13,14 +15,12 @@ type Track struct {
 
 func CreateTrack(playlist Playlist, trackForm *forms.TrackForm) (track *Track, err error) {
 	track = &Track{
-		Name: trackForm.Name,
+		Name: utils.GetRandomName(10),
 	}
 	err = forms.ErrorArray2Error(db.Create(track).GetErrors())
-	return
-}
-
-func ListTracks(playlistID uint, user *User) (tracks []Track, err error) {
-	err = forms.ErrorArray2Error(db.Where("playlist_id = ?", playlistID).Find(&tracks).GetErrors())
+	if err != nil {
+		return nil, fmt.Errorf("Can't create track")
+	}
 	return
 }
 

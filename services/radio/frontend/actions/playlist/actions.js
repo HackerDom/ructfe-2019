@@ -9,6 +9,9 @@ import {
     PLAYLIST_DELETE_IN_PROGRESS,
     PLAYLIST_DELETE_SUCCESSFULLY,
     PLAYLIST_DELETE_WITH_ERRORS,
+    PLAYLIST_FETCH_IN_PROGRESS,
+    PLAYLIST_FETCH_WITH_ERRORS,
+    PLAYLIST_FETCH_SUCCESSFULLY,
 } from './actionTypes';
 
 export const createPlaylist = ({ name, description, is_private }, callback) => async (dispatch) => {
@@ -87,6 +90,33 @@ export const deletePlaylist = (id) => async (dispatch) => {
         const data = await response.json();
         dispatch({
             type: PLAYLIST_DELETE_WITH_ERRORS,
+            data
+        });
+    }
+};
+
+export const fetchPlaylist = (id, callback) => async (dispatch) => {
+    dispatch({ type: PLAYLIST_FETCH_IN_PROGRESS });
+    const response = await fetch(`/frontend-api/playlist/${id}/`, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'GET',
+        credentials: 'same-origin',
+    });
+    if (response.ok) {
+        const data = await response.json();
+        dispatch({
+            type: PLAYLIST_FETCH_SUCCESSFULLY,
+            data
+        });
+        if (_.isFunction(callback)) {
+            callback(data);
+        }
+    } else {
+        const data = await response.json();
+        dispatch({
+            type: PLAYLIST_FETCH_WITH_ERRORS,
             data
         });
     }
