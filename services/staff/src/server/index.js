@@ -14,6 +14,7 @@ import passport from 'passport';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import { hashPassword, matchPasswordHashes } from './utils/passwordsHashing'
 
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
@@ -34,7 +35,7 @@ passport.use(new LocalStrategy(
         if (!user) {
             return done(null, false, { message: 'Unknown User' });
         }
-        if (user.password !== password) {
+        if (!matchPasswordHashes(password, user.password)) {
             return done(null, false, { message: 'Invalid password' });
         }
         return done(null, user);
@@ -93,13 +94,17 @@ export function startMongoDb (mongoUrl) {
 }
 
 app.post('/register', async function (request, response) {
+    const passwordHash = request.body.password ? await hashPassword(request.body.password.toString()) : null;
+    console.log(`FUCKING PASSWORD HASH ${passwordHash}`);
+
     const newUser = new User({
         username: request.body.username ? request.body.username.toString() : null,
-        password: request.body.password ? request.body.password.toString() : null,
+        password: passwordHash,
         firstName: request.body.firstName ? request.body.firstName.toString() : null,
         lastName: request.body.lastName ? request.body.lastName.toString() : null,
         biography: request.body.biography ? request.body.biography.toString() : null
     });
+    console.log(newUser.password);
     const isValid = fieldsAreExist(
         newUser.username,
         newUser.password,
