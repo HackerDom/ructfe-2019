@@ -1,4 +1,5 @@
 - hosts: vpn
+  gather_facts: no
   roles:
     - common
     - vpn

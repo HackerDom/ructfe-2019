@@ -20,5 +20,5 @@ while VBoxManage showvminfo "$vm" &>/dev/null; do
 done
 
 VBoxManage import "$vm_path" --vsys 0 --vmname "$vm"
-VBoxManage modifyvm "$vm" --cpus=2
+VBoxManage modifyvm "$vm" --cpus=2 --memory 4096
 vboxmanage snapshot "$vm" take initial
