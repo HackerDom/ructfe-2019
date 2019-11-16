@@ -17,7 +17,7 @@ from cloud_common import (get_cloud_ip, log_progress, take_cloud_ip,
 TEAM = int(sys.argv[1])
 VM_NAME = "team%d" % TEAM
 
-DO_IMAGE = 39763210
+DO_IMAGE = 55044777
 DO_SSH_KEYS = [435386, 25814756]
 
 
