@@ -2,14 +2,14 @@ import aiohttp
 from aiohttp.client import ClientTimeout
 
 from utils.parser_helpers import parse_response
-
+from networking.masking_connector import get_agent
 
 class Api:
     def __init__(self, service_url):
         self.service_url = service_url
         self.session = aiohttp.ClientSession(
             timeout=ClientTimeout(total=10),
-            # headers={"User-Agent": get_agent()}
+            headers={"User-Agent": get_agent()}
         )
 
     async def create(self, chat_name):

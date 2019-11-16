@@ -1,15 +1,11 @@
-import asyncio
 import traceback
 
 from api import Api
-from entities.chat import Chat
 from entities.user import User
-from utils.async_helpers import arange
-
-from chklib import Checker, Verdict, CheckRequest, PutRequest, GetRequest, utils
 from utils.invalid_response_exception import InvalidResponseException
 
-HOSTNAME = 'http://localhost:3000'
+from chklib import Checker, Verdict, CheckRequest, PutRequest, GetRequest, utils
+
 checker = Checker()
 
 
@@ -33,6 +29,7 @@ def message_in_messages(messages, message_id, message_content):
         if m['id'] == message_id:
             return m['text'] == message_content
     return False
+
 
 def chat_in_chats(chats, chat_id, chat_name):
     for c in chats:
@@ -73,8 +70,7 @@ async def check_service(request: CheckRequest) -> Verdict:
             await api.delete_message(first_message_id)
             user = User()
             await api.register(user.get_register_data())
-            resp = await api.login(user.username, user.password)
-            user_id = resp['userId']
+            await api.login(user.username, user.password)
             await api.join(chat_id, inv_link)
             resp = await api.read_messages(chat_id)
             messages = resp['messages']
@@ -167,13 +163,13 @@ async def put_flag_in_bio(request: PutRequest) -> Verdict:
         except:
             return Verdict.MUMBLE('Could not login or edit user.', traceback.format_exc())
 
-        return Verdict.OK(f'{user_id}')
+        return Verdict.OK(user_id)
 
 
 @checker.define_get(vuln_num=3)
 async def get_flag_from_bio(request: GetRequest) -> Verdict:
     async with Api(request.hostname) as api:
-        user_id = request.flag_id.split(':')
+        user_id = request.flag_id
         try:
             user = await api.get_user(user_id)
         except InvalidResponseException as e:
@@ -246,53 +242,5 @@ async def get_flag_from_deleted_messages(request: GetRequest) -> Verdict:
         return Verdict.OK()
 
 
-async def main():
-    flags = []
-    resps = []
-    count = 10
-
-    resp = await check_service(CheckRequest('http://localhost:3000'))
-    print(resp._code)
-    print(resp._public_message)
-    print(resp._private_message)
-    print(0)
-    async for e in arange(count):
-        flag = utils.generate_flag()
-        flag_id = await put_flag_in_messages(PutRequest('', flag, 1, 'http://localhost:3000'))
-        flags.append((flag_id, 1, flag))
-        print(flag_id._public_message)
-    print(1)
-    async for e in arange(count):
-        flag = utils.generate_flag()
-        flag_id = await put_flag_in_deleted_messages(PutRequest('', flag, 2, 'http://localhost:3000'))
-        flags.append((flag_id, 2, flag))
-        print(flag_id._public_message)
-    print(2)
-    async for e in arange(count):
-        flag = utils.generate_flag()
-        flag_id = await put_flag_in_bio(PutRequest('', flag, 3, 'http://localhost:3000'))
-        flags.append((flag_id, 3, flag))
-        print(flag_id._public_message)
-    print(3)
-    async for e in arange(2 * count):
-        flag_id, vuln, flag = flags[e]
-
-        if vuln == 1:
-            resp = await get_flag_from_messages(
-                GetRequest(flag_id._public_message, flag, vuln, 'http://localhost:3000'))
-        if vuln == 2:
-            resp = await get_flag_from_deleted_messages(
-                GetRequest(flag_id._public_message, flag, vuln, 'http://localhost:3000'))
-        if vuln == 3:
-            resp = await get_flag_from_bio(
-                GetRequest(flag_id._public_message, flag, vuln, 'http://localhost:3000'))
-        resps.append(resp)
-
-    for e in resps:
-        print(e._code)
-        print(e._public_message)
-        print(e._private_message)
-
-
 if __name__ == '__main__':
-    asyncio.run(main())
+    checker.run()

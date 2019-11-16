@@ -1,4 +1,3 @@
-import random
 from chklib import utils
 
 
