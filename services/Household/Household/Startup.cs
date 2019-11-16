@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 #pragma warning disable 1591
 
@@ -29,6 +31,8 @@ namespace Household
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            IdentityModelEventSource.ShowPII = true;
+
             services.AddDbContext<HouseholdDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext")));
 
@@ -43,10 +47,13 @@ namespace Household
             });
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, HouseholdDbContext>()
-                .AddSigningCredential(
-                    CertificateLoader.GetECDsaSecurityKey("12345"),
-                    IdentityServerConstants.ECDsaSigningAlgorithm.ES512);
+                .AddApiAuthorization<ApplicationUser, HouseholdDbContext>(
+                    options =>
+                    {
+                        options.SigningCredential = new SigningCredentials(
+                            CertificateLoader.GetECDsaSecurityKey("12345"),
+                            IdentityServerConstants.ECDsaSigningAlgorithm.ES512.ToString());
+                    });
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
