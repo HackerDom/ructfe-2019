@@ -81,7 +81,7 @@ def check_vm_exists(vm_name):
 
 
 def create_vm(vm_name, image, ssh_keys,
-              region="ams2", size="512mb", attempts=10, timeout=20):
+              region="ams2", size="s-1vcpu-1gb", attempts=10, timeout=20):
     for i in range(attempts):
         try:
             data = json.dumps({
