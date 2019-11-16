@@ -2,14 +2,14 @@
 
 import sys
 import os
-import random
+import secrets
 import hashlib
 
 N = 768
 
 def gentoken(team, n=32):
  abc = "abcdef0123456789"
- return str(team) + "_" + "".join([random.choice(abc) for i in range(n)])
+ return str(team) + "_" + "".join([secrets.choice(abc) for i in range(n)])
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 

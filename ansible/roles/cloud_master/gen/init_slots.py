@@ -16,7 +16,7 @@ CLOUD_PHYS_SERVERS = [
     ("93.158.156.122", "cld10"),
 ]
 
-VM_PER_SERVER = 25
+VM_PER_SERVER = 30
 
 if __name__ != "__main__":
     raise Exception("I am not a module")
