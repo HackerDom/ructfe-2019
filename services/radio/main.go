@@ -12,6 +12,7 @@ import (
 	"github.com/HackerDom/ructfe-2019/services/radio/config"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/HackerDom/ructfe-2019/services/radio/routes"
+	"github.com/gorilla/handlers"
 	"github.com/jinzhu/gorm"
 	redistore "gopkg.in/boj/redistore.v1"
 )
@@ -32,7 +33,7 @@ func startServer() {
 	defer store.Close()
 	r := routes.MakeRouter()
 	server := &http.Server{
-		Handler: r,
+		Handler: handlers.LoggingHandler(os.Stdout, r),
 		Addr:    *addr,
 
 		WriteTimeout: 15 * time.Second,

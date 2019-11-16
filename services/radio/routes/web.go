@@ -223,12 +223,14 @@ func makeWebRouter(mainRouter *mux.Router) {
 
 	r.HandleFunc("/logout/", logoutHandler)
 
-	r.HandleFunc("/frontend-api/register/", JSONHandler(registerUserHandler)).Methods("POST")
-	r.HandleFunc("/frontend-api/login/", JSONHandler(loginHandler)).Methods("POST")
-	r.HandleFunc("/frontend-api/playlist/", JSONHandler(playlistCreateHandler)).Methods("POST")
-	r.HandleFunc("/frontend-api/playlist/", JSONHandler(playlistListHandler)).Methods("GET")
-	r.HandleFunc("/frontend-api/playlist/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
-	r.HandleFunc("/frontend-api/playlist/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
-	r.HandleFunc("/frontend-api/track/", JSONHandler(createTrackHandler)).Methods("POST")
-	r.HandleFunc("/frontend-api/track/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
+	frontendAPIRouter := r.PathPrefix("/frontend-api/").Subrouter()
+	frontendAPIRouter.Use(jsonResponseMiddleware)
+	frontendAPIRouter.HandleFunc("/register/", JSONHandler(registerUserHandler)).Methods("POST")
+	frontendAPIRouter.HandleFunc("/login/", JSONHandler(loginHandler)).Methods("POST")
+	frontendAPIRouter.HandleFunc("/playlist/", JSONHandler(playlistCreateHandler)).Methods("POST")
+	frontendAPIRouter.HandleFunc("/playlist/", JSONHandler(playlistListHandler)).Methods("GET")
+	frontendAPIRouter.HandleFunc("/playlist/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
+	frontendAPIRouter.HandleFunc("/playlist/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
+	frontendAPIRouter.HandleFunc("/track/", JSONHandler(createTrackHandler)).Methods("POST")
+	frontendAPIRouter.HandleFunc("/track/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
 }
