@@ -89,9 +89,8 @@ fun main() {
             }
             post("/register") {
                 val rawRegData = call.receiveChannel().toByteArray().decodeToString()
-                println(rawRegData)
                 val regData = Json.parse(RegisterData.serializer(), rawRegData)
-                println(regData)
+
                 if (manager.isUserExists(regData.name)) {
                     call.respond(
                         HttpStatusCode.BadRequest,
@@ -109,7 +108,7 @@ fun main() {
             get("/register_page") {
                 call.respond(FreeMarkerContent("register_page.ftl", emptyMap<String, String>()))
             }
-            get("/draw") {
+            get("/") {
                 call.respond(FreeMarkerContent("draw.ftl", emptyMap<String, String>()))
             }
             get("/users") {

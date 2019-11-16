@@ -42,7 +42,7 @@ class Sonar {
     }
 
     setColor(color) {
-        this.obj.css("background", color);
+        this.obj.css("background", "#" + color);
     }
 
     getSize(property) {
@@ -139,8 +139,11 @@ function initDraw() {
         url: "/users",
         async: false
     }).responseJSON;
+
+    console.log(users);
+
     users.forEach(function (user) {
-        sonars[user.id] = new Sonar(context, new Point(user.x, user.y), 1, Math.random(), user.id, null);
+        sonars[user.id] = new Sonar(context, new Point(user.x, user.y), user.size, user.speed, user.id, user.color);
     });
 
     $("#square").on("click", function (e) {

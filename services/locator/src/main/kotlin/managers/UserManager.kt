@@ -26,6 +26,8 @@ class UserManager {
             this.coordinates = Random.nextInt(0, 255) * 256 + Random.nextInt(0, 255)
             this.color = regData.color
             this.info = info
+            this.speed = regData.speed
+            this.size = regData.size
         }.id.value
     }
 

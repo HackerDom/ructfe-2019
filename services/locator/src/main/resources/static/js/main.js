@@ -103,7 +103,7 @@ function setRegisterHandlers() {
             return;
         }
 
-        const speed = Math.min(Math.max(parseInt(speedField.val()), 0), 1);
+        const speed = Math.min(Math.max(parseFloat(speedField.val()), 0), 1);
 
         const size = parseInt(sizeField.val());
 
@@ -115,11 +115,12 @@ function setRegisterHandlers() {
         const data = JSON.stringify({
             "name": username,
             "password": password,
-            "color": color,
+            "color": color.substring(1, color.length),
             "speed": speed,
             "size": size,
             "content": getContent()
         });
+
         $.post("/register", data)
             .fail(function (data) {
                 console.log("fail");

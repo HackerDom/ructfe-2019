@@ -14,5 +14,7 @@ class RegisterData(
     val name: String,
     val password: String,
     val color: String,
+    val size: Int,
+    val speed: Float,
     val content: Content
 )

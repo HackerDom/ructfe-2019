@@ -12,6 +12,8 @@ object Users : IntIdTable() {
     val coordinates = integer("coordinates")
     val passwordHash = binary("passwordHash", 32)
     val color = varchar("color", length = 6)
+    val speed = float("speed")
+    val size = integer("size")
     val info = reference("info", Infos)
 }
 
@@ -34,8 +36,11 @@ class User(id: EntityID<Int>) : IntEntity(id) {
 
     var color by Users.color
 
+    var speed by Users.speed
+    var size by Users.size
+
     fun toPosData(): UserPosData {
-        return UserPosData(coordinateX.toInt() + 128, coordinateY.toInt() + 128, color, id.value)
+        return UserPosData(coordinateX.toInt() + 128, coordinateY.toInt() + 128, color, id.value, speed, size)
     }
 
     override fun toString(): String {
