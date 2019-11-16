@@ -48,6 +48,15 @@
     src: /etc/nginx/sites-available/cloud
     dest: /etc/nginx/sites-enabled/cloud
     state: link
+  when: variant == "prod"
+  notify: restart nginx
+
+- name: create nginx symbolic link in sites-enable
+  file:
+    src: /etc/nginx/sites-available/cloud_dev
+    dest: /etc/nginx/sites-enabled/cloud_dev
+    state: link
+  when: variant == "dev"
   notify: restart nginx
 
 - name: disable unneded modules 

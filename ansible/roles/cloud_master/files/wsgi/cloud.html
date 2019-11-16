@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> RuCTFE 2019 Cloud Console </title>
+    <title>RuCTFE 2019 Cloud Console</title>
     <style>
         pre {
             display: inline;
@@ -34,6 +34,10 @@
             color: black;
         }
 
+        #filler {
+            font-size: xx-small;
+        }
+
         [contenteditable]:focus {
             outline: 0px solid transparent;
         }
@@ -41,7 +45,7 @@
 
 </head>
 <body>
-<pre id="console"><span id="cursor"> </span></pre>
+<pre id="console"><span id="cursor"> </span><div id="filler">&nbsp;</div></pre>
 
 <script>
 var token = ""
@@ -187,6 +191,7 @@ function autocomplete(s) {
                 return first.substring(s.length, i)
             }
         }
+        return first.substring(s.length)
     }
     return ""
 }
@@ -451,7 +456,7 @@ document.onkeydown = function(e) {
         }
 
         cmd = cmd.slice(2)
-        if (cmd.length == 0 || cmd.search(" ") != -1) {
+        if (cmd.length == 0) {
             return false
         }
 
@@ -481,11 +486,11 @@ console_el.addEventListener("paste", function(e) {
     console_print(text.split("\n")[0])
 });
 
-init_text = "       ____         ____ _____ _____ _____   ____   ___  _  ___   \n" +
-            "      |  _ \\ _   _ / ___|_   _|  ___| ____| |___ \\ / _ \\/ |/ _ \\  \n" +
-            "      | |_) | | | | |     | | | |_  |  _|     __) | | | | | (_) |  \n" +
-            "      |  _ <| |_| | |___  | | |  _| | |___   / __/| |_| | |\\__, |  \n" +
-            "      |_| \\_\\\\__,_|\\____| |_| |_|   |_____| |_____|\\___/|_|  /_/   \n" +
+init_text = "    ____         ____ _____ _____ _____   ____   ___  _  ___   \n" +
+            "   |  _ \\ _   _ / ___|_   _|  ___| ____| |___ \\ / _ \\/ |/ _ \\  \n" +
+            "   | |_) | | | | |     | | | |_  |  _|     __) | | | | | (_) |  \n" +
+            "   |  _ <| |_| | |___  | | |  _| | |___   / __/| |_| | |\\__, |  \n" +
+            "   |_| \\_\\\\__,_|\\____| |_| |_|   |_____| |_____|\\___/|_|  /_/   \n" +
             " ___ _    ____ _  _ ___     ____ ____ _  _ ____ ____ _    ____ \n" +
             "|    |    |  | |  | |  \\    |    |  | |\\ | [__  |  | |    |___ \n" +
             "|___ |___ |__| |__| |__/    |___ |__| | \\| ___] |__| |___ |___ \n" +

@@ -40,7 +40,7 @@ def main():
             return 1
 
         cmd = ["sudo", "/root/cloud/switch_team_to_cloud.sh", str(TEAM), ip]
-        ret = call_unitl_zero_exit(["ssh"] + SSH_YA_OPTS + [ROUTER_HOST] + cmd)
+        ret = call_unitl_zero_exit(cmd)
         if not ret:
             log_stderr("switch_team_to_cloud")
             return 1
