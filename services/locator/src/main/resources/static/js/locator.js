@@ -18,7 +18,7 @@ class Sonar {
     constructor(context, coordinates, size, animationSpeed, uniqNumber, color) {
         this.context = context;
         this.coordinates = coordinates;
-        this.obj = Sonar.createSonarObj("sonar-" + uniqNumber.toString());
+        this.obj = Sonar.createSonarObjIfNotExist("sonar-" + uniqNumber.toString());
         this.uniqNumber = uniqNumber;
         this.setAnimationSpeed(animationSpeed);
         this.setSize(size);
@@ -28,9 +28,11 @@ class Sonar {
         this.moveTo(this.coordinates);
     }
 
-    static createSonarObj(sonarId) {
-        let body = $('#body');
-        body.append("<div class='sonar' id='" + sonarId + "'></div>");
+    static createSonarObjIfNotExist(sonarId) {
+        if (!$("#" + sonarId).length) {
+            let body = $('#body');
+            body.append("<div class='sonar' id='" + sonarId + "'></div>");
+        }
         return $("#" + sonarId);
     }
 
@@ -83,7 +85,7 @@ class Context {
     }
 
     getPointerLength() {
-        return Math.min(this.height, this.width) - this.m
+        return Math.min(this.height, this.width) - this.m;
     }
 
     setPointer() {
@@ -138,7 +140,7 @@ function initDraw() {
         async: false
     }).responseJSON;
     users.forEach(function (user) {
-        sonars[user.id] = new Sonar(context, new Point(user.x, user.y), 20, Math.random(), user.id);
+        sonars[user.id] = new Sonar(context, new Point(user.x, user.y), 1, Math.random(), user.id, null);
     });
 
     $("#square").on("click", function (e) {

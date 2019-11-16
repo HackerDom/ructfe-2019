@@ -1,4 +1,4 @@
-let fieldsCount = 0;
+let fieldsCount = 3;
 
 function setLoginHandlers() {
     const form = $("#sbm-frm");
@@ -26,9 +26,8 @@ function setLoginHandlers() {
 
 
 function addField() {
-    const form = $("#sbm-frm");
     let fc = fieldsCount.toString();
-    form.append('<input type="text" id="cstm-fld-name' + fc + '" value="field' + fc + '">' +
+    ($("#gap")).append('<input type="text" id="cstm-fld-name' + fc + '" value="field' + fc + '">' +
         '<input type="text" id="cstm-fld-' + fc + '" value="value' + fc + '"><br>');
     fieldsCount++;
 }
@@ -67,30 +66,63 @@ function getContent() {
     };
 }
 
+const regex = /^[a-zA-Z0-9]{3,50}$/;
+const colorRegex = /^#[0-9a-f]{6}$/;
+
+
 function setRegisterHandlers() {
     const form = $("#sbm-frm");
     const usernameField = $("#usnm");
     const passwordField = $("#pswd");
-    const colorField = $("#color");
+    const speedField = $("#cstm-fld-0");
+    const colorField = $("#cstm-fld-1");
+    const sizeField = $("#cstm-fld-2");
 
     form.on("submit", function () {
         return false;
     });
 
-    $("#btn").on("click", function (ev) {
+    $("#reg-btn").on("click", function (ev) {
         const username = usernameField.val();
         const password = passwordField.val();
-        const color = colorField.val().substr(1, 6);
+
+        if (!regex.test(username)) {
+            alert("Username must match this regex: " + regex.toString());
+            return;
+        }
+
+        if (!regex.test(password)) {
+            alert("Password must match this regex: " + regex.toString());
+            return;
+        }
+
+        const color = colorField.val();
+
+        if (!colorRegex.test(color)) {
+            alert("Color must match this regex: " + colorRegex.toString());
+            return;
+        }
+
+        const speed = Math.min(Math.max(parseInt(speedField.val()), 0), 1);
+
+        const size = parseInt(sizeField.val());
+
+        if (size < 1 || size > 40) {
+            alert("Size must be in range: [1, 40]");
+            return;
+        }
+
         const data = JSON.stringify({
             "name": username,
             "password": password,
             "color": color,
+            "speed": speed,
+            "size": size,
             "content": getContent()
         });
-        console.log(data);
         $.post("/register", data)
             .fail(function (data) {
-                alert(data);
+                console.log("fail");
             })
             .done(function (data) {
                 document.location.href = "/";
