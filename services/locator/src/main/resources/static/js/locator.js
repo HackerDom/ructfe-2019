@@ -14,6 +14,11 @@ class Point {
 }
 
 
+function getSize(obj, property) {
+    const propObj = obj.css(property);
+    return parseInt(propObj.substring(0, propObj.length));
+}
+
 class Sonar {
     constructor(context, coordinates, size, animationSpeed, uniqNumber, color) {
         this.context = context;
@@ -45,11 +50,6 @@ class Sonar {
         this.obj.css("background", "#" + color);
     }
 
-    getSize(property) {
-        const propObj = this.obj.css(property);
-        return parseInt(propObj.substring(0, propObj.length));
-    }
-
     move(delta) {
         this.coordinates.x += delta.x;
         this.coordinates.y += delta.y;
@@ -60,8 +60,8 @@ class Sonar {
         this.coordinates.x = (FIELD_SIZE + point.x) % FIELD_SIZE;
         this.coordinates.y = (FIELD_SIZE + point.y) % FIELD_SIZE;
 
-        let sonarWidth = this.getSize("width") / 2;
-        let sonarHeight = this.getSize("height") / 2;
+        let sonarWidth = getSize(this.obj, "width") / 2;
+        let sonarHeight = getSize(this.obj, "height") / 2;
 
         const coordinates = this.context.getRealCoordinates(point);
 
@@ -103,10 +103,18 @@ class Context {
         obj.css("top", this.height / 2 - radius / 2);
     }
 
+    getSquareTop() {
+        return this.height / 2 - this.getPointerLength() / 2;
+    }
+
+    getSquareLeft() {
+        return this.width / 2 - this.getPointerLength() / 2;
+    }
+
     setSquare() {
         const square = $("#square");
-        square.css("top", (this.height / 2 - this.getPointerLength() / 2).toString());
-        square.css("left", (this.width / 2 - this.getPointerLength() / 2).toString() + "px");
+        square.css("top", this.getSquareTop().toString() + "px");
+        square.css("left", this.getSquareLeft().toString() + "px");
         square.css("width", this.getPointerLength() + "px");
         square.css("height", this.getPointerLength() + "px");
     }
@@ -125,6 +133,11 @@ function randInt(min, max) {
 }
 
 
+function logout() {
+    location.href = "/logout";
+}
+
+
 function initDraw() {
     let context = new Context(10);
     context.setPointer();
@@ -140,17 +153,21 @@ function initDraw() {
         async: false
     }).responseJSON;
 
-    console.log(users);
-
     users.forEach(function (user) {
         sonars[user.id] = new Sonar(context, new Point(user.x, user.y), user.size, user.speed, user.id, user.color);
     });
 
     $("#square").on("click", function (e) {
-        console.log(sonars[1]);
         sonars[1].move(new Point(1, 0));
-        console.log(sonars[1]);
     });
+
+    const userLabel = $("#user-label");
+    userLabel.css("left", (context.getSquareLeft() + context.getPointerLength() - getSize(userLabel, "width")).toString() + "px");
+
+    const logoutBtn = $("#logout-btn");
+    logoutBtn.css("left", (context.getSquareLeft() + context.getPointerLength() - getSize(logoutBtn, "width") - 10).toString() + "px");
+    logoutBtn.css("top", getSize(userLabel, "height") + 4);
+    logoutBtn.on("click", logout);
 }
 
 

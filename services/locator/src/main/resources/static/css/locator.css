@@ -1,6 +1,6 @@
 html, body {
-    margin: 0 !important;
-    padding: 0 !important;
+    /*margin: 0 !important;*/
+    /*padding: 0 !important;*/
     background-color: black;
 }
 
@@ -92,4 +92,26 @@ html, body {
 .square {
     position: absolute;
     border: 2px solid #D1D95F;
+}
+
+#user-label {
+    position: absolute;
+    color: #D1D95F;
+    font-family: Din Condensed, sans-serif;
+    font-size: 30px;
+    left: 100px;
+}
+
+button {
+    width: 70px;
+    height: 40px;
+    background-color: #D1D95F;
+    border: 1px solid #D1D95F;
+    border-radius: 5px;
+    margin-left: 5px;
+    padding-bottom: 0;
+    outline-color: #D1D95F;
+    font-family: Din Condensed, sans-serif;
+    font-size: 20px;
+    position: absolute;
 }

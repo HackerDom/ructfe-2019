@@ -109,7 +109,13 @@ fun main() {
                 call.respond(FreeMarkerContent("register_page.ftl", emptyMap<String, String>()))
             }
             get("/") {
-                call.respond(FreeMarkerContent("draw.ftl", emptyMap<String, String>()))
+                val session = call.sessions.get<AuthSession>()
+                session?.uid?.let { uid ->
+                    val user = manager.userById(uid)
+                    user?.let {
+                        call.respond(FreeMarkerContent("draw.ftl", mapOf("username" to user.name)))
+                    }
+                }
             }
             get("/users") {
                 val session = call.sessions.get<AuthSession>()
@@ -124,6 +130,10 @@ fun main() {
                         call.respondBytes(rawUsers, ContentType("application", "json"))
                     }
                 } ?: call.respondRedirect("/login_page")
+            }
+            get("/logout") {
+                call.sessions.clear<AuthSession>()
+                call.respondRedirect("/login_page")
             }
         }
     }
