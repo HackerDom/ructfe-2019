@@ -1,8 +1,17 @@
 from random import choice
 
-with open("networking/user-agents") as user_agents:
-    AGENTS = [x.strip() for x in user_agents.readlines()]
+
+NETWORKING_AGENT_FILENAME = "networking/user-agents"
+agents = None
+
+
+def _get_agents():
+    global agents
+    if agents is None:
+        with open(NETWORKING_AGENT_FILENAME) as user_agents:
+            agents = [x.strip() for x in user_agents.readlines()]
+    return agents
 
 
 def get_agent():
-    return choice(AGENTS)
+    return choice(_get_agents())

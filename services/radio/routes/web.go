@@ -68,6 +68,7 @@ func loginHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r
 }
 
 func playlistCreateHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	user := getUserFromContext(r.Context())
 	var playlistForm forms.PlaylistForm
 	if err = dec.Decode(&playlistForm); err != nil {
 		return
@@ -76,16 +77,6 @@ func playlistCreateHandler(dec *json.Decoder, enc *json.Encoder, w http.Response
 		w.WriteHeader(400)
 		enc.Encode(rve)
 		return
-	}
-	var userID uint
-	var ok bool
-	session, err := store.Get(r, "user-session")
-	if userID, ok = session.Values["user_id"].(uint); !ok {
-		return fmt.Errorf("Unknown error")
-	}
-	var user *models.User
-	if user, err = models.FindUserByID(userID); err != nil {
-		return fmt.Errorf("Unknown error")
 	}
 	var playlist *models.Playlist
 	if playlist, err = models.PlaylistCreate(user, playlistForm); err != nil {
@@ -96,14 +87,7 @@ func playlistCreateHandler(dec *json.Decoder, enc *json.Encoder, w http.Response
 }
 
 func playlistListHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
-	var userID uint
-	var ok bool
-	session, err := store.Get(r, "user-session")
-	if userID, ok = session.Values["user_id"].(uint); !ok {
-		return fmt.Errorf("Unknown error")
-	}
-	var user *models.User
-	user, err = models.FindUserByID(userID)
+	user := getUserFromContext(r.Context())
 	var playlists []models.Playlist
 	if playlists, err = models.PlaylistList(user); err != nil {
 		return fmt.Errorf("Unknown error")
@@ -113,14 +97,7 @@ func playlistListHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWr
 }
 
 func playlistGETHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
-	var userID uint
-	var ok bool
-	session, err := store.Get(r, "user-session")
-	if userID, ok = session.Values["user_id"].(uint); !ok {
-		return fmt.Errorf("Unknown error")
-	}
-	var user *models.User
-	user, err = models.FindUserByID(userID)
+	user := getUserFromContext(r.Context())
 	var dbID uint64
 	vars := mux.Vars(r)
 	if dbID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
@@ -135,19 +112,12 @@ func playlistGETHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 }
 
 func playlistDeleteHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
-	var userID uint
-	var ok bool
-	session, err := store.Get(r, "user-session")
-	if userID, ok = session.Values["user_id"].(uint); !ok {
-		return fmt.Errorf("Unknown error")
-	}
+	user := getUserFromContext(r.Context())
 	var dbID uint64
 	vars := mux.Vars(r)
 	if dbID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
 		return fmt.Errorf("Unknown error")
 	}
-	var user *models.User
-	user, err = models.FindUserByID(userID)
 	if err = models.PlaylistDelete(uint(dbID), user); err != nil {
 		return fmt.Errorf("Unknown error")
 	}
@@ -156,16 +126,7 @@ func playlistDeleteHandler(dec *json.Decoder, enc *json.Encoder, w http.Response
 }
 
 func createTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
-	var userID uint
-	var ok bool
-	session, err := store.Get(r, "user-session")
-	if userID, ok = session.Values["user_id"].(uint); !ok {
-		return fmt.Errorf("Unknown error")
-	}
-	var user *models.User
-	if user, err = models.FindUserByID(userID); err != nil {
-		return fmt.Errorf("Unknown error")
-	}
+	user := getUserFromContext(r.Context())
 	var playlist *models.Playlist
 	var trackCreateForm forms.TrackCreateForm
 	if err = dec.Decode(&trackCreateForm); err != nil {
@@ -188,16 +149,7 @@ func createTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 }
 
 func deleteTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
-	var userID uint
-	var ok bool
-	session, err := store.Get(r, "user-session")
-	if userID, ok = session.Values["user_id"].(uint); !ok {
-		return fmt.Errorf("Unknown error")
-	}
-	var user *models.User
-	if user, err = models.FindUserByID(userID); err != nil {
-		return fmt.Errorf("Unknown error")
-	}
+	user := getUserFromContext(r.Context())
 	var trackID uint64
 	vars := mux.Vars(r)
 	if trackID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
@@ -227,10 +179,16 @@ func makeWebRouter(mainRouter *mux.Router) {
 	frontendAPIRouter.Use(jsonResponseMiddleware)
 	frontendAPIRouter.HandleFunc("/register/", JSONHandler(registerUserHandler)).Methods("POST")
 	frontendAPIRouter.HandleFunc("/login/", JSONHandler(loginHandler)).Methods("POST")
-	frontendAPIRouter.HandleFunc("/playlist/", JSONHandler(playlistCreateHandler)).Methods("POST")
-	frontendAPIRouter.HandleFunc("/playlist/", JSONHandler(playlistListHandler)).Methods("GET")
-	frontendAPIRouter.HandleFunc("/playlist/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
-	frontendAPIRouter.HandleFunc("/playlist/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
-	frontendAPIRouter.HandleFunc("/track/", JSONHandler(createTrackHandler)).Methods("POST")
-	frontendAPIRouter.HandleFunc("/track/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
+
+	playlistAPIRouter := frontendAPIRouter.PathPrefix("/playlist/").Subrouter()
+	playlistAPIRouter.Use(authorizeUserMiddleware)
+	playlistAPIRouter.HandleFunc("/", JSONHandler(playlistCreateHandler)).Methods("POST")
+	playlistAPIRouter.HandleFunc("/", JSONHandler(playlistListHandler)).Methods("GET")
+	playlistAPIRouter.HandleFunc("/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
+	playlistAPIRouter.HandleFunc("/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
+
+	trackAPIRouter := frontendAPIRouter.PathPrefix("/track/").Subrouter()
+	trackAPIRouter.Use(authorizeUserMiddleware)
+	trackAPIRouter.HandleFunc("/", JSONHandler(createTrackHandler)).Methods("POST")
+	trackAPIRouter.HandleFunc("/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
 }

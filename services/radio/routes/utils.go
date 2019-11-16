@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -79,6 +80,10 @@ func ServeError403(w http.ResponseWriter, r *http.Request) {
 
 func ServeError500(w http.ResponseWriter, r *http.Request) {
 	ServeWithTemplateAndStatusCode(w, r, "500.html", http.StatusInternalServerError)
+}
+
+func getUserFromContext(ctx context.Context) *models.User {
+	return ctx.Value(ContextUserKey).(*models.User)
 }
 
 func JSONHandler(handler func(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) error) func(w http.ResponseWriter, r *http.Request) {
