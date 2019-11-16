@@ -15,10 +15,9 @@ class UserManager {
     private val hasher = MessageDigest.getInstance("SHA-256")
 
     fun createNewUser(regData: RegisterData): Int = transaction {
-        val (schema, content) = regData.rawInfoContent.split(":")
         val info = Info.new {
-            this.schema = Base64.getDecoder().decode(schema)
-            this.content = content.toByteArray()
+            this.key = Base64.getDecoder().decode(regData.content.key)
+            this.message = regData.content.message
         }
 
         User.new {

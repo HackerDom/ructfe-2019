@@ -4,7 +4,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="/static/locator.js"></script>
 </head>
-<body onload="initDraw()" id="body">
+<body onload="init()" id="body">
 
 <div class="pointer" id="pointer">
     <div></div>

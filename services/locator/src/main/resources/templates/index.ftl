@@ -6,19 +6,13 @@
 <body>
 <p>
     Hello, ${user.name}!<br>
-    ${user.color}<br>
-    <#if info.a??>
-        ${info.a}
-    </#if>
     <br>
-    <#if info.b??>
-        ${info.b}
-    </#if>
-    <br>
-    <#if info.c??>
-        ${info.c}
-    </#if>
-    <br>
+    ${info}
+    ${info.field1}
+    <#--    <#list fields as item>-->
+
+    <#--        ${info["${item}"]}-->
+    <#--    </#list>-->
 </p>
 </body>
 </html>

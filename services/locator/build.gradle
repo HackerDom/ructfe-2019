@@ -44,8 +44,10 @@ dependencies {
     compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
     compile group: 'redis.clients', name: 'jedis', version: '3.1.0'
+    compile group: 'org.ow2.asm', name: 'asm', version: '5.0.3'
     compile "io.ktor:ktor-server-sessions:$ktor_version"
     compile "io.ktor:ktor-freemarker:$ktor_version"
     compile group: 'org.javassist', name: 'javassist', version: '3.26.0-GA'
+    compile "com.fasterxml.jackson.core:jackson-databind:2.9.8"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

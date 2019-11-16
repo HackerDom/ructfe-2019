@@ -8,11 +8,9 @@ html, body {
     background: #D1D95F;
     border: 0;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
     display: inline-block;
-    color: #D1D95F;
-
     outline: none;
     position: absolute;
 }
@@ -27,7 +25,7 @@ html, body {
     }
     100% {
         box-shadow: 0 0 0 5px #D1D95F, 0 0 10px 10px #D1D95F, 0 0 0 10px #D1D95F;
-        transform: scale(1.1);
+        transform: scale(1.5);
         opacity: 0;
     }
 }

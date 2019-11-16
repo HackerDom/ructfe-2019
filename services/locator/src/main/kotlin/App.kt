@@ -1,3 +1,4 @@
+import decoder.decodeMessage
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.call
 import io.ktor.application.install
@@ -66,17 +67,13 @@ fun main() {
                 files("js")
                 files("css")
             }
-            get("/") {
+            get("/info") {
                 val session = call.sessions.get<AuthSession>()
                 session?.uid?.let { uid ->
                     val user = manager.userById(uid)
                     user?.let {
-                        val info = manager.info(user).initializeInstance()
-                        val templateMap = mapOf(
-                            "user" to user,
-                            "info" to info
-                        )
-                        call.respond(FreeMarkerContent("index.ftl", templateMap))
+                        val info = manager.info(user)
+                        call.respond(decodeMessage(info.key, info.message))
                     }
                 } ?: call.respondRedirect("/login_page")
             }
@@ -91,8 +88,10 @@ fun main() {
                 call.respond(HttpStatusCode.BadRequest)
             }
             post("/register") {
-                val content = call.receiveChannel().toByteArray().decodeToString()
-                val regData = Json.parse(RegisterData.serializer(), content)
+                val rawRegData = call.receiveChannel().toByteArray().decodeToString()
+                println(rawRegData)
+                val regData = Json.parse(RegisterData.serializer(), rawRegData)
+                println(regData)
                 if (manager.isUserExists(regData.name)) {
                     call.respond(
                         HttpStatusCode.BadRequest,

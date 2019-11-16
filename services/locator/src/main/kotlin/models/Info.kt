@@ -9,21 +9,17 @@ import javax.sql.rowset.serial.SerialBlob
 
 
 object Infos : IntIdTable() {
-    val schema = blob("schema")
-    val content = blob("content")
+    val key = blob("key")
+    val message = text("message")
 }
 
 
 class Info(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Info>(Infos)
 
-    var schema: ByteArray by Infos.schema.transform({ SerialBlob(it) }, { it.toByteArray() })
-    var content by Infos.content.transform({ SerialBlob(it) }, { it.toByteArray() })
+    var key: ByteArray by Infos.key.transform({ SerialBlob(it) }, { it.toByteArray() })
+    var message by Infos.message
 
-    fun initializeInstance(): Any {
-        val clazz = RuntimeClassLoader.loadClass(schema)
-        return clazz.getConstructor(ByteArray::class.java).newInstance(content)
-    }
 }
 
 

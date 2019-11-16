@@ -1,4 +1,4 @@
-const FIELD_SIZE = 100;
+const FIELD_SIZE = 80;
 let sonars = {};
 
 
@@ -15,13 +15,17 @@ class Point {
 
 
 class Sonar {
-    constructor(context, coordinates, size, animationSpeed, uniqNumber) {
+    constructor(context, coordinates, size, animationSpeed, uniqNumber, color) {
         this.context = context;
         this.coordinates = coordinates;
         this.obj = Sonar.createSonarObj("sonar-" + uniqNumber.toString());
-        this.moveTo(this.coordinates);
+        this.uniqNumber = uniqNumber;
         this.setAnimationSpeed(animationSpeed);
         this.setSize(size);
+        if (color !== null) {
+            this.setColor(color);
+        }
+        this.moveTo(this.coordinates);
     }
 
     static createSonarObj(sonarId) {
@@ -33,6 +37,10 @@ class Sonar {
     setSize(size) {
         this.obj.css("width", size.toString() + "px");
         this.obj.css("height", size.toString() + "px");
+    }
+
+    setColor(color) {
+        this.obj.css("background", color);
     }
 
     getSize(property) {
@@ -50,13 +58,13 @@ class Sonar {
         this.coordinates.x = (FIELD_SIZE + point.x) % FIELD_SIZE;
         this.coordinates.y = (FIELD_SIZE + point.y) % FIELD_SIZE;
 
-        let sonarWidth = this.getSize("width");
-        let sonarHeight = this.getSize("height");
+        let sonarWidth = this.getSize("width") / 2;
+        let sonarHeight = this.getSize("height") / 2;
 
         const coordinates = this.context.getRealCoordinates(point);
 
-        this.obj.css("left", (coordinates.x - sonarWidth / 2).toString() + "px");
-        this.obj.css("top", (coordinates.y - sonarHeight / 2).toString() + "px");
+        this.obj.css("left", (coordinates.x - sonarWidth).toString() + "px");
+        this.obj.css("top", (coordinates.y - sonarHeight).toString() + "px");
     }
 
     setAnimationSpeed(animationSpeed) {
@@ -130,7 +138,7 @@ function initDraw() {
         async: false
     }).responseJSON;
     users.forEach(function (user) {
-        sonars[user.id] = new Sonar(context, new Point(user.x, user.y), 20, 1, user.id);
+        sonars[user.id] = new Sonar(context, new Point(user.x, user.y), 20, Math.random(), user.id);
     });
 
     $("#square").on("click", function (e) {
@@ -138,8 +146,10 @@ function initDraw() {
         sonars[1].move(new Point(1, 0));
         console.log(sonars[1]);
     });
+}
 
-    setInterval(function () {
-        sonars[1].move(new Point(1, 0));
-    }, 3000);
+
+function init() {
+    window.onresize = initDraw;
+    initDraw();
 }
