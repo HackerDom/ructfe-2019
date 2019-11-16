@@ -11,13 +11,13 @@ checker = Checker()
 
 def users_are_equals(first: User, second: dict):
     try:
-        if first.username != second['username']:
+        if str(first.username) != str(second['username']):
             return False
-        if first.first_name != second['firstName']:
+        if str(first.first_name) != str(second['firstName']):
             return False
-        if first.last_name != second['lastName']:
+        if str(first.last_name) != str(second['lastName']):
             return False
-        if first.biography != second['biography']:
+        if str(first.biography) != str(second['biography']):
             return False
         return True
     except:
@@ -26,15 +26,15 @@ def users_are_equals(first: User, second: dict):
 
 def message_in_messages(messages, message_id, message_content):
     for m in messages:
-        if m['id'] == message_id:
+        if str(m['id']) == str(message_id):
             return m['text'] == message_content
     return False
 
 
-def chat_in_chats(chats, chat_id, chat_name):
+def chat_in_chats(chats, chat_id, chat_name=None):
     for c in chats:
-        if c['id'] == chat_id:
-            return c['name'] == chat_name
+        if str(c['id']) == str(chat_id):
+            return c['name'] == chat_name or not chat_name
     return False
 
 
@@ -59,13 +59,19 @@ async def check_service(request: CheckRequest) -> Verdict:
 
             chat_name = utils.generate_random_text()
             resp = await api.create(chat_name)
+            if 'chatId' not in resp:
+                return Verdict.MUMBLE('Invalid contract in chat creating', '')
             chat_id = resp['chatId']
             resp = await api.get_invite_link(chat_id)
+            if 'inviteLink' not in resp:
+                return Verdict.MUMBLE('Invalid contract in generating invite link', '')
             inv_link = resp['inviteLink']
             admin = user
             admin_id = user_id
             first_message_content = utils.generate_random_text()
             resp = await api.send_message(chat_id, first_message_content)
+            if 'messageId' not in resp:
+                return Verdict.MUMBLE('Invalid contract in messages sending', '')
             first_message_id = resp['messageId']
             await api.delete_message(first_message_id)
             user = User()
@@ -73,6 +79,8 @@ async def check_service(request: CheckRequest) -> Verdict:
             await api.login(user.username, user.password)
             await api.join(chat_id, inv_link)
             resp = await api.read_messages(chat_id)
+            if 'messages' not in resp:
+                return Verdict.MUMBLE('Invalid contract in messages reading', '')
             messages = resp['messages']
             if message_in_messages(messages, first_message_id, first_message_content):
                 return Verdict.MUMBLE('Can read deleted message', 'deleted by other user')
@@ -83,11 +91,13 @@ async def check_service(request: CheckRequest) -> Verdict:
             if resp['id'] != admin_id:
                 return Verdict.MUMBLE('Can not search user', 'invalid data')
             resp = await api.get_chats()
+            if 'chats' not in resp:
+                return Verdict.MUMBLE('Invalid contract in chats listing', 'invalid data')
             chats = resp['chats']
             if not chat_in_chats(chats, chat_id, chat_name):
                 return Verdict.MUMBLE('Can not find chat in chats', 'invalid chats method')
         except:
-            return Verdict.MUMBLE('Some service errors.', traceback.format_exc())
+            return Verdict.DOWN('Some service errors.', traceback.format_exc())
 
     return Verdict.OK()
 
@@ -197,14 +207,27 @@ async def get_flag_from_messages(request: GetRequest) -> Verdict:
             return Verdict.DOWN('Could not connect to service', traceback.format_exc())
         try:
             resp = await api.read_messages(chat_id)
+            if 'messages' not in resp:
+                return Verdict.MUMBLE('Invalid contract in message getting', '')
             messages = resp['messages']
             message = list(filter(lambda m: int(m['id']) == int(message_id), messages))
             if len(message) != 1:
                 return Verdict.CORRUPT('Invalid messages count', f'with id: {message_id}')
+            if 'text' not in message[0]:
+                return Verdict.MUMBLE('Invalid contract in message getting', '')
             message_content = message[0]['text']
         except:
-            return Verdict.CORRUPT('Invalid response from service', traceback.format_exc())
+            return Verdict.DOWN('Invalid response from service', traceback.format_exc())
 
+        try:
+            resp = await api.get_chats()
+            if 'chats' not in resp:
+                return Verdict.MUMBLE('Invalid contract in chats listing', 'invalid data')
+            chats = resp['chats']
+            if not chat_in_chats(chats, chat_id):
+                return Verdict.MUMBLE('Can not find chat in chats', 'invalid /chats')
+        except:
+            return Verdict.DOWN('Invalid response from service', traceback.format_exc())
         if message_content != request.flag:
             return Verdict.CORRUPT('Invalid flag', f'{request.flag}, chat id: {chat_id}, invite link: {inv_link}')
 
