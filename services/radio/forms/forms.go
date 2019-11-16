@@ -17,6 +17,10 @@ type PlaylistForm struct {
 	Private     bool   `json:"is_private"`
 }
 
+type TrackCreateForm struct {
+	PlaylistID uint `json:"playlist_id" validate:"required,numeric"`
+}
+
 type TrackForm struct {
 	Name string `json:"name" validate:"required,alphanumunicode,min=1,max=256"`
 }

@@ -11,6 +11,12 @@ import {
     PLAYLIST_FETCH_IN_PROGRESS,
     PLAYLIST_FETCH_SUCCESSFULLY,
     PLAYLIST_FETCH_WITH_ERRORS,
+    PLAYLIST_TRACK_REMOVE_WITH_ERRORS,
+    PLAYLIST_TRACK_REMOVE_SUCCESSFULLY,
+    PLAYLIST_TRACK_REMOVE_IN_PROGRESS,
+    PLAYLIST_TRACK_ADD_WITH_ERRORS,
+    PLAYLIST_TRACK_ADD_SUCCESSFULLY,
+    PLAYLIST_TRACK_ADD_IN_PROGRESS
 } from '../actions/playlist/actionTypes';
 
 export default () => {
@@ -86,6 +92,42 @@ export default () => {
             };
         }
         case PLAYLIST_FETCH_WITH_ERRORS: {
+            return state;
+        }
+        case PLAYLIST_TRACK_ADD_IN_PROGRESS: {
+            return state;
+        }
+        case PLAYLIST_TRACK_ADD_SUCCESSFULLY: {
+            const tracks = state.currentPlaylist.tracks || [];
+            return {
+                ...state,
+                currentPlaylist: {
+                    ...state.currentPlaylist,
+                    tracks: [
+                        action.data,
+                        ...tracks
+                    ]
+                }
+            };
+        }
+        case PLAYLIST_TRACK_ADD_WITH_ERRORS: {
+            return state;
+        }
+        case PLAYLIST_TRACK_REMOVE_IN_PROGRESS: {
+            return state;
+        }
+        case PLAYLIST_TRACK_REMOVE_SUCCESSFULLY: {
+            const track = action.data;
+            const tracks = state.currentPlaylist.tracks || [];
+            return {
+                ...state,
+                currentPlaylist: {
+                    ...state.currentPlaylist,
+                    tracks: tracks.filter((t) => t.ID !== track.id)
+                }
+            };
+        }
+        case PLAYLIST_TRACK_REMOVE_WITH_ERRORS: {
             return state;
         }
         default: {

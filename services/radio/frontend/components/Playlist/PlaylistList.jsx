@@ -36,8 +36,9 @@ class PlaylistList extends React.Component {
                     onClick={() => { push(`/playlist/${p.ID}/`); }}
                     className='playlist-item'>
                     <div className='playlist-item__name' title={p.name}>{p.name}</div>
-                    <FontAwesomeIcon icon={faTimes} onClick={() => {
+                    <FontAwesomeIcon icon={faTimes} onClick={(e) => {
                         deletePlaylist(p.ID);
+                        e.stopPropagation();
                     }}/>
                 </div>)}
             </div>}

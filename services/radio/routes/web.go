@@ -155,6 +155,63 @@ func playlistDeleteHandler(dec *json.Decoder, enc *json.Encoder, w http.Response
 	return
 }
 
+func createTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	var userID uint
+	var ok bool
+	session, err := store.Get(r, "user-session")
+	if userID, ok = session.Values["user_id"].(uint); !ok {
+		return fmt.Errorf("Unknown error")
+	}
+	var user *models.User
+	if user, err = models.FindUserByID(userID); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	var playlist *models.Playlist
+	var trackCreateForm forms.TrackCreateForm
+	if err = dec.Decode(&trackCreateForm); err != nil {
+		return
+	}
+	if rve := forms.ValidateForm(trackCreateForm); rve != nil {
+		w.WriteHeader(400)
+		enc.Encode(rve)
+		return
+	}
+	if playlist, err = models.PlaylistGet(trackCreateForm.PlaylistID, user); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	var track *models.Track
+	if track, err = models.CreateTrack(playlist); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	enc.Encode(track)
+	return
+}
+
+func deleteTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	var userID uint
+	var ok bool
+	session, err := store.Get(r, "user-session")
+	if userID, ok = session.Values["user_id"].(uint); !ok {
+		return fmt.Errorf("Unknown error")
+	}
+	var user *models.User
+	if user, err = models.FindUserByID(userID); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	var trackID uint64
+	vars := mux.Vars(r)
+	if trackID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	if err = models.DeleteTrack(uint(trackID), user); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	enc.Encode(map[string]interface{}{
+		"id": trackID,
+	})
+	return
+}
+
 func makeWebRouter(mainRouter *mux.Router) {
 	r := mainRouter.PathPrefix("").Subrouter()
 
@@ -172,4 +229,6 @@ func makeWebRouter(mainRouter *mux.Router) {
 	r.HandleFunc("/frontend-api/playlist/", JSONHandler(playlistListHandler)).Methods("GET")
 	r.HandleFunc("/frontend-api/playlist/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
 	r.HandleFunc("/frontend-api/playlist/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
+	r.HandleFunc("/frontend-api/track/", JSONHandler(createTrackHandler)).Methods("POST")
+	r.HandleFunc("/frontend-api/track/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
 }
