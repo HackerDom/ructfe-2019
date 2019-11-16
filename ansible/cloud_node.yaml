@@ -1,4 +1,5 @@
-- hosts: cloud-node
+- hosts: cloud_node
+  gather_facts: no
   roles:
     - common
     - cloud_node

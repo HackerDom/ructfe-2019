@@ -1,0 +1,69 @@
+- name: increase MaxStartups in sshd_config
+  lineinfile: 
+    dest: /etc/ssh/sshd_config
+    regexp: "^MaxStartups "
+    line: MaxStartups 100:30:600
+    insertafter: "^#MaxStartups"
+  notify: restart sshd
+
+- name: increase the number of sessions in sshd_config
+  lineinfile: 
+    dest: /etc/ssh/sshd_config
+    regexp: "^MaxSessions "
+    line: MaxSessions 1000
+    insertafter: "^MaxStartups"
+  notify: restart sshd
+
+- name: create cloud user
+  user: name=cloud shell=/bin/bash
+
+- name: add keys to cloud user
+  authorized_key: user=cloud key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+N1OuhCrv6WboE/nMloSRvAlS6GGFPr0mEWXeKjGWgGJUL1iB3nwPsI4Ei4ILIq/RVFYcoAdkGv4vbI9EpZKSU5BFAaCZPd3rCxgC7qesEAYIiy2FUhhZNEZolFpIpOCoWH+mvCV9fxgsG+RJ4M9cuj2K8XsJ6bayAuhT1hg68M0dbkrjhclASgiLjN7J4efmxN79uCYLyNrb6CQdwYMrmtfobrcGdgQ0oeprczb05JC+6cQ4V2fTN2uR/+zAmFOu2xAAzqtv59wndSnP1X7qhUQX4CwbMa9hE5AJ7miXL5pflpyrfL3KqmB4we/sQMtwF0YaPFD/T/G02sJApjTaxSGeaY3UWB/wYa3BBnrkTywS+DtDkJfwco2MINqtJ2ZHYzqO7/nnNCnva93Mh/EqJJbCywElZRFjX75N45VAbBdsKvxwZlJXVPRErO2aJwIBbNIoGO0QLJXejgQLWqaBn5fTBHgKngZ5ERodnuu3h+CGxkP8egS1DG4HCcYme/M= bay@baysnotebook"
+
+- name: copy sudo_cloud
+  copy: src=sudo_cloud dest=/etc/sudoers.d/ mode=0640
+
+- name: copy virtualbox.list
+  copy: src=virtualbox.list dest=/etc/apt/sources.list.d/
+
+- name: add virtualbox repo keys
+  apt_key:
+    url: "{{item}}"
+    state: present
+  with_items:
+    - https://www.virtualbox.org/download/oracle_vbox_2016.asc
+    - https://www.virtualbox.org/download/oracle_vbox.asc
+
+- name: apt update
+  apt:
+    update_cache: yes
+
+- name: install xterm
+  apt: name=xterm state=latest
+
+- name: install x2goserver
+  apt: name=x2goserver state=latest
+
+- name: install virtualbox
+  apt: name=virtualbox-6.0 state=latest
+
+- name: load some modules
+  modprobe:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - vboxpci
+    - vboxnetadp
+    - vboxnetflt
+    - vboxdrv
+
+- name: copy cloud scripts
+  copy: src=scripts dest=/cloud/ mode=755
+
+- name: install openvpn
+  apt: name=openvpn state=latest
+
+- name: copy openvpn bridging script
+  copy: src=add_to_team_bridge.sh dest=/etc/openvpn/ mode=755
+
+
