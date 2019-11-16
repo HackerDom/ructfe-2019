@@ -6,6 +6,7 @@ N = 768
 SERVER = "team%d.cloud.ructfe.org"
 
 CLIENT_DATA = """tls-client
+cipher AES-128-CBC
 remote {0} {1}
 dev-type tap
 dev team{2}

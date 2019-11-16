@@ -5,6 +5,7 @@ N = 768
 
 SERVER_DATA = """server-bridge 10.{0}.{1}.1 255.255.255.0 10.{0}.{1}.100 10.{0}.{1}.200
 port {2}
+cipher AES-128-CBC
 dev team{3}
 dev-type tap
 dev team{3}-net

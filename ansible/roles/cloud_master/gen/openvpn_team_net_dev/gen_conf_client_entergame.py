@@ -7,6 +7,7 @@ SERVER = "team%d.cloud.ructfe.org"
 
 CLIENT_DATA = """client
 tls-client
+cipher AES-128-CBC
 remote {0} {1}
 dev tap
 route 10.60.0.0 255.252.0.0
