@@ -1,5 +1,4 @@
 import { Chat } from '../../entities/chatEntity';
-import uuid from 'uuid/v4';
 
 export class ChatsCollection {
     async createChat (userCreator, name) {
@@ -27,19 +26,7 @@ export class ChatsCollection {
     }
 
     async getChats () {
-        return Chat.findOne({}, (err, chats) => {
-            if (err) {
-                return null;
-            } else {
-                return chats;
-            }
-        }).then(chats => {
-            if (!chats) {
-                throw new Error('Chats not found');
-            } else {
-                return chats;
-            }
-        });
+        return Chat.find({}, null);
     }
 
     async saveChat (chatModel) {

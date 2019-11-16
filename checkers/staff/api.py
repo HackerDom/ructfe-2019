@@ -82,6 +82,12 @@ class Api:
         ) as response:
             return parse_response(await response.json(), response.status)
 
+    async def get_chats(self):
+        async with self.session.get(
+                f'{self.service_url}/chats'
+        ) as response:
+            return parse_response(await response.json(), response.status)
+
     async def search(self, first_name, last_name):
         async with self.session.post(
                 f'{self.service_url}/searchUser',

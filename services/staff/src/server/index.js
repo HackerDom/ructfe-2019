@@ -47,7 +47,11 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async (id, done) => {
     const user = await usersCollection.findUser(id);
-    done(null, { username: user.username, id: user.id, biography: user.biography });
+    done(null, {
+        username: user.username,
+        id: user.id,
+        biography: user.biography
+    });
 });
 
 export const app = express();
@@ -320,11 +324,17 @@ app.get('/chats', async function (request, response) {
             isSuccess = false;
             errorMessage = 'Can not find chats.';
         }).then(x => {
-            if (typeof x === 'object') {
-                return [x];
+            if (Array.isArray(x)) {
+                return x;
             }
-            return x;
-        }).then(x => x.map(chat => ({ id: chat.id, name: chat.name, usersIds: chat.usersIds })));
+            return [x];
+        }).then(x => x.map(chat => {
+            return {
+                id: chat.id,
+                name: chat.name,
+                usersIds: chat.usersIds
+            };
+        }));
     await sendResponse(response, { chats }, isSuccess, errorMessage);
 });
 
@@ -486,7 +496,10 @@ app.post('/searchUser', async function (request, response) {
     }
     const query = request.body.query;
     const foundedUser = await usersCollection
-        .findByNameAndLastName({ firstName: query.firstName, lastName: query.lastName })
+        .findByNameAndLastName({
+            firstName: query.firstName,
+            lastName: query.lastName
+        })
         .catch(_ => {
             isSuccess = false;
         });
@@ -498,7 +511,8 @@ app.post('/searchUser', async function (request, response) {
         username: foundedUser.username,
         firstName: foundedUser.firstName,
         lastName: foundedUser.lastName,
-        biography: foundedUser.biography
+        biography: foundedUser.biography,
+        id: foundedUser.id
     } : {};
     await sendResponse(response, userInfo);
 });
