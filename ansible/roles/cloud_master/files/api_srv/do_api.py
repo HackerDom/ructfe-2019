@@ -223,7 +223,7 @@ def create_domain_record(name, ip, domain, attempts=10, timeout=20):
                 "type": "A",
                 "name": name,
                 "data": ip,
-                "ttl": 1
+                "ttl": 30
             })
             url = "https://api.digitalocean.com/v2/domains/%s/records" % domain
             resp = requests.post(url, headers=HEADERS, data=data)
