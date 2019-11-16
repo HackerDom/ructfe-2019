@@ -52,7 +52,10 @@ export class UsersCollection {
 
     async editUser (oldUserModel, newFields) {
         for (const key of Object.keys(newFields)) {
-            if (oldUserModel[key]) {
+            if (Object.prototype.hasOwnProperty.call(oldUserModel, key) &&
+                key !== 'id' &&
+                key !== 'username' &&
+                key !== 'password') {
                 oldUserModel[key] = newFields[key];
             }
         }

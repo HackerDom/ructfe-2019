@@ -199,7 +199,7 @@ app.post('/createChat', checkAuthentication, async function (request, response) 
     const userId = await request.user.id;
     const chatName = request.body.chatName;
 
-    const isValid = fieldsAreExist(chatName.toString());
+    const isValid = chatName && fieldsAreExist(chatName.toString());
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
@@ -409,7 +409,7 @@ app.post('/deleteMessage', checkAuthentication, async function (request, respons
     if (isSuccess) {
         message.isDeleted = true;
     }
-    if (isSuccess && hasAccessToDeleteMessage(userId, message)) {
+    if (isSuccess && !hasAccessToDeleteMessage(userId, message)) {
         isSuccess = false;
         errorMessage = 'Can not delete message of another user';
     }
@@ -522,7 +522,7 @@ function hasAccessToWriteMessages (userId, usersIds) {
 }
 
 function hasAccessToDeleteMessage (userId, message) {
-    return message.ownerId === userId;
+    return parseInt(message.ownerId) === parseInt(userId);
 }
 
 function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {
