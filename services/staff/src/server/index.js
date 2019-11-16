@@ -95,7 +95,6 @@ export function startMongoDb (mongoUrl) {
 
 app.post('/register', async function (request, response) {
     const passwordHash = request.body.password ? await hashPassword(request.body.password.toString()) : null;
-    console.log(`FUCKING PASSWORD HASH ${passwordHash}`);
 
     const newUser = new User({
         username: request.body.username ? request.body.username.toString() : null,
@@ -104,7 +103,6 @@ app.post('/register', async function (request, response) {
         lastName: request.body.lastName ? request.body.lastName.toString() : null,
         biography: request.body.biography ? request.body.biography.toString() : null
     });
-    console.log(newUser.password);
     const isValid = fieldsAreExist(
         newUser.username,
         newUser.password,
