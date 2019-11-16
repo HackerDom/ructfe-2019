@@ -7,7 +7,7 @@ namespace HouseholdTests.Utils
 {
     public static class Generator
     {
-        private static Random random = new Random();
+        private static readonly Random random = new Random();
 
         public static ProductViewModel GetRandomProduct()
         {

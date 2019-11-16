@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<products>
+    <product>
+        <name>Banana</name>
+        <calories>89</calories>
+        <protein>1.5</protein>
+        <fat>0.1</fat>
+        <carbohydrate>21.8</carbohydrate>
+    </product>
+    <product>
+        <name>Cherry</name>
+        <calories>52</calories>
+        <protein>0.8</protein>
+        <fat>0.2</fat>
+        <carbohydrate>10.6</carbohydrate>
+    </product>
+    <product>
+        <name>Avocado</name>
+        <calories>160</calories>
+        <protein>2</protein>
+        <fat>14.65</fat>
+        <carbohydrate>1.85</carbohydrate>
+    </product>
+</products>

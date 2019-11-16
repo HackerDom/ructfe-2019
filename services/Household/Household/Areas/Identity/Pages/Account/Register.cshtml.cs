@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-#pragma warning disable 1591
-
 namespace Household.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]

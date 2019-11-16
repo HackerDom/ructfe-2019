@@ -9,6 +9,7 @@ import { Page, Product } from '../../common';
 export class ProductsImportComponent {
   public products: Product[];
   public totalCount: number;
+  public uploadedCount: number;
   http: HttpClient;
   baseUrl: string;
   selectedFile: File = null;
@@ -22,18 +23,6 @@ export class ProductsImportComponent {
     this.selectedFile = <File>event.target.files[0];
   }
 
-  onFileChanged(event) {
-    const file = event.target.files[0];
-    var fd = new FormData();
-    fd.append('file', file);
-    this.http.post<Page<Product>>(this.baseUrl + 'api/products/import', fd)
-      .subscribe(result => {
-          this.products = result.items;
-          this.totalCount = result.totalCount;
-        },
-        error => console.error(error));
-  }
-
   onUpload() {
     const fd = new FormData();
     fd.append('file', this.selectedFile);
@@ -42,6 +31,7 @@ export class ProductsImportComponent {
       .subscribe(result => {
           this.products = result.items;
           this.totalCount = result.totalCount;
+          this.uploadedCount = result.take;
         },
         error => console.error(error));
     // II

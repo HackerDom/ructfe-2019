@@ -40,13 +40,20 @@ namespace Household.Controllers
                 return BadRequest("Parameter skip should be greater or equal to 0");
             take = Math.Min(take, 100);
 
+            var userId = GetUserId();
+
             var items = await dataBase.Dishes
+                .Where(p => p.CreatedBy == userId)
                 .Include(d => d.Ingredients)
                 .ThenInclude(ing => ing.Product)
                 .Skip(skip).Take(take)
-                .ToArrayAsync().ConfigureAwait(false);
+                .ToArrayAsync()
+                .ConfigureAwait(false);
 
-            var totalCount = await dataBase.Dishes.CountAsync().ConfigureAwait(false);
+            var totalCount = await dataBase.Dishes
+                .Where(p => p.CreatedBy == userId)
+                .CountAsync()
+                .ConfigureAwait(false);
 
             var page = new Page<DishViewModel>
             {
@@ -72,6 +79,11 @@ namespace Household.Controllers
                 return NotFound();
             }
 
+            if (dish.CreatedBy != GetUserId())
+            {
+                return Unauthorized();
+            }
+
             return GetViewModel(dish);
         }
 
@@ -83,7 +95,13 @@ namespace Household.Controllers
             dataBase.Dishes.Add(dish);
             await dataBase.SaveChangesAsync();
 
-            return CreatedAtAction("GetDish", new {id = dish.Id}, GetViewModel(dish));
+            return CreatedAtAction(
+                "GetDish",
+                new
+                {
+                    id = dish.Id
+                },
+                GetViewModel(dish));
         }
 
         private DishViewModel GetViewModel(Dish dishDataModel)
@@ -95,7 +113,14 @@ namespace Household.Controllers
         private Dish GetDataModel(DishViewModel dishViewModel)
         {
             var dishDataModel = mapper.Map<Dish>(dishViewModel);
+            dishDataModel.CreatedBy = GetUserId();
+
             return dishDataModel;
+        }
+
+        private string GetUserId()
+        {
+            return User.Claims.ToArray()[5].Value;
         }
     }
 }

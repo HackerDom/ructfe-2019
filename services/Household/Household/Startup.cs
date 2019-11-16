@@ -12,10 +12,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-
-#pragma warning disable 1591
 
 namespace Household
 {
@@ -32,6 +31,8 @@ namespace Household
         public void ConfigureServices(IServiceCollection services)
         {
             IdentityModelEventSource.ShowPII = true;
+            services.AddTransient(p => new HouseholdConfiguration(p.GetService<IConfiguration>()));
+            services.AddTransient(p => new ProductsImportHandler(p.GetService<ILogger<ProductsImportHandler>>()));
 
             services.AddDbContext<HouseholdDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext")));
@@ -46,14 +47,12 @@ namespace Household
                 options.Password.RequireNonAlphanumeric = false;
             });
 
+            var credential = new SigningCredentials(
+                CertificateLoader.GetECDsaSecurityKey("12345"),
+                IdentityServerConstants.ECDsaSigningAlgorithm.ES512.ToString());
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, HouseholdDbContext>(
-                    options =>
-                    {
-                        options.SigningCredential = new SigningCredentials(
-                            CertificateLoader.GetECDsaSecurityKey("12345"),
-                            IdentityServerConstants.ECDsaSigningAlgorithm.ES512.ToString());
-                    });
+                    options => { options.SigningCredential = credential; });
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

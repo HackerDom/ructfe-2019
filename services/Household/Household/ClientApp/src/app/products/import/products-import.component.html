@@ -22,10 +22,10 @@
 
 <br/>
 <br/>
-<!--<input type="file" (change)="onFileChanged($event)">-->
+<br/>
 
 
-<p *ngIf="totalCount">Uploaded products: {{totalCount}}</p>
+<p *ngIf="totalCount">Uploaded products: {{uploadedCount}}. Available products: {{totalCount}}.</p>
 
 <!--// хорошо бы табличку с распознавшимися продуктами и подтверждение их добавления-->
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="products">
