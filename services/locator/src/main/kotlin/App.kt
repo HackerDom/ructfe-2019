@@ -56,7 +56,7 @@ fun main() {
 
         install(Sessions) {
             val secretHashKey = hex("6269746c792e636f6d2f39384b386548")
-            val sessionStorage = directorySessionStorage(File(".sessions"), cached = true)
+            val sessionStorage = SessionStorageMemory()
             cookie<AuthSession>("sid", sessionStorage) {
                 transform(SessionTransportTransformerMessageAuthentication(secretHashKey, "HmacSHA256"))
             }
