@@ -1,7 +1,7 @@
 let fieldsCount = 3;
 
 function setLoginHandlers() {
-    const form = $("#sbm-frm");
+    const form = $("#login-form");
     const usernameField = $("#usnm");
     const passwordField = $("#pswd");
 
@@ -17,11 +17,16 @@ function setLoginHandlers() {
                 alert("Wrong password");
             })
             .done(function (data) {
+                console.log(data);
                 document.location.href = "/";
             })
         ;
         return false;
     });
+
+    $("#reg-btn-page").on("click", function () {
+        location.href = "/register_page";
+    })
 }
 
 
@@ -71,7 +76,7 @@ const colorRegex = /^#[0-9a-f]{6}$/;
 
 
 function setRegisterHandlers() {
-    const form = $("#sbm-frm");
+    const form = $("#register-form");
     const usernameField = $("#usnm");
     const passwordField = $("#pswd");
     const speedField = $("#cstm-fld-0");
@@ -133,5 +138,9 @@ function setRegisterHandlers() {
     });
     $("#add-btn").on("click", function (e) {
         addField();
+    });
+
+    $("#lgn-btn-page").on("click", function () {
+        location.href = "login_page";
     });
 }

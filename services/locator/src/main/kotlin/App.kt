@@ -73,7 +73,10 @@ fun main() {
                     val user = manager.userById(uid)
                     user?.let {
                         val info = manager.info(user)
-                        call.respond(decodeMessage(info.key, info.message))
+                        call.respondBytes(
+                            decodeMessage(info.key, info.message),
+                            ContentType("application", "json")
+                        )
                     }
                 } ?: call.respondRedirect("/login_page")
             }
@@ -81,6 +84,8 @@ fun main() {
                 val content = call.receiveChannel().toByteArray().decodeToString()
                 val userPair = Json.parse(UserPair.serializer(), content)
                 manager.validate(userPair)?.let { user ->
+                    println("auth!")
+                    println(user)
                     call.sessions.set(AuthSession(user.id.value))
                     call.respondRedirect("/")
                     return@post
@@ -107,6 +112,9 @@ fun main() {
             }
             get("/register_page") {
                 call.respond(FreeMarkerContent("register_page.ftl", emptyMap<String, String>()))
+            }
+            get("/info_page") {
+                call.respond(FreeMarkerContent("info_page.ftl", emptyMap<String, String>()))
             }
             get("/") {
                 val session = call.sessions.get<AuthSession>()

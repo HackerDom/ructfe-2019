@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream
 
 private val objectMapper = ObjectMapper()
 
-fun decodeMessage(key: ByteArray, message: String): Any {
+fun decodeMessage(key: ByteArray, message: String): ByteArray {
     val clazz = RuntimeClassLoader.loadClass(key)
     val obj = clazz.newInstance()
     val keys = clazz.fields.map { it.name }.sorted()

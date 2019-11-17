@@ -37,8 +37,7 @@ class UserManager {
 
     fun validate(userPair: UserPair): User? = transaction {
         User.find { Users.name eq userPair.name }.firstOrNull()?.let { dbUser ->
-            hasher.digest(userPair.password.toByteArray())!!.contentEquals(dbUser.passwordHash)
-            dbUser
+            if (hasher.digest(userPair.password.toByteArray())!!.contentEquals(dbUser.passwordHash)) dbUser else null
         }
     }
 

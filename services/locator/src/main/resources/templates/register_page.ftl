@@ -8,7 +8,7 @@
 </head>
 <body onload="setRegisterHandlers()">
 <div id="content">
-<form id="sbm-frm">
+    <form id="register-form">
     <label>Register your submarine</label><br>
     <input type="text" name="username" id="usnm" placeholder="username">
     <input type="password" name="password" id="pswd" placeholder="password"><br>
@@ -24,7 +24,7 @@
 
     </div>
     <button id="reg-btn">Register</button>
-    <button id="lgn-btn">Login Page</button>
+        <button id="lgn-btn-page">Go to login Page</button>
     <button id="add-btn">Add info field</button>
     <br>
 </form>

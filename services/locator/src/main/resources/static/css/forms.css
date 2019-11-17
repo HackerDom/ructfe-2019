@@ -62,7 +62,7 @@ input {
     padding-bottom: 0;
 }
 
-button {
+#register-form button {
     width: 200px;
     height: 40px;
     background-color: #D1D95F;
@@ -75,8 +75,49 @@ button {
     font-size: 20px;
 }
 
+#login-form button {
+    width: 300px;
+    height: 40px;
+    background-color: #D1D95F;
+    border: 1px solid #D1D95F;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding-bottom: 0;
+    outline-color: #D1D95F;
+    font-family: Din Condensed, sans-serif;
+    font-size: 20px;
+}
+
 label {
     color: #D1D95F;
     font-family: Din Condensed, sans-serif;
     font-size: 40px;
+}
+
+table {
+    border: 1px solid #D1D95F;
+    width: 400px;
+    height: 40px;
+    font-family: Din Condensed, sans-serif;
+    font-size: 20px;
+    padding-left: 0;
+    padding-bottom: 0;
+    border-radius: 10px;
+    color: #D1D95F;
+    text-align: center;
+}
+
+td, th {
+    border-left: solid #D1D95F 1px;
+    border-top: solid #D1D95F 1px;
+    padding-left: 0;
+    padding-top: 5px;
+}
+
+th {
+    border-top: none;
+}
+
+td:first-child, th:first-child {
+    border-left: none;
 }
