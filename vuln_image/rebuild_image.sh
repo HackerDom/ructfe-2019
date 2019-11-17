@@ -13,7 +13,7 @@ cd $BASE_DIR
 vboxmanage snapshot "$VM_NAME" restore "base_image"
 
 # Start vm
-VBoxManage modifyvm "$VM_NAME" --natpf1 "deploy,tcp,127.0.0.1,$FORWARD_PORT,,22"
+VBoxManage modifyvm "$VM_NAME" --natpf1 "deploy,tcp,127.0.0.1,$SSH_PORT,,22"
 vboxmanage startvm "$VM_NAME" --type headless
 
 echo "Waiting SSH up"
@@ -45,6 +45,6 @@ echo "VM stoped, exporting"
 if [ -f "$OUTPUT_IMAGE" ]; then
     mv "$OUTPUT_IMAGE" "$OUTPUT_IMAGE.prev"
 fi
-VBoxManage export "$OUTPUT_IMAGE" -o "$OUTPUT_IMAGE"
+VBoxManage export "$VM_NAME" -o "$OUTPUT_IMAGE"
 
 echo "Done"

@@ -19,7 +19,7 @@ if VBoxManage showvminfo "$VM_NAME" --machinereadable &> /dev/null; then
  VBoxManage unregistervm "$VM_NAME" --delete
 fi
 
-VBoxManage import "$IMAGE_FILE" --options importtovdi -vsys0 --vmname $VM_NAME
+VBoxManage import "$IMAGE_FILE" --options importtovdi --vsys 0 --vmname $VM_NAME
 
 # quick fixup
 VBoxManage modifyvm "$VM_NAME" --natpf1 delete "Rule 1"
