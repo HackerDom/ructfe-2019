@@ -1,0 +1,29 @@
+- hosts: checkers, master
+  tasks:
+  - name: sync catalog
+    synchronize: src="../checkers" dest="{{cs_dir}}"
+    tags: sync
+
+  - name: checkers owner
+    file:
+      path: "{{cs_dir}}/checkers"
+      owner: "{{cs_user}}"
+      group: "{{cs_user}}"
+      recurse: yes
+    tags: sync
+
+  - name: install sys deps
+    apt:
+      name:
+        - python3-pip
+        - python3-dev
+        - python3-setuptools
+        - libssl-dev
+
+  - name: python deps
+    pip:
+      executable: pip3
+      name:
+        - requests
+        - pycrypto
+        - pillow

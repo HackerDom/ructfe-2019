@@ -1,0 +1,20 @@
+- name: restart openvpn
+  shell: /bin/bash -c "/bin/systemctl restart openvpn@{0..767}"
+
+- name: restart nginx
+  service: name=nginx state=restarted
+
+- name: enable and restart teamcheck
+  service: name=teamcheck enabled=yes state=restarted
+
+- name: enable and restart networkclosed
+  service: name=networkclosed enabled=yes state=restarted
+
+- name: enable and restart antidos
+  service: name=antidos enabled=yes state=restarted
+
+- name: enable and restart connectmon
+  service: name=connectmon enabled=yes state=restarted
+
+- name: enable and restart dump
+  shell: /bin/bash -c "/bin/systemctl enable dump; /bin/systemctl restart dump"

@@ -1,0 +1,2 @@
+cloud  ALL=NOPASSWD:/root/cloud/switch_team_to_cloud.sh
+cloud  ALL=NOPASSWD:/root/cloud/switch_team_to_not_cloud.sh

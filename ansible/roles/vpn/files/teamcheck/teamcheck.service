@@ -1,0 +1,17 @@
+[Unit]
+    Description=Team checker
+    After=network.target
+
+[Service]
+    ExecStart=/home/teamcheck/gen_status_loop.py
+    WorkingDirectory=/home/teamcheck
+    User=teamcheck
+    Group=teamcheck
+    Restart=on-failure
+    RestartSec=3s
+    CPUQuota=100%
+    MemoryLimit=2000M
+
+
+[Install]
+    WantedBy=multi-user.target

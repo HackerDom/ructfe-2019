@@ -1,0 +1,6 @@
+Net states: NOT_STARTED -> DO_LAUNCHED -> DNS_REGISTERED -> DO_DEPLOYED -> READY
+                        -> DNS_REGISTERED_WITH_HACK                     -> READY
+
+Image states: NOT_STARTED -> RUNNING
+
+Team states: NOT_CLOUD -> MIDDLE_STATE -> CLOUD

@@ -1,0 +1,50 @@
+- name: grafana catalog
+  file: path=/root/grafana state=directory
+
+- name: data catalog
+  file: path={{ item }} state=directory mode=0777
+  with_items:
+    - /root/grafana/data
+
+- name: grafana docker-compose config
+  copy: src=grafana-compose.yml dest=/root/grafana/docker-compose.yml
+
+- name: grafana admin password
+  copy:
+    dest: /root/grafana/.env
+    content: |
+      GF_SECURITY_ADMIN_PASSWORD={{ grafana_admin_pass }}
+
+- name: grafana data source
+  copy:
+    dest: /root/grafana/prometheus.yml
+    content: |
+      apiVersion: 1
+      datasources:
+        - name: prometheus
+          type: prometheus
+          access: proxy
+          url: {{ prometheus_uri }}
+
+- name: grafana dashboard provider
+  copy:
+    dest: /root/grafana/dashboard.yml
+    content: |
+      apiVersion: 1
+      providers:
+      - name: 'cs'
+        folder: ''
+        type: file
+        editable: true
+        allowUiUpdates: true
+        options:
+          path: /var/lib/grafana/dashboards
+
+- name: grafana dashborard
+  copy: src=grafana-cs-dashboard.yml dest=/root/grafana/grafana-cs-dashboard.yml
+
+- name: ensure compose running
+  docker_compose:
+    project_src: /root/grafana
+    state: present
+    restarted: yes
