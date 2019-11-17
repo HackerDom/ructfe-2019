@@ -3,7 +3,8 @@ import { User } from '../../entities/userEntity';
 export class UsersCollection {
     async saveUser (userModel) {
         const user = new User(userModel);
-        return user.save();
+        await user.save();
+        return user.id;
     }
 
     async findUser (userId) {

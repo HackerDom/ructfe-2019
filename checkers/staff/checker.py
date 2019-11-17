@@ -2,6 +2,7 @@ import traceback
 
 from api import Api
 from entities.user import User
+from utils.assertions_helpers import users_are_equals, message_in_messages, chat_in_chats
 from utils.invalid_response_exception import InvalidResponseException
 
 from chklib import Checker, Verdict, CheckRequest, PutRequest, GetRequest, utils
@@ -9,95 +10,130 @@ from chklib import Checker, Verdict, CheckRequest, PutRequest, GetRequest, utils
 checker = Checker()
 
 
-def users_are_equals(first: User, second: dict):
+async def check_user_info(api, reference_user):
     try:
-        if str(first.username) != str(second['username']):
-            return False
-        if str(first.first_name) != str(second['firstName']):
-            return False
-        if str(first.last_name) != str(second['lastName']):
-            return False
-        if str(first.biography) != str(second['biography']):
-            return False
-        return True
+        await api.login(reference_user.username, reference_user.password)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not login.', traceback.format_exc())
     except:
-        return False
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+    try:
+        resp = await api.get_user(reference_user.user_id)
+        if not users_are_equals(reference_user, resp):
+            return Verdict.MUMBLE('Users not equals on registration and getting from service.', traceback.format_exc())
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not get user information.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
 
 
-def message_in_messages(messages, message_id, message_content):
-    for m in messages:
-        if str(m['id']) == str(message_id):
-            return m['text'] == message_content
-    return False
+async def check_chats(api, first_user, second_user):
+    try:
+        await api.login(first_user.username, first_user.password)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not login.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+    chat_name = utils.generate_random_text()
+    try:
+        resp = await api.create(chat_name)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not create chat.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+
+    if 'chatId' not in resp:
+        return Verdict.MUMBLE('Invalid contract in chat creating', '')
+    chat_id = resp['chatId']
+
+    try:
+        resp = await api.get_invite_link(chat_id)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not create invite link.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+    if 'inviteLink' not in resp:
+        return Verdict.MUMBLE('Invalid contract in generating invite link', '')
+
+    inv_link = resp['inviteLink']
+    first_message_content = utils.generate_random_text()
+
+    try:
+        resp = await api.send_message(chat_id, first_message_content)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not send message.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+
+    if 'messageId' not in resp:
+        return Verdict.MUMBLE('Invalid contract in messages sending', '')
+    first_message_id = resp['messageId']
+
+    try:
+        await api.login(second_user.username, second_user.password)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not login.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+    try:
+        await api.join(chat_id, inv_link)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not register login.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+
+    resp = await api.read_messages(chat_id)
+    if 'messages' not in resp:
+        return Verdict.MUMBLE('Invalid contract in messages reading', '')
+    messages = resp['messages']
+    if not message_in_messages(messages, first_message_id, first_message_content):
+        return Verdict.MUMBLE('Could not read messages of other user', 'deleted by other user')
 
 
-def chat_in_chats(chats, chat_id, chat_name=None):
-    for c in chats:
-        if str(c['id']) == str(chat_id):
-            return c['name'] == chat_name or not chat_name
-    return False
+async def check_users_searching(api, user):
+    try:
+        resp = await api.search(user.first_name, user.last_name)
+    except InvalidResponseException:
+        return Verdict.MUMBLE('Could not register login.', traceback.format_exc())
+    except:
+        return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
+
+    if not users_are_equals(user, resp):
+        return Verdict.MUMBLE('Can not search user', 'invalid data')
+    if resp['id'] != user.user_id:
+        return Verdict.MUMBLE('Can not search user', 'invalid data')
 
 
 @checker.define_check
 async def check_service(request: CheckRequest) -> Verdict:
     async with Api(request.hostname) as api:
-        user = User()
+        first_user = User()
+        second_user = User()
         try:
-            await api.register(user.get_register_data())
-            resp = await api.login(user.username, user.password)
+            resp = await api.register(first_user.get_register_data())
+            if 'userId' not in resp:
+                return Verdict.MUMBLE('Invalid contract in user login', '')
+            first_user.user_id = resp['userId']
+            resp = await api.register(second_user.get_register_data())
+            if 'userId' not in resp:
+                return Verdict.MUMBLE('Invalid contract in user login', '')
+            second_user.user_id = resp['userId']
         except InvalidResponseException:
             return Verdict.MUMBLE('Could not register login.', traceback.format_exc())
         except:
             return Verdict.DOWN('Could not connect to service.', traceback.format_exc())
 
-        try:
-            user_id = resp['userId']
-            resp = await api.get_user(user_id)
-            if not users_are_equals(user, resp):
-                return Verdict.MUMBLE('Users not equals on registration and getting from service.',
-                                      traceback.format_exc())
+        verdict = await check_user_info(api, first_user)
+        if verdict:
+            return verdict
 
-            chat_name = utils.generate_random_text()
-            resp = await api.create(chat_name)
-            if 'chatId' not in resp:
-                return Verdict.MUMBLE('Invalid contract in chat creating', '')
-            chat_id = resp['chatId']
-            resp = await api.get_invite_link(chat_id)
-            if 'inviteLink' not in resp:
-                return Verdict.MUMBLE('Invalid contract in generating invite link', '')
-            inv_link = resp['inviteLink']
-            admin = user
-            admin_id = user_id
-            first_message_content = utils.generate_random_text()
-            resp = await api.send_message(chat_id, first_message_content)
-            if 'messageId' not in resp:
-                return Verdict.MUMBLE('Invalid contract in messages sending', '')
-            first_message_id = resp['messageId']
-            await api.delete_message(first_message_id)
-            user = User()
-            await api.register(user.get_register_data())
-            await api.login(user.username, user.password)
-            await api.join(chat_id, inv_link)
-            resp = await api.read_messages(chat_id)
-            if 'messages' not in resp:
-                return Verdict.MUMBLE('Invalid contract in messages reading', '')
-            messages = resp['messages']
-            if message_in_messages(messages, first_message_id, first_message_content):
-                return Verdict.MUMBLE('Can read deleted message', 'deleted by other user')
+        verdict = await check_chats(api, first_user, second_user)
+        if verdict:
+            return verdict
 
-            resp = await api.search(admin.first_name, admin.last_name)
-            if not users_are_equals(admin, resp):
-                return Verdict.MUMBLE('Can not search user', 'invalid data')
-            if resp['id'] != admin_id:
-                return Verdict.MUMBLE('Can not search user', 'invalid data')
-            resp = await api.get_chats()
-            if 'chats' not in resp:
-                return Verdict.MUMBLE('Invalid contract in chats listing', 'invalid data')
-            chats = resp['chats']
-            if not chat_in_chats(chats, chat_id, chat_name):
-                return Verdict.MUMBLE('Can not find chat in chats', 'invalid chats method')
-        except:
-            return Verdict.DOWN('Some service errors.', traceback.format_exc())
+        verdict = await check_users_searching(api, first_user)
+        if verdict:
+            return verdict
 
     return Verdict.OK()
 
@@ -258,6 +294,16 @@ async def get_flag_from_deleted_messages(request: GetRequest) -> Verdict:
             message_content = message[0]['text']
         except:
             return Verdict.CORRUPT('Invalid response from service', traceback.format_exc())
+
+        try:
+            resp = await api.get_chats()
+            if 'chats' not in resp:
+                return Verdict.MUMBLE('Invalid contract in chats listing', 'invalid data')
+            chats = resp['chats']
+            if not chat_in_chats(chats, chat_id):
+                return Verdict.MUMBLE('Can not find chat in chats', 'invalid /chats')
+        except:
+            return Verdict.DOWN('Invalid response from service', traceback.format_exc())
 
         if message_content != request.flag:
             return Verdict.CORRUPT('Invalid flag', f'{request.flag}, message content: {message_content}')

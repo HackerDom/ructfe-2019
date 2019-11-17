@@ -14,7 +14,7 @@ import passport from 'passport';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import { hashPassword, matchPasswordHashes } from './utils/passwordsHashing'
+import { hashPassword, matchPasswordHashes } from './utils/passwordsHashing';
 
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
@@ -120,8 +120,8 @@ app.post('/register', async function (request, response) {
         await sendResponse(response, {}, false, 'User with this name is already exist', 400);
         return;
     }
-    await usersCollection.saveUser(newUser);
-    await sendResponse(response);
+    const userId = await usersCollection.saveUser(newUser);
+    await sendResponse(response, { userId: userId });
 });
 
 app.post('/login', passport.authenticate('local'), async (request, response) => {
