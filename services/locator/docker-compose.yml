@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  locator:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: on-failure
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=locator
+    ports:
+      - "3306:3306"
