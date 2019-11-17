@@ -1,0 +1,25 @@
+#TODO: use v2 and add limits for containers
+#TODO: use non-root containers
+version: '3'
+services:
+  example_service:
+    build: .
+    # Service should always restart on fails
+    restart: "always"
+    # Services should handle SIGTERM, but if service freezed - SIGKILL it after 5 seconds
+    stop_grace_period: 5s
+    ports:
+      - "8080:8080"
+    # data persistence
+    volumes:
+      - "./data:/app/data"
+    ulimits:
+      # protect from fork bombs
+      nproc: 5
+      # allow 12K connections at once just in case
+      nofile:
+        soft: 12000
+        hard: 12000
+  redis:
+    image: "redis:alpine"
+    restart: "always"
