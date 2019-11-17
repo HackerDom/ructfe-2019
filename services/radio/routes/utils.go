@@ -3,15 +3,18 @@ package routes
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"path"
+	"strconv"
 	"text/template"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/config"
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/HackerDom/ructfe-2019/services/radio/webpack"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 )
 
@@ -84,6 +87,17 @@ func ServeError500(w http.ResponseWriter, r *http.Request) {
 
 func getUserFromContext(ctx context.Context) *models.User {
 	return ctx.Value(ContextUserKey).(*models.User)
+}
+
+func getUintParamFromRequestQuery(param string, r *http.Request) (uint, error) {
+	var r64 uint64
+	var err error
+	vars := mux.Vars(r)
+	r64, err = strconv.ParseUint(vars[param], 10, 32)
+	if err != nil {
+		return 0, fmt.Errorf("Param \"%s\" is too big", param)
+	}
+	return uint(r64), err
 }
 
 func JSONHandler(handler func(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) error) func(w http.ResponseWriter, r *http.Request) {

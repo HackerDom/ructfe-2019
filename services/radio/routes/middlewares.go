@@ -40,7 +40,6 @@ func authorizeUserMiddleware(next http.Handler) http.Handler {
 			encoder.Encode(forms.Error2RadioValidationErrors(err))
 			return
 		}
-
 		ctx := context.WithValue(r.Context(), ContextUserKey, user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

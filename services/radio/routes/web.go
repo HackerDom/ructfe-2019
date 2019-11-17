@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
@@ -98,13 +97,12 @@ func playlistListHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWr
 
 func playlistGETHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	user := getUserFromContext(r.Context())
-	var dbID uint64
-	vars := mux.Vars(r)
-	if dbID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
-		return fmt.Errorf("Unknown error")
+	var playlistID uint
+	if playlistID, err = getUintParamFromRequestQuery("id", r); err != nil {
+		return err
 	}
 	var playlist *models.Playlist
-	if playlist, err = models.PlaylistGet(uint(dbID), user); err != nil {
+	if playlist, err = models.PlaylistGet(playlistID, user); err != nil {
 		return fmt.Errorf("Unknown error")
 	}
 	enc.Encode(playlist)
@@ -113,12 +111,11 @@ func playlistGETHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 
 func playlistDeleteHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	user := getUserFromContext(r.Context())
-	var dbID uint64
-	vars := mux.Vars(r)
-	if dbID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
-		return fmt.Errorf("Unknown error")
+	var playlistID uint
+	if playlistID, err = getUintParamFromRequestQuery("id", r); err != nil {
+		return err
 	}
-	if err = models.PlaylistDelete(uint(dbID), user); err != nil {
+	if err = models.PlaylistDelete(playlistID, user); err != nil {
 		return fmt.Errorf("Unknown error")
 	}
 	enc.Encode(map[string]string{})
@@ -150,13 +147,12 @@ func createTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 
 func deleteTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	user := getUserFromContext(r.Context())
-	var trackID uint64
-	vars := mux.Vars(r)
-	if trackID, err = strconv.ParseUint(vars["id"], 10, 32); err != nil {
-		return fmt.Errorf("Unknown error")
+	var trackID uint
+	if trackID, err = getUintParamFromRequestQuery("id", r); err != nil {
+		return err
 	}
-	if err = models.DeleteTrack(uint(trackID), user); err != nil {
-		return fmt.Errorf("Unknown error")
+	if err = models.DeleteTrack(trackID, user); err != nil {
+		return fmt.Errorf("Can't delete track")
 	}
 	enc.Encode(map[string]interface{}{
 		"id": trackID,
