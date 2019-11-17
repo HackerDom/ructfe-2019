@@ -1,0 +1,18 @@
+#!/bin/sh
+
+setterm --fore green --store 2>/dev/null
+echo
+
+printf '                 _aaaa_                 aaaa,         _aaa,_aaaaa aaaaa/_aaaa/  \n'
+printf '                _QQQW\(                 QW?WQ/       .QQ?WQ/?4QP? QW??? ]QP??   \n'
+printf '                ?!""!7                  QQ -Qf       ]Qf )?` ]Qf  QQ    ]Qf     \n'
+printf '                 _aajaaa                QQ _Qf QQ ]Q.]Qf     ]Qf  WQ    ]Qf     \n'
+printf '                ajQQQQQQaaaaaaa/        QQQQ@  QQ ]Q.]Qf     ]Qf  QQQQQ ]QQQQf  \n'
+printf '   j6aaaawQQQQQQQQQQQQQQQWQWQWQQQ/      QQ"Qf  QQ ]Q.]Qf     ]Qf  QW    ]Qf     \n'
+printf '   ]f QWQQQQQQQQQQQQQQQQQQQQQQQQQQ      QQ 4Q  QQ ]Q.]Qf _a. ]Qf  QQ    ]Qf     \n'
+printf '   )T??)???QQQQQQQQQQQQQQQQQQQQQP"      QQ )Qf QQaQQ."QgaQQ  ]Qf  QQ    ]Q6aa/  \n'
+printf '                 "????????????"         ??  ?? )??)?  )???   )?"  ??    )????   \n'
+printf "\n"
+
+printf '                          Welcome aboard RuCTFE 2019!\n'
+printf "\n"

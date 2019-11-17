@@ -1,0 +1,8 @@
+#!/bin/sh
+printf "\n"
+printf " * News and announcements: https://twitter.com/RuCTFE or https://t.me/RuCTFE\n"
+printf " * Site:                   https://ructfe.org\n"
+printf " * IRC:                    #ructfe@irc.hackerdom.ru\n"
+printf " * Cloud Console:          https://cloud.ructfe.org\n"
+printf " * Monitor:                http://monitor.ructfe.org (for oldfags: http://monitor.ructfe.org/board)\n"
+printf " * Flags:                  flags.ructfe.org TCP port 31337 or read https://ructfe.org/http-flags\n"

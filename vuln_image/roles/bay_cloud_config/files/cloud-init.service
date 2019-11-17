@@ -1,0 +1,16 @@
+[Unit]
+    Description=Cloud Init
+    Before=network-pre.target
+    Wants=network-pre.target
+    After=virtualbox-guest-utils.service
+    After=vboxadd-service.service
+
+[Service]
+    ExecStart=/etc/cloud-init/cloud-init.sh
+    WorkingDirectory=/etc/cloud-init/
+    User=root
+    Group=root
+    Type=oneshot
+
+[Install]
+    WantedBy=multi-user.target

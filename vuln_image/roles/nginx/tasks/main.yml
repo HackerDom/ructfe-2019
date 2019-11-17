@@ -1,0 +1,26 @@
+---
+- name: Install nginx
+  apt:
+    name:
+      - nginx
+    state: latest
+    update_cache: yes
+
+- name: Copy configs
+  copy:
+    src: "{{ item.src }}"
+    dest: "/etc/nginx/{{ item.dest }}"
+    mode: 0644
+    owner: root
+  with_items:
+    - {src: "default", dest: "sites-available/default"}
+  notify: "reload nginx"
+
+- name: Copy front
+  copy:
+    src: ../pipboy_front/
+    dest: /var/www/html/
+    mode: u=rwX,g=rX,o=rX
+    owner: www-data
+    group: www-data
+  notify: "reload nginx"

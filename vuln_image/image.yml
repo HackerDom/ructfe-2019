@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+
+  gather_facts: no
+  # From http://docs.ansible.com/ansible/latest/intro_installation.html#managed-node-requirements
+  # Note (@xelez): this should not be needed I guess
+  pre_tasks:
+#    - name: 'Install python2'
+#      raw: sudo apt-get -y install python-simplejson
+#      changed_when: False
+#    - name: 'Add universe repo'
+#      raw: sudo add-apt-repository universe
+#      changed_when: False
+    - name: 'Ensure tmp exists'
+      raw: sudo mkdir -p /run/ansible_tmp/
+      changed_when: False
+    - name: 'Ensure tmp dir rights'
+      raw: sudo chmod a+rwx /run/ansible_tmp/
+      changed_when: False
+
+  roles:
+    - base_image
+    - bay_cloud_config
+    - { role: service, service_name: example_service }
