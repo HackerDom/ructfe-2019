@@ -9,9 +9,9 @@ import java.sql.Connection.TRANSACTION_SERIALIZABLE
 
 fun init() {
     Database.connect(
-        "jdbc:mysql://localhost:3306/locator",
+        "jdbc:mysql://mysql:3306/locator",
         driver = "com.mysql.jdbc.Driver",
-        user = "root", password = "12341234"
+        user = "root", password = "root"
     )
     TransactionManager.manager.defaultIsolationLevel = TRANSACTION_SERIALIZABLE
     transaction {
