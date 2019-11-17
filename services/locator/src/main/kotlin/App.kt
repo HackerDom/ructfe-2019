@@ -1,5 +1,6 @@
 import decoder.decodeMessage
 import freemarker.cache.ClassTemplateLoader
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.StatusPages
@@ -34,6 +35,12 @@ import java.io.File
 data class AuthSession(
     val uid: Int
 )
+
+
+suspend fun clearCookieAndGoLoginPage(call: ApplicationCall) {
+    call.sessions.clear<AuthSession>()
+    call.respondRedirect("/login_page")
+}
 
 
 @UnstableDefault
@@ -108,9 +115,11 @@ fun main() {
                 }
             }
             get("/login_page") {
+                call.sessions.clear<AuthSession>()
                 call.respond(FreeMarkerContent("login_page.ftl", emptyMap<String, String>()))
             }
             get("/register_page") {
+                call.sessions.clear<AuthSession>()
                 call.respond(FreeMarkerContent("register_page.ftl", emptyMap<String, String>()))
             }
             get("/info_page") {
@@ -123,7 +132,7 @@ fun main() {
                     user?.let {
                         call.respond(FreeMarkerContent("draw.ftl", mapOf("username" to user.name)))
                     }
-                }
+                } ?: clearCookieAndGoLoginPage(call)
             }
             get("/users") {
                 val session = call.sessions.get<AuthSession>()
@@ -140,8 +149,7 @@ fun main() {
                 } ?: call.respondRedirect("/login_page")
             }
             get("/logout") {
-                call.sessions.clear<AuthSession>()
-                call.respondRedirect("/login_page")
+                clearCookieAndGoLoginPage(call)
             }
         }
     }
