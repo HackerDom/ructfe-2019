@@ -11,6 +11,8 @@ namespace Household.Utils
             this.configuration = configuration;
         }
 
+        public string ConnectionString => configuration.GetConnectionString("DataBaseContext");
+        public string DataBaseSystem => configuration.GetSection("DataBaseSystem").Value;
         public string SaveFilePath => configuration.GetSection("SaveFilePath").Value;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Household.DataBaseModels;
+using Household.Utils;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,15 @@ namespace Household.DataBase
 {
     public class HouseholdDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public HouseholdDbContext(DbContextOptions<HouseholdDbContext> options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
-        { 
+        private readonly HouseholdConfiguration configuration;
+
+        public HouseholdDbContext(
+            DbContextOptions<HouseholdDbContext> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions,
+            HouseholdConfiguration configuration)
+            : base(options, operationalStoreOptions)
+        {
+            this.configuration = configuration;
             //Database.EnsureDeleted();
             Database.EnsureCreated(); // создаем бд с новой схемой
         }
@@ -59,21 +66,34 @@ namespace Household.DataBase
 
             builder.Entity<Product>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql(SqlGetDate());
             builder.Entity<Ingredient>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql(SqlGetDate());
             builder.Entity<Dish>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql(SqlGetDate());
             builder.Entity<DishInMenu>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql(SqlGetDate());
             builder.Entity<Menu>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql("GETDATE()");
+                .HasDefaultValueSql(SqlGetDate());
 
             base.OnModelCreating(builder);
+        }
+
+        private string SqlGetDate()
+        {
+            switch (configuration.DataBaseSystem)
+            {
+                case "MSSQL":
+                    return "getdate()";
+                case "PostgreSQL":
+                    return "(now() at time zone 'utc')";
+            }
+
+            return null;
         }
     }
 }

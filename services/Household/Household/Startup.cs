@@ -26,6 +26,7 @@ namespace Household
         }
 
         public IConfiguration Configuration { get; }
+        public HouseholdConfiguration HouseholdConfiguration => new HouseholdConfiguration(Configuration);
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,8 +35,7 @@ namespace Household
             services.AddTransient(p => new HouseholdConfiguration(p.GetService<IConfiguration>()));
             services.AddTransient(p => new ProductsImportHandler(p.GetService<ILogger<ProductsImportHandler>>()));
 
-            services.AddDbContext<HouseholdDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext")));
+            services.AddDbContext<HouseholdDbContext>(DefineSqlServer);
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<HouseholdDbContext>();
@@ -47,7 +47,7 @@ namespace Household
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-            var credential = new SigningCredentials(
+           var credential = new SigningCredentials(
                 CertificateLoader.GetECDsaSecurityKey("12345"),
                 IdentityServerConstants.ECDsaSigningAlgorithm.ES512.ToString());
             services.AddIdentityServer()
@@ -115,6 +115,20 @@ namespace Household
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+        }
+
+        private void DefineSqlServer(DbContextOptionsBuilder options)
+        {
+            var type = HouseholdConfiguration.DataBaseSystem;
+            switch (type)
+            {
+                case "MSSQL":
+                    options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext"));
+                    break;
+                case "PostgreSQL":
+                    options.UseNpgsql(Configuration.GetConnectionString("DataBaseContext"));
+                    break;
+            }
         }
     }
 }
