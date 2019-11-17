@@ -1,31 +1,16 @@
 import React from 'react';
-import { TextField, Button } from '@material-ui/core';
-import s from './Login.css';
+import { observer } from 'mobx-react';
 import { login } from '../../models/login';
 
-export function Login () {
+const LoginC = observer(login => {
     return (
-        <article className={s.formContainer}>
-            <section className={s.form}>
-                <TextField
-                    label="Login"
-                    variant="outlined"
-                    onChange={login.changeUsername}
-                />
-                <TextField
-                    label="Password"
-                    variant="outlined"
-                    type="password"
-                    onChange={login.changePassword}
-                />
-                <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={login.login}
-                >
-                    Login
-                </Button>
-            </section>
-        </article>
+        <input
+            value={login.username}
+            onChange={login.changeUsername}
+        />
     );
-}
+});
+
+export const Login = () => (
+    <LoginC login={login} />
+);
