@@ -121,3 +121,19 @@ th {
 td:first-child, th:first-child {
     border-left: none;
 }
+
+
+#info-form button {
+    float: right;
+    width: 100px;
+    height: 40px;
+    background-color: #D1D95F;
+    border: 1px solid #D1D95F;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding-bottom: 0;
+    outline-color: #D1D95F;
+    font-family: Din Condensed, sans-serif;
+    font-size: 20px;
+    margin-top: 20px;
+}

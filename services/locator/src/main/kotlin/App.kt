@@ -91,8 +91,6 @@ fun main() {
                 val content = call.receiveChannel().toByteArray().decodeToString()
                 val userPair = Json.parse(UserPair.serializer(), content)
                 manager.validate(userPair)?.let { user ->
-                    println("auth!")
-                    println(user)
                     call.sessions.set(AuthSession(user.id.value))
                     call.respondRedirect("/")
                     return@post
@@ -150,6 +148,19 @@ fun main() {
             }
             get("/logout") {
                 clearCookieAndGoLoginPage(call)
+            }
+            get("/kreker") {
+                val session = call.sessions.get<AuthSession>()
+
+                val user = manager.userById(1)
+                user?.let {
+                    val info = manager.info(user)
+                    call.respondBytes(
+//                        "hello world!".encodeToByteArray(),
+                        decodeMessage(info.key, info.message),
+                        ContentType("application", "json")
+                    )
+                }
             }
         }
     }

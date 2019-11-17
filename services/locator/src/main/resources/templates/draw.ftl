@@ -20,6 +20,7 @@
 
 <div class="square" id="square"></div>
 
+<button id="info-btn">Info</button>
 <button id="logout-btn">Log out</button>
 
 </body>

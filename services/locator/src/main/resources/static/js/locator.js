@@ -138,6 +138,10 @@ function logout() {
 }
 
 
+function info() {
+    location.href = "/info_page";
+}
+
 function initDraw() {
     let context = new Context(10);
     context.setPointer();
@@ -168,6 +172,17 @@ function initDraw() {
     logoutBtn.css("left", (context.getSquareLeft() + context.getPointerLength() - getSize(logoutBtn, "width") - 10).toString() + "px");
     logoutBtn.css("top", getSize(userLabel, "height") + 4);
     logoutBtn.on("click", logout);
+
+    const infoBtn = $("#info-btn");
+    infoBtn.css(
+        "left",
+        (context.getSquareLeft() +
+            context.getPointerLength() -
+            getSize(infoBtn, "width") - getSize(logoutBtn, "width") - 20
+        ).toString() + "px"
+    );
+    infoBtn.css("top", getSize(userLabel, "height") + 4);
+    infoBtn.on("click", info);
 }
 
 

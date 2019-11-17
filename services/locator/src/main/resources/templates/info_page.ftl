@@ -7,7 +7,7 @@
 </head>
 <body onload="initInfo()">
 <div id="content">
-    <form id="info-form">
+    <form id="info-form" action="/">
         <label>Your submarine info</label><br>
         <table id="info-table">
             <thead>
@@ -17,6 +17,7 @@
             </tr>
             </thead>
         </table>
+        <button id="home-button">Home</button>
     </form>
 </div>
 </body>
