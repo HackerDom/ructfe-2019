@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+- targets:
+{% for item in groups['cs'] %}
+  - {{ hostvars[item]['ansible_host'] }}:9100
+{% endfor %}
+{% for item in groups['vpn'] %}
+  - {{ hostvars[item]['private_addr'] }}:9100
+  - {{ hostvars[item]['private_addr'] }}:9300
+{% endfor %}

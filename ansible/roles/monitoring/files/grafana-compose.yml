@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - "/root/grafana/prometheus.yml:/etc/grafana/provisioning/datasources/prometheus.yml"
+      - "/root/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml"
+      - "/root/grafana/grafana-cs-dashboard.yml:/var/lib/grafana/dashboards/grafana-cs-dashboard.yml"
+      - "/root/grafana/data:/var/lib/grafana"
+    ports:
+      - "0.0.0.0:3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD

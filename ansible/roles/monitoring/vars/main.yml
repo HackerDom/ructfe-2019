@@ -1,0 +1,2 @@
+grafana_admin_pass: see4Ahcati
+prometheus_uri: http://10.10.10.20:9090

@@ -1,0 +1,198 @@
+- name: install packages
+  apt:
+    name:
+      - openvpn
+      - nginx
+      - python3-jinja2
+      - fping
+      - python3-requests
+      - conntrack
+    state: latest
+
+- name: copy prod vpn configs
+  synchronize: 
+    src: openvpn_prod/
+    dest: /etc/openvpn/
+    rsync_opts:
+      - "--chmod=0600"
+      - "--chown=root:root"
+  notify: restart openvpn
+  when: variant == "prod"
+
+- name: copy dev vpn configs
+  synchronize: 
+    src: openvpn_dev/
+    dest: /etc/openvpn/
+    rsync_opts:
+      - "--chmod=0600"
+      - "--chown=root:root"
+  notify: restart openvpn
+  when: variant == "dev"
+
+- name: create users
+  user: name={{item}} shell=/bin/false
+  with_items:
+    - teamcheck
+    - networkclosed
+    - antidos
+    - dump
+    - connectmon
+
+- name: create cloud user
+  user: name=cloud shell=/bin/bash
+
+- name: copy teamcheck files
+  copy: src=teamcheck/{{item}} dest=/home/teamcheck/ owner=teamcheck group=teamcheck
+  with_items:
+    - favicon.ico
+    - gen_status_loop.py
+    - team_tcp_checker.py
+    - status.tpl
+    - teams.py
+  notify: enable and restart teamcheck
+
+- name: make gen_status_loop and team_tcp_checker executable
+  file: path={{item}} mode=0755
+  with_items:
+    - /home/teamcheck/gen_status_loop.py
+    - /home/teamcheck/team_tcp_checker.py
+  notify: enable and restart teamcheck
+
+- name: copy teamcheck systemd service
+  copy: src=teamcheck/teamcheck.service dest=/etc/systemd/system/teamcheck.service
+  notify: enable and restart teamcheck
+
+- name: copy nginx config
+  copy: src=nginx/default dest=/etc/nginx/sites-available/default
+  notify: restart nginx
+
+- name: copy nginx files for https (dev)
+  copy: src=nginx/{{item}}_dev.pem dest=/etc/nginx/{{item}}.pem
+  notify: restart nginx
+  with_items:
+    - cert
+    - key
+    - dhparams
+  when: variant == "dev"
+
+- name: copy nginx files for https (prod)
+  copy: src=nginx/{{item}}_prod.pem dest=/etc/nginx/{{item}}.pem
+  notify: restart nginx
+  with_items:
+    - cert
+    - key
+    - dhparams
+  when: variant == "prod"
+
+- name: copy nginx htpasswd
+  copy: src=nginx/htpasswd dest=/etc/nginx/htpasswd
+  notify: restart nginx
+
+- name: create control dirs in /root
+  file: path=/root/{{item}} state=directory
+  with_items:
+    - antidos
+    - openclosenetwork
+    - snat
+    - trafdump
+    - cloud
+
+- name: copy sudo_cloud
+  copy: src=cloud/sudo_cloud dest=/etc/sudoers.d/ mode=0640
+
+- name: copy sudo_cloud scripts
+  copy: src=cloud/{{item}} dest=/root/cloud/{{item}} mode=0755
+  with_items:
+    - switch_team_to_cloud.sh
+    - switch_team_to_not_cloud.sh
+
+- name: create teamcheck web symlinks
+  file: src=/home/teamcheck/{{item}} dest=/var/www/html/{{item}} state=link force=yes
+  with_items:
+    - status.html
+    - favicon.ico
+
+- name: copy networkclosed systemd service
+  copy: src=networkclosed/networkclosed.service dest=/etc/systemd/system/networkclosed.service
+  notify: enable and restart networkclosed
+
+- name: copy networkclosed service
+  copy: 
+    src: networkclosed/networkclosed_serv.py
+    dest: /home/networkclosed/networkclosed_serv.py
+    owner: networkclosed
+    group: networkclosed
+    mode: 0755
+  notify: enable and restart networkclosed
+
+
+- name: copy open-close network scripts
+  copy: src=networkclosed/{{item}} dest=/root/openclosenetwork/{{item}} mode=0755
+  with_items:
+    - open_network.sh
+    - close_network.sh
+    - check_network.sh
+
+- name: copy antidos systemd service
+  copy: src=antidos/antidos.service dest=/etc/systemd/system/antidos.service
+  notify: enable and restart antidos
+
+- name: copy antidos service
+  copy: 
+    src: antidos/antidos_serv.py
+    dest: /home/antidos/antidos_serv.py
+    owner: antidos
+    group: antidos
+    mode: 0755
+  notify: enable and restart antidos
+
+- name: copy antidos root scripts
+  copy: src=antidos/{{item}} dest=/root/antidos/{{item}} mode=0755
+  with_items:
+    - block_team.sh
+    - unblock_team.sh
+    - list_blocked_teams.sh
+
+- name: copy snat root scripts
+  copy: src=snat/{{item}} dest=/root/snat/{{item}} mode=0755
+  with_items:
+    - add_snat_rules.sh
+    - del_snat_rules.sh
+    - check_snat_rules.sh
+
+- name: copy trafdump root scripts
+  copy: src=trafdump/{{item}} dest=/root/trafdump/{{item}} mode=0755
+  with_items:
+    - add_trafdump_rules.sh
+    - del_trafdump_rules.sh
+    - check_trafdump_rules.sh
+    - get_pkg_stat.sh
+
+- name: install tshark package
+  apt: name=tshark state=latest
+
+- name: create dump directory
+  file: path=/home/dump state=directory
+
+- copy: src=dump/{{item}} dest=/home/dump/ owner=dump group=dump mode=0755
+  with_items:
+    - rotate_dump.sh
+    - start_dump.sh
+  notify: enable and restart dump
+
+- name: copy dump systemd service
+  copy: src=dump/dump.service dest=/etc/systemd/system/dump.service
+  notify: enable and restart dump
+
+- name: copy connectmon systemd service
+  copy: src=connectmon/connectmon.service dest=/etc/systemd/system/connectmon.service
+  notify: enable and restart connectmon
+
+- name: copy connectmon service
+  copy: 
+    src: connectmon/connectmon.py
+    dest: /home/connectmon/connectmon.py
+    owner: connectmon
+    group: connectmon
+    mode: 0755
+  notify: enable and restart connectmon
