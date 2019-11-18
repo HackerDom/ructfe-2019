@@ -55,3 +55,13 @@ func FindUserByID(userID uint) (user *User, err error) {
 	err = forms.ErrorArray2Error(db.Find(&user, userID).GetErrors())
 	return
 }
+
+func FindUserByUserName(username string) (user *User, err error) {
+	user = &User{}
+	isRecordNotFound := db.Where("username = ?", username).First(&user).RecordNotFound()
+	if isRecordNotFound {
+		err = fmt.Errorf("User \"%s\" not found", username)
+		return
+	}
+	return
+}
