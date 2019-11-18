@@ -19,49 +19,47 @@ export class Registration extends React.Component {
         const FORM_GAP = 110;
 
         return (
-            <article className={s.login}>
-                <section>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Name: " />
-                            <Input
-                                onChange={this.onChangeFirstName}
-                                value={this.state.firstName}
-                            />
-                        </Row>
-                    </MarginBox>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Last name: " />
-                            <Input
-                                onChange={this.onChangeLastName}
-                                value={this.state.lastName}
-                            />
-                        </Row>
-                    </MarginBox>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Login: " />
-                            <Input
-                                onChange={this.onChangeLogin}
-                                value={this.state.login}
-                            />
-                        </Row>
-                    </MarginBox>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Password: " />
-                            <Input
-                                onChange={this.onChangePassword}
-                                value={this.state.password}
-                            />
-                        </Row>
-                    </MarginBox>
-                    <MarginBox alignCenter={true}>
-                        <Button text="register" onClick={register.register} />
-                    </MarginBox>
-                </section>
-            </article>
+            <section>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text="Name: " />
+                        <Input
+                            onChange={this.onChangeFirstName}
+                            value={this.state.firstName}
+                        />
+                    </Row>
+                </MarginBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text="Last name: " />
+                        <Input
+                            onChange={this.onChangeLastName}
+                            value={this.state.lastName}
+                        />
+                    </Row>
+                </MarginBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text="Login: " />
+                        <Input
+                            onChange={this.onChangeLogin}
+                            value={this.state.login}
+                        />
+                    </Row>
+                </MarginBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text="Password: " />
+                        <Input
+                            onChange={this.onChangePassword}
+                            value={this.state.password}
+                        />
+                    </Row>
+                </MarginBox>
+                <MarginBox alignCenter={true}>
+                    <Button text="register" onClick={register.register} />
+                </MarginBox>
+            </section>
         );
     }
 

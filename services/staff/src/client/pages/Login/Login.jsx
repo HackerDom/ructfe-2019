@@ -14,31 +14,29 @@ export class Login extends React.Component {
         const FORM_GAP = 110;
 
         return (
-            <article className={s.login}>
-                <section>
+            <section>
+                <Row gap={FORM_GAP}>
+                    <Text text="Login: " />
+                    <Input
+                        onChange={this.onChangeLogin}
+                        value={this.state.login}
+                    />
+                </Row>
+                <MarginBox>
                     <Row gap={FORM_GAP}>
-                        <Text text="Login: " />
+                        <Text text="Password: " />
                         <Input
-                            onChange={this.onChangeLogin}
-                            value={this.state.login}
+                            onChange={this.onChangePassword}
+                            value={this.state.password}
                         />
                     </Row>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Password: " />
-                            <Input
-                                onChange={this.onChangePassword}
-                                value={this.state.password}
-                            />
-                        </Row>
-                    </MarginBox>
-                    <MarginBox>
-                    </MarginBox>
-                    <MarginBox alignCenter={true}>
-                        <Button text="login" onClick={login.login} />
-                    </MarginBox>
-                </section>
-            </article>
+                </MarginBox>
+                <MarginBox>
+                </MarginBox>
+                <MarginBox alignCenter={true}>
+                    <Button text="login" onClick={login.login} />
+                </MarginBox>
+            </section>
         );
     }
 
