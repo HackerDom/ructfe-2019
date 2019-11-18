@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if VBoxControl --nologo guestproperty get team; then
+if /usr/sbin/VBoxControl --nologo guestproperty get team; then
   echo "Cloud detected"
-  TEAM="$(VBoxControl --nologo guestproperty get team|cut -d' ' -f 2)"
+  TEAM="$(/usr/sbin/VBoxControl --nologo guestproperty get team|cut -d' ' -f 2)"
   echo "TEAM=$TEAM"
 
   echo "network:" > /etc/netplan/50-cloud-init.yaml
@@ -15,11 +15,11 @@ if VBoxControl --nologo guestproperty get team; then
   echo "      gateway4: 10.$((60 + TEAM / 256)).$((TEAM % 256)).1" >>  /etc/netplan/50-cloud-init.yaml
   echo "      nameservers:" >> /etc/netplan/50-cloud-init.yaml
   echo "        addresses: [8.8.8.8, 8.8.4.4]" >> /etc/netplan/50-cloud-init.yaml
-  
+
   /usr/sbin/netplan apply
 fi
 
-if VBoxControl --nologo guestproperty get root_passwd_hash; then
+if /usr/sbin/VBoxControl --nologo guestproperty get root_passwd_hash; then
   PASS_HASH="$(VBoxControl --nologo guestproperty get root_passwd_hash | cut -d' ' -f 2)"
   usermod -p "$PASS_HASH" root
 fi
