@@ -58,9 +58,7 @@ export class Registration extends React.Component {
                         </Row>
                     </MarginBox>
                     <MarginBox alignCenter={true}>
-                        <div>
-                            <Button text="login" onClick={register.register} />
-                        </div>
+                        <Button text="register" onClick={register.register} />
                     </MarginBox>
                 </section>
             </article>

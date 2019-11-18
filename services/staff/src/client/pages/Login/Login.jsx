@@ -8,7 +8,7 @@ import { Row } from '../../components/Row/Row';
 import { Text } from '../../components/Text/Text';
 
 export class Login extends React.Component {
-    state = { username: '' };
+    state = { login: '', password: '' };
 
     render () {
         const FORM_GAP = 110;
@@ -16,54 +16,39 @@ export class Login extends React.Component {
         return (
             <article className={s.login}>
                 <section>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Name: " />
-                            <Input
-                                onChange={this.onChangeUserName}
-                                value={this.state.username}
-                            />
-                        </Row>
-                    </MarginBox>
-                    <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Last name: " />
-                            <Input
-                                onChange={this.onChangeUserName}
-                                value={this.state.username}
-                            />
-                        </Row>
-                    </MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text="Login: " />
+                        <Input
+                            onChange={this.onChangeLogin}
+                            value={this.state.login}
+                        />
+                    </Row>
                     <MarginBox>
                         <Row gap={FORM_GAP}>
                             <Text text="Password: " />
                             <Input
-                                onChange={this.onChangeUserName}
-                                value={this.state.username}
+                                onChange={this.onChangePassword}
+                                value={this.state.password}
                             />
                         </Row>
                     </MarginBox>
                     <MarginBox>
-                        <Row gap={FORM_GAP}>
-                            <Text text="Login: " />
-                            <Input
-                                onChange={this.onChangeUserName}
-                                value={this.state.username}
-                            />
-                        </Row>
                     </MarginBox>
                     <MarginBox alignCenter={true}>
-                        <div className={s.loginButton}>
-                            <Button text="login" />
-                        </div>
+                        <Button text="login" onClick={login.login} />
                     </MarginBox>
                 </section>
             </article>
         );
     }
 
-    onChangeUserName = (username) => {
-        login.username = username;
-        this.setState({ username });
+    onChangeLogin = (loginValue) => {
+        login.username = loginValue;
+        this.setState({ login: loginValue });
+    };
+
+    onChangePassword = (password) => {
+        login.password = password;
+        this.setState({ password });
     };
 }
