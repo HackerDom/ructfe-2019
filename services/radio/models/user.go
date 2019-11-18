@@ -65,3 +65,8 @@ func FindUserByUserName(username string) (user *User, err error) {
 	}
 	return
 }
+
+func UserList() (users []User, err error) {
+	err = forms.ErrorArray2Error(db.Find(&users).GetErrors())
+	return
+}

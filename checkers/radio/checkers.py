@@ -23,6 +23,13 @@ async def check_service(request: CheckRequest) -> Verdict:
             return Verdict.MUMBLE(f"Can't login user", f"Wrong status code [user.login],"
                                                        f"expect = 200, real = {status}")
 
+        status, usernames = await api.our_users()
+        if status != 200:
+            return Verdict.MUMBLE(f"Can't get users", f"Wrong status code [user.usernames],"
+                                                       f"expect = 200, real = {status}")
+        if user['username'] not in usernames:
+            return Verdict.MUMBLE(f"Can't find username in usernames", f"usernames: {usernames.join(', ')}")
+
         playlist_name = utils.generate_random_text()
         playlist_description = utils.generate_random_text(256)
         status, playlist_private = await api.create_playlist(playlist_name, playlist_description, False)
@@ -48,6 +55,11 @@ async def check_service(request: CheckRequest) -> Verdict:
         playlist_list_count = len(playlist_list)
         if playlist_list_count > 2:
             return Verdict.MUMBLE("Something wrong with playlist", f"Playlists count {playlist_list_count}, expect = 2")
+
+        status, _ = await api.get_shared_playlist(playlist_public, user)
+        if status != 200:
+            return Verdict.MUMBLE("Can't get public playlist by hash", f"Wrong status code [playlist.get_by_hash], "
+                                                                       f"expect = 200, real = {status}")
 
         status, _ = await api.delete_playlist(playlist_public["ID"])
         if status != 200:

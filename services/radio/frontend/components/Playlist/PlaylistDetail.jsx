@@ -24,7 +24,7 @@ class PlaylistDetail extends React.Component {
         match: PropTypes.object.isRequired,
         location: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
-        currentPlaylist: PropTypes.shape({
+        playlist: PropTypes.shape({
             ID: PropTypes.number,
             name: PropTypes.string,
             description: PropTypes.string,
@@ -40,19 +40,7 @@ class PlaylistDetail extends React.Component {
 
         this.state = {
             trackPlayID: -1,
-            currentId: null
         };
-    }
-
-    fetchPlaylist() {
-        const { match, fetchPlaylist } = this.props;
-        const { id } = match.params;
-        const { currentId } = this.state;
-        if (id !== currentId) {
-            fetchPlaylist(id, () => {
-                this.setState({ currentId: id });
-            });
-        }
     }
 
     play(trackID) {
@@ -71,21 +59,13 @@ class PlaylistDetail extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.fetchPlaylist();
-    }
-
-    componentDidUpdate() {
-        this.fetchPlaylist();
-    }
-
     componentWillUnmount() {
         this.stop();
     }
 
     getTracks() {
-        const { currentPlaylist, deleteTrack } = this.props;
-        return currentPlaylist.tracks.map((track, i) => <div key={`track-${currentPlaylist.ID}-${i}`} className='playlist-track'>
+        const { playlist, deleteTrack } = this.props;
+        return playlist.tracks.map((track, i) => <div key={`track-${playlist.ID}-${i}`} className='playlist-track'>
             <div className='playlist-track__buttons'>
                 {this.isTrackPlaying(track.ID) && <FontAwesomeIcon className='playlist-clickable-button'
                     icon={faStop} onClick={() => {
@@ -107,19 +87,19 @@ class PlaylistDetail extends React.Component {
     }
 
     render() {
-        const { currentPlaylist, createTrack } = this.props;
+        const { playlist, createTrack } = this.props;
 
         return <React.Fragment>
-            {currentPlaylist && <div className='playlist-detail'>
-                <div className='playlist-detail__title'>{currentPlaylist.name}</div>
-                {currentPlaylist.description && <div className='playlist-detail__description'>{currentPlaylist.description}</div>}
+            {playlist && <div className='playlist-detail'>
+                <div className='playlist-detail__title'>{playlist.name}</div>
+                {playlist.description && <div className='playlist-detail__description'>{playlist.description}</div>}
                 <div className='playlist-detail-tracks'>
                     {this.getTracks()}
                 </div>
                 <Spring />
                 <div className='playlist-add-track-button'>
                     <Button title='+ Add track' onClick={() => {
-                        createTrack(currentPlaylist.ID);
+                        createTrack(playlist.ID);
                     }} />
                 </div>
             </div>}

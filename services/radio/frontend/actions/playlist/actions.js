@@ -134,6 +134,33 @@ export const fetchPlaylist = (id, callback) => async (dispatch) => {
     }
 };
 
+export const fetchPlaylistByHash = (h, callback) => async (dispatch) => {
+    dispatch({ type: PLAYLIST_FETCH_IN_PROGRESS });
+    const response = await fetch(`/frontend-api/share/playlist/${h}/`, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'GET',
+        credentials: 'same-origin',
+    });
+    if (response.ok) {
+        const data = await response.json();
+        dispatch({
+            type: PLAYLIST_FETCH_SUCCESSFULLY,
+            data
+        });
+        if (_.isFunction(callback)) {
+            callback(data);
+        }
+    } else {
+        const data = await response.json();
+        dispatch({
+            type: PLAYLIST_FETCH_WITH_ERRORS,
+            data
+        });
+    }
+};
+
 export const createTrack = (playlistID) => async (dispatch) => {
     dispatch({ type: PLAYLIST_TRACK_ADD_IN_PROGRESS });
     const response = await fetch('/frontend-api/track/', {

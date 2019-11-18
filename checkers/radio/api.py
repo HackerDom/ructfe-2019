@@ -1,9 +1,10 @@
 import aiohttp
 import os
+import hashlib
+
 from typing import Tuple, Dict
 from networking.masking_connector import get_agent
 from aiohttp.client import ClientTimeout
-from random import randint
 
 PORT = os.getenv('RADIO_PORT', 80)
 
@@ -34,6 +35,10 @@ class Api:
         async with self.session.post(self.make_url('/login/'), json=data) as resp:
             return resp.status, await resp.json()
 
+    async def our_users(self):
+        async with self.session.get(self.make_url('/our-users/')) as resp:
+            return resp.status, await resp.json()
+
     async def create_playlist(self, name: str, description: str, is_private: str) -> Tuple[int, Dict]:
         data = {
             'name': name,
@@ -53,6 +58,17 @@ class Api:
 
     async def get_playlist(self, playlist_id):
         async with self.session.get(self.make_url(f'/playlist/{playlist_id}/')) as resp:
+            return resp.status, await resp.json()
+
+    async def get_shared_playlist(self, public_playlist, user):
+        token = 'playlist:{{{0}}}:{{{1}}}:{{{2}}}:{{&b}}'.format(
+            public_playlist["ID"],
+            'true' if public_playlist["private"] else 'false',
+            user["ID"]
+        ).encode('utf-8')
+        alg = hashlib.sha256()
+        alg.update(token)
+        async with self.session.get(self.make_url(f'/share/playlist/{alg.hexdigest()}/')) as resp:
             return resp.status, await resp.json()
 
     async def create_track(self, playlist_id):

@@ -42,8 +42,6 @@ func Decode(jwt string, secret string, out interface{}) error {
 		return fmt.Errorf("Invalid payload: %v", parseErr)
 	}
 	signatureValue := token[0] + "." + token[1]
-	// verifies if the header and signature is exactly whats in
-	// the signature
 	if isValidHash(signatureValue, token[2], secret) == false {
 		return errors.New("Invalid token")
 	}

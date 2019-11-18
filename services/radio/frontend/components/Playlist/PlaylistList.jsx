@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faShare } from '@fortawesome/free-solid-svg-icons';
 
 import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { fetchPlaylists, deletePlaylist } from '../../actions/playlist/actions';
+import Spring from '../Spring/Spring';
 
 class PlaylistList extends React.Component {
     static propTypes = {
@@ -36,6 +37,12 @@ class PlaylistList extends React.Component {
                     onClick={() => { push(`/playlist/${p.ID}/`); }}
                     className='playlist-item'>
                     <div className='playlist-item__name' title={p.name}>{p.name}</div>
+                    <Spring />
+                    {!p.private && <a target='_blank'
+                        className='playlist-item__share'
+                        href={`/share/playlist/${p.sharehash}/`}>
+                        <FontAwesomeIcon icon={faShare} />
+                    </a>}
                     <FontAwesomeIcon icon={faTimes} onClick={(e) => {
                         deletePlaylist(p.ID);
                         e.stopPropagation();

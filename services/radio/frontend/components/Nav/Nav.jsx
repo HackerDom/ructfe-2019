@@ -26,7 +26,7 @@ class Nav extends React.Component {
                 <Link to='/signup/' className='radio-nav__item radio-nav-item radio-nav-item--with-border'>Sign up</Link>
             </React.Fragment>}
             {user && <React.Fragment>
-                <Link to='/account/' className='radio-nav__item radio-nav-item'>{user.username}</Link>
+                <div className='radio-nav__item radio-nav-item'>{user.username}</div>
                 <a href='/logout/' className='radio-nav__item radio-nav-item radio-nav-item--with-border'>Logout</a>
             </React.Fragment>}
         </nav>;

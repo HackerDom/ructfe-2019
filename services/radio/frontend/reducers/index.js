@@ -7,6 +7,7 @@ const attachedReducers = [
     'login',
     'register',
     'playlist',
+    'ourUsers',
 ];
 
 const normalizeModuleName = (moduleName) => moduleName.split('/').map((item, i) => {

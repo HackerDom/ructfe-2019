@@ -30,7 +30,8 @@ func DeleteTrack(trackID uint, user *User) (err error) {
 	if err = forms.ErrorArray2Error(db.Find(&track, trackID).GetErrors()); err != nil {
 		return fmt.Errorf("Can't delete track")
 	}
-	if err = forms.ErrorArray2Error(db.Where("id = ? AND user_id = ?", track.PlaylistID, user.ID).GetErrors()); err != nil {
+	playlist := &Playlist{}
+	if err = forms.ErrorArray2Error(db.Where("id = ? AND user_id = ?", track.PlaylistID, user.ID).First(&playlist).GetErrors()); err != nil {
 		return fmt.Errorf("Can't delete track")
 	}
 	if err = forms.ErrorArray2Error(db.Model(&track).Delete(&track).GetErrors()); err != nil {

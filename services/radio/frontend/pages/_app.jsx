@@ -13,7 +13,8 @@ import React from 'react';
 import MainPage from './main';
 import RegisterPage from './register';
 import LoginPage from './login';
-import AccountPage from './account';
+import OurUsersPage from './our-users';
+import PlaylistSharePage from './share/playlist';
 
 import makeReducers from '../reducers';
 
@@ -48,9 +49,10 @@ export default class RadioApp extends React.Component {
                 <Switch>
                     <Route exact path='/signup/*' component={RegisterPage}></Route>
                     <Route exact path='/signin/*' component={LoginPage}></Route>
-                    <Route exact path='/account/*' component={AccountPage}></Route>
+                    <Route exact path='/our-users/' component={OurUsersPage}></Route>
 
                     <Route exact path='/playlist/:id/' component={MainPage}></Route>
+                    <Route exact path='/share/playlist/:h/' component={PlaylistSharePage}></Route>
                     <Route exact path='/' component={MainPage}></Route>
                 </Switch>
             </ConnectedRouter>

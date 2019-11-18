@@ -66,6 +66,19 @@ func loginHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r
 	return
 }
 
+func usersListHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	var users []models.User
+	if users, err = models.UserList(); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	usernames := make([]string, len(users))
+	for i, u := range users {
+		usernames[i] = u.Username
+	}
+	enc.Encode(usernames)
+	return
+}
+
 func playlistCreateHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	user := getUserFromContext(r.Context())
 	var playlistForm forms.PlaylistForm
@@ -109,6 +122,17 @@ func playlistGETHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 	return
 }
 
+func playlistGETByHHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	vars := mux.Vars(r)
+	h := vars["h"]
+	var playlist *models.Playlist
+	if playlist, err = models.PlaylistGetByH(h); err != nil {
+		return fmt.Errorf("Unknown error")
+	}
+	enc.Encode(playlist)
+	return
+}
+
 func playlistDeleteHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	user := getUserFromContext(r.Context())
 	var playlistID uint
@@ -137,6 +161,9 @@ func createTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 	if playlist, err = models.PlaylistGet(trackCreateForm.PlaylistID, user); err != nil {
 		return fmt.Errorf("Unknown error")
 	}
+	if playlist.UserID != user.ID {
+		return fmt.Errorf("Wrong User")
+	}
 	var track *models.Track
 	if track, err = models.CreateTrack(playlist); err != nil {
 		return fmt.Errorf("Unknown error")
@@ -164,10 +191,11 @@ func makeWebRouter(mainRouter *mux.Router) {
 	r := mainRouter.PathPrefix("").Subrouter()
 
 	r.HandleFunc("/", spaHandler)
-	r.HandleFunc("/account/", spaHandler)
 	r.HandleFunc("/signup/", spaHandler)
 	r.HandleFunc("/signin/", spaHandler)
+	r.HandleFunc("/our-users/", spaHandler)
 	r.HandleFunc("/playlist/{id:[0-9]+}/", spaHandler)
+	r.HandleFunc("/share/playlist/{h:\\w{64}}/", spaHandler)
 
 	r.HandleFunc("/logout/", logoutHandler)
 
@@ -175,6 +203,8 @@ func makeWebRouter(mainRouter *mux.Router) {
 	frontendAPIRouter.Use(jsonResponseMiddleware)
 	frontendAPIRouter.HandleFunc("/register/", JSONHandler(registerUserHandler)).Methods("POST")
 	frontendAPIRouter.HandleFunc("/login/", JSONHandler(loginHandler)).Methods("POST")
+	frontendAPIRouter.HandleFunc("/share/playlist/{h:\\w{64}}/", JSONHandler(playlistGETByHHandler)).Methods("GET")
+	frontendAPIRouter.HandleFunc("/our-users/", JSONHandler(usersListHandler)).Methods("GET")
 
 	playlistAPIRouter := frontendAPIRouter.PathPrefix("/playlist/").Subrouter()
 	playlistAPIRouter.Use(authorizeUserMiddleware)
