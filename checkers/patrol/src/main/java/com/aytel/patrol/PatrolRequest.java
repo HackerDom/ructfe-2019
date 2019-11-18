@@ -31,11 +31,12 @@ public class PatrolRequest {
         return patrolRequest;
     }
 
-    public static PatrolRequest iso(String rid, Graph iso) {
+    public static PatrolRequest iso(String rid, Graph iso, String graphId) {
         PatrolRequest patrolRequest = new PatrolRequest();
         patrolRequest.type = Type.SEND_ISO;
         patrolRequest.reqId = rid;
         patrolRequest.graph = iso;
+        patrolRequest.graphId = graphId;
         return patrolRequest;
     }
 

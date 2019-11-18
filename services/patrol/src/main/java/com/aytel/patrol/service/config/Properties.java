@@ -26,6 +26,7 @@ public class Properties {
     Map<String, String> map = new HashMap<>();
     Map<String, RequestInfo> info = new HashMap<>();
     public final Gson gson = new GsonBuilder().setExclusionStrategies(new ExcludeDescriptionStategy()).create();
+    public final Gson readGson = new GsonBuilder().create();
     private AtomicInteger counter = new AtomicInteger(0);
     private final int requestPoolSize = 10000;
 
@@ -42,7 +43,7 @@ public class Properties {
 
         listenPort = Integer.parseInt(config.getProperty("listen_port", "23179"));
         workerLoopGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
-        storageSize = Integer.parseInt(config.getProperty("storage_size", "500000"));
+        storageSize = Integer.parseInt(config.getProperty("storage_size", "5"));
         String almostStoragePath = config.getProperty("storage_path", "./storage/");
         if (almostStoragePath.charAt(almostStoragePath.length() - 1) != '/')
             almostStoragePath += "/";
@@ -59,7 +60,7 @@ public class Properties {
         }
         for (File file: files) {
             try {
-                Graph graph = gson.fromJson(new FileReader(file), Graph.class);
+                Graph graph = readGson.fromJson(new FileReader(file), Graph.class);
                 map.put(graph.getId(), file.getName());
             } catch (FileNotFoundException | JsonSyntaxException e) {
                 throw new ExceptionInInitializerError();
@@ -68,8 +69,9 @@ public class Properties {
 
         counter.set(0);
         while (Files.exists(Path.of(storagePath + counter.get() + ".json"))) {
-            counter.updateAndGet(x -> (x + 1) % storageSize);
+            counter.updateAndGet(x -> (x + 1));
         }
+        counter.updateAndGet(x -> (x + 1) % storageSize);
     }
 
     public String[] getIds() {
@@ -83,7 +85,7 @@ public class Properties {
     }
 
     public Graph getGraph(String graphId) throws FileNotFoundException {
-        return gson.fromJson(new FileReader(new File(map.get(graphId))), Graph.class);
+        return readGson.fromJson(new FileReader(new File(storagePath + map.get(graphId))), Graph.class);
     }
 
     public RequestInfo getRequestInfo(String reqId) {
@@ -119,7 +121,9 @@ public class Properties {
         int fileNum = counter.getAndUpdate(x -> (x + 1) % storageSize);
         File file = new File(storagePath + fileNum + ".json");
         map.put(graph.getId(), file.getName());
-        new FileWriter(file).write(gson.toJson(graph));
+        FileWriter writer = new FileWriter(file);
+        writer.write(readGson.toJson(graph));
+        writer.flush();
     }
 
     public static class RequestInfo {

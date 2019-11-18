@@ -63,7 +63,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     id, seed = request.flag_id.split()
 
-    rid = uuid.uuid4()
+    rid = str(uuid.uuid4())
 
     d = dict()
     d['type'] = 'GET_GRAPH'
@@ -85,42 +85,50 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
     for _ in range(50):
-        cmd = f'./gradlew run --quiet --args="-m=iso -r={rid}.json --rid={rid} -s={seed}"'
+        cmd = f'./gradlew run --quiet --args="-m=iso --id={id} -r={rid}.json --rid={rid} -s={seed}"'
         perm_seed = await get_out(cmd)
-        with Api(request.hostname) as api:
+        async with Api(request.hostname) as api:
             try:
                 downloaded_json = (await api.send_and_get(f'{rid}.json'))
-
-                if 'type' not in downloaded_json\
-                        or (downloaded_json['type'] != 'VC' and downloaded_json['type'] != 'PERM'):
-                    return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
-
-                type = downloaded_json['type']
-
-                if type == 'VC':
-                    cmd = f'./gradlew run --quiet --args="-m=vc -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}"'
-                else:
-                    cmd = f'./gradlew run --quiet --args="-m=perm -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}"'
-
-                await get_out(cmd)
-
-                downloaded_json = (await api.send_and_get(f'{rid}.json'))
-
-                if 'type' not in downloaded_json \
-                        or (downloaded_json['type'] != 'CONTINUE' and downloaded_json['type'] != 'OK'):
-                    os.remove(f'{rid}.json')
-                    return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
-
-                if downloaded_json['type'] == 'OK':
-                    if 'flag' not in downloaded_json:
-                        os.remove(f'{rid}.json')
-                        return Verdict.CORRUPT("Bad json", "'flag' not in answer")
-                    if downloaded_json['flag'] != request.flag:
-                        os.remove(f'{rid}.json')
-                        return Verdict.CORRUPT("Invalid flag", "Invalid flag")
             except Exception as e:
                 os.remove(f'{rid}.json')
                 return Verdict.DOWN(str(e), traceback.format_exc())
+
+        if 'type' not in downloaded_json \
+                or (downloaded_json['type'] != 'REQ_VC' and downloaded_json['type'] != 'REQ_PERM'):
+            os.remove(f'{rid}.json')
+            return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
+
+        type = downloaded_json['type']
+
+        if type == 'REQ_VC':
+            cmd = f'./gradlew run --quiet --args="-m=vc -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}"'
+        else:
+            cmd = f'./gradlew run --quiet --args="-m=perm -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}"'
+
+        await get_out(cmd)
+
+        async with Api(request.hostname) as api:
+            try:
+                downloaded_json = (await api.send_and_get(f'{rid}.json'))
+            except Exception as e:
+                os.remove(f'{rid}.json')
+                return Verdict.DOWN(str(e), traceback.format_exc())
+
+        if 'type' not in downloaded_json \
+                or (downloaded_json['type'] != 'CONTINUE' and downloaded_json['type'] != 'OK'):
+            os.remove(f'{rid}.json')
+            return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
+
+        if downloaded_json['type'] == 'OK':
+            if 'flag' not in downloaded_json:
+                os.remove(f'{rid}.json')
+                return Verdict.CORRUPT("Bad json", "'flag' not in answer")
+            if downloaded_json['flag'] != request.flag:
+                os.remove(f'{rid}.json')
+                return Verdict.CORRUPT("Invalid flag", "Invalid flag")
+            os.remove(f'{rid}.json')
+            return Verdict.OK()
 
     os.remove(f'{rid}.json')
     return Verdict.MUMBLE("Bad responses", "Too many requests")

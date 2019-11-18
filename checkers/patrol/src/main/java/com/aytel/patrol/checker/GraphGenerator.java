@@ -193,11 +193,11 @@ public class GraphGenerator {
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "10000"));
-        int _w = Integer.parseInt(cmd.getOptionValue("w", "5"));
-        int _bound = Integer.parseInt(cmd.getOptionValue("b", "300"));
-        double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5"));
-        long _seed = Long.parseLong(cmd.getOptionValue("s", String.valueOf(System.nanoTime())));
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "10").trim());
+        int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
+        int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
+        double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
+        long _seed = Long.parseLong(cmd.getOptionValue("s", String.valueOf(System.nanoTime())).trim());
         Random random = new Random(_seed);
         TreeDecomposition decomposition = generate(random, _n, _w, _bound, _p);
         Graph g = decomposition.getG();
@@ -220,11 +220,13 @@ public class GraphGenerator {
                 System.out.println(g.getId() + " " + _seed);
                 break;
             case "perm":
-                perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps"))));
+                System.err.println("perm built");
+                perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps").trim())));
                 patrolRequest = PatrolRequest.perm(_rid, perm);
                 break;
             case "vc":
-                perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps"))));
+                System.err.println("vc built");
+                perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps").trim())));
                 Set<Integer> isInIso = modifyVertices(decomposition.getMaxIS(), perm);
                 Set<Integer> vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
                 vc.removeAll(isInIso);
@@ -234,7 +236,7 @@ public class GraphGenerator {
                 long _permSeed = System.nanoTime();
                 perm = createPerm(g.getN(), new Random(_permSeed));
                 iso = modifyGraph(g, perm);
-                patrolRequest = PatrolRequest.iso(_rid, iso);
+                patrolRequest = PatrolRequest.iso(_rid, iso, cmd.getOptionValue("id"));
                 System.out.println(_permSeed);
                 break;
             default:
@@ -255,7 +257,9 @@ public class GraphGenerator {
         for (int i = 0; i < g.getN(); i++) {
             newW[perm[i]] = g.getWeight()[i];
         }
-        return new Graph(g.getN(), newEdges, newW);
+        Graph res = new Graph(g.getN(), newEdges, newW);
+        res.setLimit(g.getLimit());
+        return res;
 
     }
 

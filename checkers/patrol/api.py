@@ -10,7 +10,7 @@ PORT = 23179
 class Api:
     def __init__(self, hostname: str):
         self.hostname = hostname
-        self.session = aiohttp.ClientSession(timeout=ClientTimeout(total=10), headers={"User-Agent": get_agent()})
+        self.session = aiohttp.ClientSession(timeout=ClientTimeout(total=100), headers={"User-Agent": get_agent()})
 
     async def send_and_get(self, path: str) -> dict:
         with open(path, mode="rb") as archive_descriptor:

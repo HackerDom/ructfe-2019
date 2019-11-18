@@ -51,8 +51,9 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
             flushAndClose(ctx.channel());
         }
         try {
-            PatrolRequest patrolRequest = config.gson.fromJson(content, PatrolRequest.class);
-            String json = config.gson.toJson(handle(patrolRequest, ctx));
+            PatrolRequest patrolRequest = config.readGson.fromJson(content, PatrolRequest.class);
+            PatrolResponse patrolResponse = handle(patrolRequest, ctx);
+            String json = config.gson.toJson(patrolResponse);
             FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK, Unpooled.copiedBuffer(json.getBytes()));
             ctx.channel().writeAndFlush(response);
@@ -89,8 +90,8 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                     }
                 case SEND_VC:
                     int[] vc = patrolRequest.vc;
-                    graph = config.getGraph(patrolRequest.graphId);
                     info = config.getRequestInfo(patrolRequest.reqId);
+                    graph = config.getGraph(info.getGraphId());
                     if (checkVC(info.getLastIso(), vc)) {
                         return getPatrolResponseIfSuccess(patrolRequest, graph, info);
                     } else {
@@ -99,8 +100,8 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                     }
                 case SEND_PERM:
                     int[] perm = patrolRequest.perm;
-                    graph = config.getGraph(patrolRequest.graphId);
                     info = config.getRequestInfo(patrolRequest.reqId);
+                    graph = config.getGraph(info.getGraphId());
                     if (checkPerm(graph, info.getLastIso(), perm)) {
                         return getPatrolResponseIfSuccess(patrolRequest, graph, info);
                     } else {

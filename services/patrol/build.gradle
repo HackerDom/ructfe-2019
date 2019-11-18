@@ -11,7 +11,7 @@ targetCompatibility = 11
 apply plugin: 'application'
 mainClassName = 'com.aytel.patrol.service.ApplicationMain'
 application {
-    applicationDefaultJvmArgs = ["-Xms4096m", "-Xmx4096m", "-Xss1024m"]
+    applicationDefaultJvmArgs = ["-Xms256m", "-Xmx512m"]
 }
 
 repositories {
