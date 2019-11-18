@@ -15,13 +15,15 @@ export class Login extends React.Component {
 
         return (
             <section>
-                <Row gap={FORM_GAP}>
-                    <Text text="Login: " />
-                    <Input
-                        onChange={this.onChangeLogin}
-                        value={this.state.login}
-                    />
-                </Row>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text="Login: " />
+                        <Input
+                            onChange={this.onChangeLogin}
+                            value={this.state.login}
+                        />
+                    </Row>
+                </MarginBox>
                 <MarginBox>
                     <Row gap={FORM_GAP}>
                         <Text text="Password: " />
@@ -33,8 +35,10 @@ export class Login extends React.Component {
                 </MarginBox>
                 <MarginBox>
                 </MarginBox>
-                <MarginBox alignCenter={true}>
-                    <Button text="login" onClick={login.login} />
+                <MarginBox>
+                    <div className={s.loginButton}>
+                        <Button text="login" onClick={login.login} />
+                    </div>
                 </MarginBox>
             </section>
         );

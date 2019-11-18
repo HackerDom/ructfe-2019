@@ -9,3 +9,8 @@
     background-color: var(--black);
     flex-direction: column;
 }
+
+.form {
+    position: relative;
+    right: 55px;
+}

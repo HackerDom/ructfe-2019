@@ -1,11 +1,11 @@
 import React from 'react';
-import s from '../Login/Login.css';
 import { MarginBox } from '../../components/MarginBox/MarginBox';
 import { Row } from '../../components/Row/Row';
 import { Text } from '../../components/Text/Text';
 import { Input } from '../../components/Input/Input';
 import { Button } from '../../components/Button/Button';
 import { register } from '../../models/register';
+import s from './Registration.css';
 
 export class Registration extends React.Component {
     state = {
@@ -56,8 +56,13 @@ export class Registration extends React.Component {
                         />
                     </Row>
                 </MarginBox>
-                <MarginBox alignCenter={true}>
-                    <Button text="register" onClick={register.register} />
+                <MarginBox>
+                    <div className={s.registerButton}>
+                        <Button
+                            text="register"
+                            onClick={register.register}
+                        />
+                    </div>
                 </MarginBox>
             </section>
         );

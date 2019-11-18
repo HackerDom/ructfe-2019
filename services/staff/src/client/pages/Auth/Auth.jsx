@@ -25,14 +25,16 @@ export class Auth extends React.Component {
                         onChange={this.onChangeSelectedTab}
                     />
                 </MarginBox>
-                <Switch by={this.state.selectedTab}>
-                    <Case value={tabs.register}>
-                        <Registration />
-                    </Case>
-                    <Case value={tabs.login}>
-                        <Login />
-                    </Case>
-                </Switch>
+                <section className={s.form}>
+                    <Switch by={this.state.selectedTab}>
+                        <Case value={tabs.register}>
+                            <Registration />
+                        </Case>
+                        <Case value={tabs.login}>
+                            <Login />
+                        </Case>
+                    </Switch>
+                </section>
             </article>
         );
     }
