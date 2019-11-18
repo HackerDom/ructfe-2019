@@ -2,6 +2,7 @@
 
 .text {
     color: var(--white);
-    font-size: 20px;
+    font-size: 18px;
     font-family: sans-serif;
+    user-select: none;
 }

@@ -4,6 +4,13 @@
     align-items: center;
 }
 
-.rightElement {
-    margin-right: 8px;
+.leftElementContainer {
+    position: relative;
+}
+
+.leftElement {
+    position: absolute;
+    bottom: 50%;
+    transform: translateY(50%);
+    width: 100%;
 }

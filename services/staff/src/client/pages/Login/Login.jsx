@@ -11,12 +11,14 @@ export class Login extends React.Component {
     state = { username: '' };
 
     render () {
+        const FORM_GAP = 110;
+
         return (
             <article className={s.login}>
                 <section>
                     <MarginBox>
-                        <Row>
-                            <Text text="User name: " />
+                        <Row gap={FORM_GAP}>
+                            <Text text="Name: " />
                             <Input
                                 onChange={this.onChangeUserName}
                                 value={this.state.username}
@@ -24,7 +26,36 @@ export class Login extends React.Component {
                         </Row>
                     </MarginBox>
                     <MarginBox>
-                        <Button text="login" />
+                        <Row gap={FORM_GAP}>
+                            <Text text="Last name: " />
+                            <Input
+                                onChange={this.onChangeUserName}
+                                value={this.state.username}
+                            />
+                        </Row>
+                    </MarginBox>
+                    <MarginBox>
+                        <Row gap={FORM_GAP}>
+                            <Text text="Password: " />
+                            <Input
+                                onChange={this.onChangeUserName}
+                                value={this.state.username}
+                            />
+                        </Row>
+                    </MarginBox>
+                    <MarginBox>
+                        <Row gap={FORM_GAP}>
+                            <Text text="Login: " />
+                            <Input
+                                onChange={this.onChangeUserName}
+                                value={this.state.username}
+                            />
+                        </Row>
+                    </MarginBox>
+                    <MarginBox alignCenter={true}>
+                        <div className={s.loginButton}>
+                            <Button text="login" />
+                        </div>
                     </MarginBox>
                 </section>
             </article>

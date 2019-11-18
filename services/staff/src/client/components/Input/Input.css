@@ -2,7 +2,7 @@
 
 .input {
     color: var(--white);
-    border: 2px solid var(--yellow);
+    border: 1px solid var(--yellow);
     background-color: var(--black);
     outline: none;
     height: 35px;
@@ -14,5 +14,5 @@
 }
 
 .input:focus {
-    outline: 3px solid var(--yellow);
+    outline: 2px solid var(--yellow);
 }
