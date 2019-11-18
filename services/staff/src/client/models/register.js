@@ -1,13 +1,12 @@
 import { action, observable } from 'mobx';
 
 class Register {
-    @observable firstName = ''
-    @observable lastName = ''
-    @observable bio = ''
-    @observable password = ''
-    @observable username = ''
+    firstName = '';
+    lastName = '';
+    bio = '';
+    password = '';
+    username = '';
 
-    @action
     register = () => {
         fetch('/register', {
             method: 'POST',
@@ -23,32 +22,7 @@ class Register {
             })
         }).then(x => console.log(x))
             .catch(x => console.log(x));
-    }
-
-    @action
-    changeFirstName = (firstNameEvent) => {
-        this.firstName = firstNameEvent.target.value;
-    }
-
-    @action
-    changeLastName = (lastNameEvent) => {
-        this.lastName = lastNameEvent.target.value;
-    }
-
-    @action
-    changeUsername = (lastNameEvent) => {
-        this.username = lastNameEvent.target.value;
-    }
-
-    @action
-    changeBio = (bioEvent) => {
-        this.bio = bioEvent.target.value;
-    }
-
-    @action
-    changePassword = (passwordEvent) => {
-        this.password = passwordEvent.target.value;
-    }
+    };
 }
 
 export const register = new Register();
