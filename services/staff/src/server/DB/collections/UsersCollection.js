@@ -3,7 +3,8 @@ import { User } from '../../entities/userEntity';
 export class UsersCollection {
     async saveUser (userModel) {
         const user = new User(userModel);
-        return user.save();
+        await user.save();
+        return user.id;
     }
 
     async findUser (userId) {
@@ -51,17 +52,21 @@ export class UsersCollection {
     }
 
     async editUser (oldUserModel, newFields) {
-        for (const key in newFields) {
-            if (oldUserModel[key]) {
+        for (const key of Object.keys(newFields)) {
+            if (Object.prototype.hasOwnProperty.call(oldUserModel.toObject(), key) &&
+                key !== 'id' &&
+                key !== '_id' &&
+                key !== '__v' &&
+                key !== 'username' &&
+                key !== 'password') {
                 oldUserModel[key] = newFields[key];
             }
         }
-
         return oldUserModel.save();
     }
 
     async addFieldsToUser (oldUserModel, newFields) {
-        for (const key in newFields) {
+        for (const key of Object.keys(newFields)) {
             oldUserModel[key] = newFields[key];
         }
 

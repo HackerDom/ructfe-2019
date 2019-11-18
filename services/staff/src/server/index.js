@@ -14,6 +14,7 @@ import passport from 'passport';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import { hashPassword, matchPasswordHashes } from './utils/passwordsHashing';
 
 const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo')(session);
@@ -30,11 +31,11 @@ const messagesCollection = new MessagesCollection();
 
 passport.use(new LocalStrategy(
     async function (username, password, done) {
-        const user = await usersCollection.findUserByUsername(username);
+        const user = await usersCollection.findUserByUsername(username).catch(() => null);
         if (!user) {
             return done(null, false, { message: 'Unknown User' });
         }
-        if (user.password !== password) {
+        if (!matchPasswordHashes(password, user.password)) {
             return done(null, false, { message: 'Invalid password' });
         }
         return done(null, user);
@@ -47,7 +48,11 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async (id, done) => {
     const user = await usersCollection.findUser(id);
-    done(null, { username: user.username, id: user.id, biography: user.biography });
+    done(null, {
+        username: user.username,
+        id: user.id,
+        biography: user.biography
+    });
 });
 
 export const app = express();
@@ -89,12 +94,14 @@ export function startMongoDb (mongoUrl) {
 }
 
 app.post('/register', async function (request, response) {
+    const passwordHash = request.body.password ? await hashPassword(request.body.password.toString()) : null;
+
     const newUser = new User({
         username: request.body.username ? request.body.username.toString() : null,
-        password: request.body.password ? request.body.password.toString() : null,
+        password: passwordHash,
         firstName: request.body.firstName ? request.body.firstName.toString() : null,
-        lastName: request.body.lastName ? request.body.lastName : null,
-        biography: request.body.biography.toString() ? request.body.biography : null
+        lastName: request.body.lastName ? request.body.lastName.toString() : null,
+        biography: request.body.biography ? request.body.biography.toString() : null
     });
     const isValid = fieldsAreExist(
         newUser.username,
@@ -113,12 +120,12 @@ app.post('/register', async function (request, response) {
         await sendResponse(response, {}, false, 'User with this name is already exist', 400);
         return;
     }
-    await usersCollection.saveUser(newUser);
-    await sendResponse(response);
+    const userId = await usersCollection.saveUser(newUser);
+    await sendResponse(response, { userId: userId });
 });
 
 app.post('/login', passport.authenticate('local'), async (request, response) => {
-    await sendResponse(response);
+    await sendResponse(response, { userId: request.user.id });
 });
 
 app.get('/user', async (request, response) => {
@@ -195,7 +202,7 @@ app.post('/createChat', checkAuthentication, async function (request, response) 
     const userId = await request.user.id;
     const chatName = request.body.chatName;
 
-    const isValid = fieldsAreExist(chatName.toString());
+    const isValid = chatName && fieldsAreExist(chatName.toString());
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
@@ -258,7 +265,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
         });
 
     if (isSuccess && String(chat.inviteLink) !== String(inviteLink)) {
-        await sendResponse(response, { }, false, 'Invalid invite link', 403);
+        await sendResponse(response, {}, false, 'Invalid invite link', 403);
     }
 
     if (isSuccess) {
@@ -297,10 +304,9 @@ app.get('/inviteLink', checkAuthentication, async function (request, response) {
         });
 
     if (isSuccess && !chat.usersIds.some(id => id === userId)) {
-        await sendResponse(response, { }, false, 'You have not access to this chat', 403);
+        await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
-    console.log(chat);
 
     await sendResponse(response,
         {
@@ -321,11 +327,17 @@ app.get('/chats', async function (request, response) {
             isSuccess = false;
             errorMessage = 'Can not find chats.';
         }).then(x => {
-            if (typeof x === 'object') {
-                return [x];
+            if (Array.isArray(x)) {
+                return x;
             }
-            return x;
-        }).then(x => x.map(chat => ({ id: chat.id, name: chat.name, usersIds: chat.usersIds })));
+            return [x];
+        }).then(x => x.map(chat => {
+            return {
+                id: chat.id,
+                name: chat.name,
+                usersIds: chat.usersIds
+            };
+        }));
     await sendResponse(response, { chats }, isSuccess, errorMessage);
 });
 
@@ -375,7 +387,7 @@ app.post('/sendMessage', checkAuthentication, async function (request, response)
             });
     }
 
-    await sendResponse(response, {}, isSuccess, errorMessage);
+    await sendResponse(response, { messageId: messageId }, isSuccess, errorMessage);
 });
 
 app.post('/deleteMessage', checkAuthentication, async function (request, response) {
@@ -400,7 +412,7 @@ app.post('/deleteMessage', checkAuthentication, async function (request, respons
     if (isSuccess) {
         message.isDeleted = true;
     }
-    if (isSuccess && hasAccessToDeleteMessage(userId, message)) {
+    if (isSuccess && !hasAccessToDeleteMessage(userId, message)) {
         isSuccess = false;
         errorMessage = 'Can not delete message of another user';
     }
@@ -442,7 +454,7 @@ app.get('/messages', checkAuthentication, async function (request, response) {
         });
 
     if (isSuccess && !chat.usersIds.some(x => x === userId)) {
-        await sendResponse(response, { }, false, 'You have not access to this chat', 403);
+        await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
 
@@ -487,7 +499,10 @@ app.post('/searchUser', async function (request, response) {
     }
     const query = request.body.query;
     const foundedUser = await usersCollection
-        .findByNameAndLastName({ firstName: query.firstName, lastName: query.lastName })
+        .findByNameAndLastName({
+            firstName: query.firstName,
+            lastName: query.lastName
+        })
         .catch(_ => {
             isSuccess = false;
         });
@@ -499,7 +514,8 @@ app.post('/searchUser', async function (request, response) {
         username: foundedUser.username,
         firstName: foundedUser.firstName,
         lastName: foundedUser.lastName,
-        biography: foundedUser.biography
+        biography: foundedUser.biography,
+        id: foundedUser.id
     } : {};
     await sendResponse(response, userInfo);
 });
@@ -509,7 +525,7 @@ function hasAccessToWriteMessages (userId, usersIds) {
 }
 
 function hasAccessToDeleteMessage (userId, message) {
-    return message.ownerId === userId;
+    return parseInt(message.ownerId) === parseInt(userId);
 }
 
 function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {
@@ -523,7 +539,7 @@ function checkIsAdminOfCurrentChat (user, chatId) {
 async function sendResponse (response, outputValue = {}, isSuccess = true, errorMessage = '', statusCode = 200) {
     if (isSuccess) {
         await response.json({
-            ...outputValue,
+            data: outputValue,
             success: true
         });
     } else {
