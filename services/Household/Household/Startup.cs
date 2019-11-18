@@ -122,9 +122,9 @@ namespace Household
             var type = HouseholdConfiguration.DataBaseSystem;
             switch (type)
             {
-                case "MSSQL":
-                    options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext"));
-                    break;
+                //case "MSSQL":
+                //    options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext"));
+                //    break;
                 case "PostgreSQL":
                     options.UseNpgsql(Configuration.GetConnectionString("DataBaseContext"));
                     break;
