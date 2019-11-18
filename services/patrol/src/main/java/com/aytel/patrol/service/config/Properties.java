@@ -43,7 +43,7 @@ public class Properties {
 
         listenPort = Integer.parseInt(config.getProperty("listen_port", "23179"));
         workerLoopGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors());
-        storageSize = Integer.parseInt(config.getProperty("storage_size", "5"));
+        storageSize = Integer.parseInt(config.getProperty("storage_size", "500000"));
         String almostStoragePath = config.getProperty("storage_path", "./storage/");
         if (almostStoragePath.charAt(almostStoragePath.length() - 1) != '/')
             almostStoragePath += "/";
