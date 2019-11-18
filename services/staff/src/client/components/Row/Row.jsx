@@ -10,7 +10,7 @@ export function Row (props) {
 
     return (
         <div className={s.row}>
-            {children[0]}
+            <div className={s.rightElement}>{children[0]}</div>
             {children[1]}
         </div>
     );

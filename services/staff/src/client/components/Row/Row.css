@@ -1,4 +1,9 @@
 .row {
     display: flex;
     flex-direction: row;
+    align-items: center;
+}
+
+.rightElement {
+    margin-right: 8px;
 }
