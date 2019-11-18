@@ -3,8 +3,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.IdentityModel.Tokens;
-using Security.Cryptography;
-using Security.Cryptography.X509Certificates;
+//using Security.Cryptography;
+//using Security.Cryptography.X509Certificates;
 
 namespace Household.Utils
 {
@@ -84,30 +84,30 @@ namespace Household.Utils
             File.WriteAllBytes(cerPath, publicKey);
         }
 
-        private static void ExportECDKey(ECDsaCng dsa, string pfxPath, string pfxPassword, string cerPath)
-        {
-            var certCreationParameters = new X509CertificateCreationParameters(new X500DistinguishedName("CN=Example Name"))
-            {
-                StartTime = DateTime.Now,
-                EndTime = DateTime.MaxValue,
-                TakeOwnershipOfKey = true,
-                SignatureAlgorithm = X509CertificateSignatureAlgorithm.ECDsaSha512
-            };
+        //private static void ExportECDKey(ECDsaCng dsa, string pfxPath, string pfxPassword, string cerPath)
+        //{
+        //    var certCreationParameters = new X509CertificateCreationParameters(new X500DistinguishedName("CN=Example Name"))
+        //    {
+        //        StartTime = DateTime.Now,
+        //        EndTime = DateTime.MaxValue,
+        //        TakeOwnershipOfKey = true,
+        //        SignatureAlgorithm = X509CertificateSignatureAlgorithm.ECDsaSha512
+        //    };
 
-            using (var cert = dsa.Key.CreateSelfSignedCertificate(certCreationParameters))
-            {
-                File.WriteAllBytes(pfxPath, cert.Export(X509ContentType.Pkcs12, pfxPassword));
-                File.WriteAllBytes(cerPath, cert.Export(X509ContentType.Cert, pfxPassword));
-            }
-        }
+        //    using (var cert = dsa.Key.CreateSelfSignedCertificate(certCreationParameters))
+        //    {
+        //        File.WriteAllBytes(pfxPath, cert.Export(X509ContentType.Pkcs12, pfxPassword));
+        //        File.WriteAllBytes(cerPath, cert.Export(X509ContentType.Cert, pfxPassword));
+        //    }
+        //}
 
-        private static ECDsaCng ImportECDKey(string pfxPath, string pfxPassword)
-        {
-            using (var cert = new X509Certificate2(pfxPath, pfxPassword))
-            {
-                var key = cert.GetCngPrivateKey();
-                return new ECDsaCng(key);
-            }
-        }
+        //private static ECDsaCng ImportECDKey(string pfxPath, string pfxPassword)
+        //{
+        //    using (var cert = new X509Certificate2(pfxPath, pfxPassword))
+        //    {
+        //        var key = cert.GetCngPrivateKey();
+        //        return new ECDsaCng(key);
+        //    }
+        //}
     }
 }
