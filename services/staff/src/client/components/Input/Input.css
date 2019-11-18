@@ -1,0 +1,18 @@
+@import "../../colors.css";
+
+.input {
+    color: var(--white);
+    border: 2px solid var(--yellow);
+    background-color: var(--black);
+    outline: none;
+    height: 35px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 18px;
+    font-family: sans-serif;
+    border-radius: 0;
+}
+
+.input:focus {
+    outline: 3px solid var(--yellow);
+}
