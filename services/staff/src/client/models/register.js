@@ -1,5 +1,3 @@
-import { action, observable } from 'mobx';
-
 class Register {
     firstName = '';
     lastName = '';
