@@ -1,8 +1,9 @@
-import aiohttp
 import json
-from networking.masking_connector import get_agent
+
+import aiohttp
 from aiohttp.client import ClientTimeout
-from random import randint
+
+from networking.masking_connector import get_agent
 
 PORT = 23179
 

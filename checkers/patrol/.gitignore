@@ -1,0 +1,10 @@
+storage/*
+.gradle
+.idea
+build
+gradle
+chklib/__pychache__/
+graph.json
+out.txt
+venv/
+__pycache__/

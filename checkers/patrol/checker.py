@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 import asyncio
+import json
+import os
+import subprocess
+import traceback
+import uuid
 
 from api import Api
 from chklib import Checker, Verdict, \
-    CheckRequest, PutRequest, GetRequest, utils
-import subprocess
-import json
-import uuid
-import traceback
-import os
+    CheckRequest, PutRequest, GetRequest
 
 checker = Checker()
 

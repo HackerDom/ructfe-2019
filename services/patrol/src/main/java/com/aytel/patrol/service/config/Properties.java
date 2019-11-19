@@ -71,7 +71,7 @@ public class Properties {
         while (Files.exists(Path.of(storagePath + counter.get() + ".json"))) {
             counter.updateAndGet(x -> (x + 1));
         }
-        counter.updateAndGet(x -> (x + 1) % storageSize);
+        counter.updateAndGet(x -> x % storageSize);
     }
 
     public String[] getIds() {
