@@ -1,0 +1,10 @@
+version: '3'
+services:
+  patrol:
+    build: .
+    ports:
+      - "23179:23179"
+    volumes:
+      - ./storage:/app/storage
+      - ./patrol.properties:/app/patrol.properties
+    restart: on-failure
