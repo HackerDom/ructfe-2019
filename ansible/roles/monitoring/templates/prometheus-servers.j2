@@ -8,3 +8,8 @@
   - {{ hostvars[item]['private_addr'] }}:9100
   - {{ hostvars[item]['private_addr'] }}:9300
 {% endfor %}
+{% for item in groups['cloud_node'] %}
+- targets: ['{{ hostvars[item]['ansible_host'] }}:9100']
+  labels:
+    hostname: '{{ hostvars[item]['inventory_hostname'] }}'
+{% endfor %}

@@ -66,4 +66,5 @@
 - name: copy openvpn bridging script
   copy: src=add_to_team_bridge.sh dest=/etc/openvpn/ mode=755
 
-
+- name: install prometheus node exporter
+  apt: name=prometheus-node-exporter state=latest
