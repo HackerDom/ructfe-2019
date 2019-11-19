@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/HackerDom/ructfe-2019/services/radio/auth"
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
-	"github.com/HackerDom/ructfe-2019/services/radio/jwt"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -191,7 +191,7 @@ func deleteTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 func getToken(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
 	user := getUserFromContext(r.Context())
 	payload := map[string]string{"user": user.Username}
-	token := jwt.Encode(&payload)
+	token := auth.Encode(&payload)
 	enc.Encode(map[string]string{"token": token})
 	return
 }

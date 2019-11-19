@@ -7,3 +7,5 @@
 /secrets/db_password
 /secrets/session_key
 /secrets/jwt_secret
+
+/radio-auth.so

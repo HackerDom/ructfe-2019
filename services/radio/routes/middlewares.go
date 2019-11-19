@@ -5,10 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 
+	"github.com/HackerDom/ructfe-2019/services/radio/auth"
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
-	"github.com/HackerDom/ructfe-2019/services/radio/jwt"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 )
 
@@ -16,7 +15,7 @@ type ContextType string
 
 const ContextUserKey ContextType = "user"
 
-type JWTPayload struct {
+type AuthPayload struct {
 	User string `user`
 }
 
@@ -55,22 +54,10 @@ func authorizeApiMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		encoder := json.NewEncoder(w)
 		tokenString := r.Header.Get("Authorization")
-		isBearer := strings.HasPrefix(tokenString, "Bearer ")
-		if !isBearer {
-			w.WriteHeader(400)
-			encoder.Encode(forms.Error2RadioValidationErrors(fmt.Errorf("Sorry")))
-			return
-		}
-		stringList := strings.Split(tokenString, " ")
-		if len(stringList) < 1 {
-			w.WriteHeader(400)
-			encoder.Encode(forms.Error2RadioValidationErrors(fmt.Errorf("Sorry")))
-			return
-		}
-		token := stringList[1]
-		var payload JWTPayload
+
+		var payload AuthPayload
 		var err error
-		if err = jwt.Decode(token, &payload); err != nil {
+		if err = auth.Decode(tokenString, &payload); err != nil {
 			w.WriteHeader(400)
 			encoder.Encode(forms.Error2RadioValidationErrors(fmt.Errorf("Sorry")))
 			return

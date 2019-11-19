@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/HackerDom/ructfe-2019/services/radio/auth"
 	"github.com/HackerDom/ructfe-2019/services/radio/config"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/HackerDom/ructfe-2019/services/radio/routes"
@@ -66,9 +67,12 @@ func startServer() {
 func main() {
 	flag.Parse()
 
-	_, err := config.InitConfig(*configFile)
+	conf, err := config.InitConfig(*configFile)
 	if err != nil {
 		log.Fatalf("Can't get config, reason: %v", err)
+	}
+	if err = auth.InitAuth(conf.Core.JWTSecret); err != nil {
+		log.Fatalf("Can't init auth module, reason: %v", err)
 	}
 	var db *gorm.DB
 	db, err = models.InitDB()
