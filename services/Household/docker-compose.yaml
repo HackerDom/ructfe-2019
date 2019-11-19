@@ -1,0 +1,21 @@
+version: '3'
+services:
+    postgres:
+        image: postgres:10
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: adminhip
+            POSTGRES_DB: HouseholdDatabase
+        ports:
+            - 5432:5432
+    
+    household:
+        container_name: household
+        restart: unless-stopped
+        build: .
+        network_mode: host
+        ports:
+            - 5000:5000
+        depends_on:
+            - postgres

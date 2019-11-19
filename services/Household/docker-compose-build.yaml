@@ -1,0 +1,9 @@
+version: '3'
+services:
+    household_build:
+        container_name: household-build
+        build:
+            context: .
+            dockerfile: Dockerfile-build
+        volumes:
+            - ./publish:/app/Household/publish
