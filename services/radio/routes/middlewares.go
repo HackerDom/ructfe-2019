@@ -70,7 +70,7 @@ func authorizeApiMiddleware(next http.Handler) http.Handler {
 		token := stringList[1]
 		var payload JWTPayload
 		var err error
-		if err = jwt.Decode(token, "", &payload); err != nil {
+		if err = jwt.Decode(token, &payload); err != nil {
 			w.WriteHeader(400)
 			encoder.Encode(forms.Error2RadioValidationErrors(fmt.Errorf("Sorry")))
 			return

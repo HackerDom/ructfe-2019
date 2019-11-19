@@ -2,11 +2,12 @@ import traceback
 from chklib import Verdict
 from functools import wraps
 
+
 def check_exception(func):
     @wraps(func)
-    def inner(*args, **kwargs):
+    async def inner(request, *args, **kwargs) -> Verdict:
         try:
-            result = func(*args, **kwargs)
+            result = await func(request, *args, **kwargs)
         except Exception as e:
             return Verdict.DOWN(str(e), traceback.format_exc())
         return result

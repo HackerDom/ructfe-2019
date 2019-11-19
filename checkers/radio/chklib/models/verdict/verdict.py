@@ -8,6 +8,12 @@ class Verdict:
         self._public_message: str = public_message
         self._private_message: str = private_message
 
+    def __eq__(self, other):
+        if isinstance(other, Verdict):
+            return (self._code == other._code and self._public_message == other._public_message and
+                    self._private_message == other._private_message)
+        return False
+
     @staticmethod
     def OK(flag_id: str = ''):
         return Verdict(OK, flag_id)

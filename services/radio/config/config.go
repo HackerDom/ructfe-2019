@@ -32,6 +32,7 @@ type RedisConfig struct {
 
 type CoreConfig struct {
 	SessionKey string `yaml:"-"`
+	JWTSecret  string `yaml:"-"`
 }
 
 type Config struct {
@@ -52,11 +53,15 @@ func makeConfig(appPath string, configName string) (*Config, error) {
 	}
 	config.Paths.TemplatePath = path.Join(appPath, config.Paths.TemplatePath)
 	config.Paths.StaticPath = path.Join(appPath, config.Paths.StaticPath)
-	config.DB.Password, err = utils.ReadSecret("db_password")
-	if err != nil {
+	if config.DB.Password, err = utils.ReadSecret("db_password"); err != nil {
 		return config, err
 	}
-	config.Core.SessionKey, err = utils.ReadSecret("session_key")
+	if config.Core.SessionKey, err = utils.ReadSecret("session_key"); err != nil {
+		return config, err
+	}
+	if config.Core.JWTSecret, err = utils.ReadSecret("jwt_secret"); err != nil {
+		return config, err
+	}
 	return config, err
 }
 

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
+	"github.com/HackerDom/ructfe-2019/services/radio/jwt"
 	"github.com/HackerDom/ructfe-2019/services/radio/models"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -187,6 +188,14 @@ func deleteTrackHandler(dec *json.Decoder, enc *json.Encoder, w http.ResponseWri
 	return
 }
 
+func getToken(dec *json.Decoder, enc *json.Encoder, w http.ResponseWriter, r *http.Request) (err error) {
+	user := getUserFromContext(r.Context())
+	payload := map[string]string{"user": user.Username}
+	token := jwt.Encode(&payload)
+	enc.Encode(map[string]string{"token": token})
+	return
+}
+
 func makeWebRouter(mainRouter *mux.Router) {
 	r := mainRouter.PathPrefix("").Subrouter()
 
@@ -217,4 +226,19 @@ func makeWebRouter(mainRouter *mux.Router) {
 	trackAPIRouter.Use(authorizeUserMiddleware)
 	trackAPIRouter.HandleFunc("/", JSONHandler(createTrackHandler)).Methods("POST")
 	trackAPIRouter.HandleFunc("/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
+
+	tokenAPIRouter := r.PathPrefix("/api/v1/token/").Subrouter()
+	tokenAPIRouter.Use(jsonResponseMiddleware)
+	tokenAPIRouter.Use(authorizeUserMiddleware)
+	tokenAPIRouter.HandleFunc("/", JSONHandler(getToken)).Methods("GET")
+
+	api := r.PathPrefix("/api/v1/").Subrouter()
+	api.Use(jsonResponseMiddleware)
+	api.Use(authorizeApiMiddleware)
+	api.HandleFunc("/playlist/", JSONHandler(playlistCreateHandler)).Methods("POST")
+	api.HandleFunc("/playlist/", JSONHandler(playlistListHandler)).Methods("GET")
+	api.HandleFunc("/playlist/{id}/", JSONHandler(playlistGETHandler)).Methods("GET")
+	api.HandleFunc("/playlist/{id:[0-9]+}/", JSONHandler(playlistDeleteHandler)).Methods("DELETE")
+	api.HandleFunc("/track/", JSONHandler(createTrackHandler)).Methods("POST")
+	api.HandleFunc("/track/{id:[0-9]+}/", JSONHandler(deleteTrackHandler)).Methods("DELETE")
 }
