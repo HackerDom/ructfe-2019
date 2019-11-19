@@ -3,7 +3,8 @@ storage/*
 .idea
 build
 gradle
-chklib/__pychache__/
+chklib/__pycache__/
+networking/__pycache__/
 graph.json
 out.txt
 venv/
