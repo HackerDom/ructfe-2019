@@ -1,0 +1,65 @@
+@import "../../colors.css";
+
+.item {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    background-color: var(--black);
+    color: var(--white);
+    cursor: pointer;
+    user-select: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.item:focus,
+.item:active {
+    outline: none;
+}
+
+.item:hover {
+    color: var(--blue);
+}
+
+.selected.item {
+    color: var(--yellow);
+    cursor: default;
+}
+
+.itemCircle {
+    width: 21px;
+    height: 21px;
+    border-radius: 25px;
+    border: 2px solid var(--white);
+    margin: 0 10px;
+    position: relative;
+}
+
+.itemCircle:after {
+    content: " ";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 2px solid var(--white);
+    border-radius: 25px;
+}
+
+.item:hover > .itemCircle,
+.item:hover > .itemCircle:after {
+    border-color: var(--blue);
+}
+
+.selected.item:hover > .itemCircle,
+.selected.item:hover > .itemCircle:after {
+    border-color: var(--yellow);
+}
+
+.selected > .itemCircle,
+.selected > .itemCircle:after {
+    border-color: var(--yellow);
+}
