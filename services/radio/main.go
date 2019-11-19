@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	waitTimeout = flag.Duration("graceful-timeout", time.Second*15, "The duration for which the server gracefully wait")
+	waitTimeout = flag.Duration("graceful-timeout", time.Second*5, "The duration for which the server gracefully wait")
 	onlyMigrate = flag.Bool("migrate", false, "Only migrate db")
 	addr        = flag.String("addr", ":4553", "Address for binding service")
 	configFile  = flag.String("config-file", "config.yaml", "Config filename")

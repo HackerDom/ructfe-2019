@@ -1,0 +1,29 @@
+version: '3'
+services:
+  radio:
+    build: .
+    depends_on:
+      - redis
+      - db
+    restart: "always"
+    stop_grace_period: '5'
+    ports:
+      - "4553:4553"
+    ulimits:
+      nproc: 5
+      nofile:
+        soft: 12000
+        hard: 12000
+  redis:
+    image: redis:5-alpine
+    restart: always
+    volumes:
+      - ./data/redis:/data
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: radio
+      POSTGRES_PASSWORD: radio
+      POSTGRES_DB: radio
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data

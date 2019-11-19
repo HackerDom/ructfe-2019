@@ -6,7 +6,9 @@
   "scripts": {
     "dev:server": "go run main.go",
     "dev:client": "webpack --config ./webpack.config.js --mode development --watch",
-    "dev": "npm-run-all --parallel dev:server dev:client"
+    "dev": "npm-run-all --parallel dev:server dev:client",
+    "build:client": "webpack --config ./webpack.config.js --mode production",
+    "build": "npm-run-all build:client"
   },
   "dependencies": {
     "@babel/cli": "^7.6.4",

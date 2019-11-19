@@ -1,11 +1,14 @@
 /.build
+/.docker
+
 /static/build
 /node_modules
-/.docker
-/docker-compose.yml
+/docker-compose.dev.yml
 /config.yaml
+
 /secrets/db_password
 /secrets/session_key
 /secrets/jwt_secret
 
 /radio-auth.so
+/data

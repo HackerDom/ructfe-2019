@@ -27,7 +27,11 @@ func InitDB() (*gorm.DB, error) {
 	)
 	db, err = gorm.Open("postgres", pgConnectionString)
 	if err != nil {
-		return db, err
+		time.Sleep(15 * time.Second)
+		db, err = gorm.Open("postgres", pgConnectionString)
+		if err != nil {
+			return db, err
+		}
 	}
 	dbInstance := db.DB()
 	dbInstance.SetMaxOpenConns(maxOpenConns)
