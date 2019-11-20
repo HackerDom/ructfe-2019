@@ -5,6 +5,7 @@ import os
 import subprocess
 import traceback
 import uuid
+import platform
 
 from api import Api
 from chklib import Checker, Verdict, \
@@ -136,7 +137,8 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
 
 async def get_out(cmd):
     d = dict(os.environ)
-    d['JAVA_HOME'] = "/Library/Java/JavaVirtualMachines/jdk-11.0.5.jdk/Contents/Home/"
+    if platform.system() == 'Darwin':
+        d['JAVA_HOME'] = "/Library/Java/JavaVirtualMachines/jdk-11.0.5.jdk/Contents/Home/"
 
     p = await asyncio.create_subprocess_shell(cmd, shell=True,
                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=d)
