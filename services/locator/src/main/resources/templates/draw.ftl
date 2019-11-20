@@ -1,7 +1,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="/static/locator.css">
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="/static/jquery-3.4.1.js"></script>
     <script src="/static/locator.js"></script>
 </head>
 <body onload="init()" id="body">
