@@ -90,7 +90,10 @@ class FrontendApi(BaseApi):
         custom_headers = custom_headers or {}
         headers = {"User-Agent": get_agent()}
         headers.update(custom_headers)
-        self.session = aiohttp.ClientSession(timeout=ClientTimeout(total=10), headers=headers)
+        self.session = aiohttp.ClientSession(
+            cookie_jar=aiohttp.CookieJar(unsafe=True),
+            timeout=ClientTimeout(total=10), headers=headers
+        )
 
     def make_url(self, url):
         return f'{self.base_url}/frontend-api{url}'
@@ -103,7 +106,10 @@ class Api(BaseApi):
         custom_headers = custom_headers or {}
         headers = {"User-Agent": get_agent()}
         headers.update(custom_headers)
-        self.session = aiohttp.ClientSession(timeout=ClientTimeout(total=10), headers=headers)
+        self.session = aiohttp.ClientSession(
+            cookie_jar=aiohttp.CookieJar(unsafe=True),
+            timeout=ClientTimeout(total=10), headers=headers
+        )
 
     def make_url(self, url):
         return f'{self.base_url}/api/v1{url}'
