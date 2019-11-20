@@ -1,0 +1,34 @@
+---
+- name: Install utils
+  apt:
+    name:
+      - apt-transport-https
+      - mc
+      - htop
+      - rsync
+      - tmux
+      - docker.io
+      - docker-compose
+    state: latest
+    update_cache: yes
+
+- name: Remove Ubuntu MOTD
+  file: path='/etc/update-motd.d/{{ item }}' state=absent
+  with_items:
+    - 50-motd-news
+    - 80-esm
+    - 80-livepatch
+    - 90-updates-available
+    - 91-release-upgrade
+    - 95-hwe-eol
+
+- name: Copy MOTD
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: root
+  with_items:
+    - {src: "00-header", dest: "/etc/update-motd.d/00-header"}
+    - {src: "10-help-text", dest: "/etc/update-motd.d/10-help-text"}
+

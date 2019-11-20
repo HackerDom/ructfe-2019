@@ -1,0 +1,8 @@
+#!/bin/sh
+printf "\n"
+printf " * News and announcements: https://twitter.com/RuCTFE or https://t.me/RuCTFE\n"
+printf " * Site:                   https://ructfe.org\n"
+printf " * Slack:                  https://ructfe.org/slack\n"
+printf " * Cloud Console:          https://cloud.ructfe.org\n"
+printf " * Monitor:                http://monitor.ructfe.org (for oldfags: http://monitor.ructfe.org/board)\n"
+printf " * Flags:                  read https://ructfe.org/http-flags, send to http://monitor.ructfe.org/flags\n"

@@ -1,0 +1,33 @@
+---
+- name: Make directory for cloud-init
+  file:
+    path: /etc/cloud-init/
+    state: directory
+    mode: 0755
+    owner: root
+
+- name: Install cloud-init
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{  item.dest }}"
+    mode: 0755
+    owner: root
+  with_items:
+    - {src: "cloud-init.sh", dest: "/etc/cloud-init/cloud-init.sh"}
+    - {src: "cloud-init.service", dest: "/etc/systemd/system/cloud-init.service"}
+
+- name: Enable cloud-init
+  systemd:
+    name: cloud-init
+    enabled: yes
+    daemon_reload: yes
+
+- name: Copy MOTD for CLOUD
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+    owner: root
+  with_items:
+    - {src: "01-cloud", dest: "/etc/update-motd.d/01-cloud"}
+

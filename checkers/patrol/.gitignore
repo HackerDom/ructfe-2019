@@ -1,0 +1,13 @@
+storage/*
+.gradle
+.idea
+build
+gradle
+chklib/__pycache__
+chklib/models/__pycache__
+chklib/models/verdict/__pycache__
+networking/__pycache__
+graph.json
+out.txt
+venv/
+__pycache__/

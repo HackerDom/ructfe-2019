@@ -1,0 +1,4 @@
+- hosts: cloud_master
+  gather_facts: no
+  roles:
+    - cloud_master

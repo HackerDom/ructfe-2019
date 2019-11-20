@@ -1,0 +1,17 @@
+#jinja2: lstrip_blocks: "True"
+[Unit]
+    Description=RuCTFE 2019: {{ service_name }}
+    After=network-online.target docker.service
+    Wants=network-online.target docker.service
+    Requires=docker.service
+
+[Service]
+    ExecStart=/usr/bin/docker-compose up
+    WorkingDirectory=/home/{{ service_name }}
+    User={{ service_name }}
+    Group={{ service_name }}
+    Restart=on-failure
+    StartLimitBurst=3
+    StartLimitInterval=60s
+[Install]
+    WantedBy=multi-user.target

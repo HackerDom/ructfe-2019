@@ -1,0 +1,62 @@
+# Use this exact version of docker-compose!
+# Versions 3.x don't support normal resource limiting
+
+version: '2.2'
+services:
+  example_service:
+    build: .
+    # Service should always restart on fails
+    restart: "always"
+    # Services should handle SIGTERM, but if service freezed - SIGKILL it after 3 seconds
+    stop_grace_period: 3s
+
+    # memory limit
+    mem_limit: 1G
+    memswap_limit: 1G # we don't use swap, but why not
+
+    # additionaly you may tune cpu limits if you predict that your service may affect others
+    # but i think by default this is not needed, feel free to consult if needed
+    #cpu_count:
+    #cpu_percent:
+    #cpu_shares:
+    #cpu_quota:
+    #cpus:
+    #cpuset:
+
+    # protect yourself from fork-bombs!
+    pids_limit: 10
+
+    # allow 12K open files (for example, connections) at once just in case
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
+
+    # allow access to service
+    ports:
+      - "13666:8080"
+
+    # data persistence
+    volumes:
+      - "./volumes/service/:/app/data/"
+
+    # only if service needs fast temp files (I guess don't add by default and save memory)
+    # consider using volumes instead
+    #tmpfs:
+    #  - /run/
+    #  - /tmp/
+
+  redis:
+    image: "redis:alpine"
+    restart: "always"
+
+    # don't forget limits for your database!
+    mem_limit: 1G
+    memswap_limit: 1G
+    pids_limit: 10
+    # ulimits: ... # default file limit is ok for DB if not stated otherwise in docs
+
+    # don't forget about data persistence if needed!
+    volumes:
+      - "./volumes/redis/:/data/"
+

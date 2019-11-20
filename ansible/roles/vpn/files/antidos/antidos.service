@@ -1,0 +1,16 @@
+[Unit]
+    Description=Network closed
+    After=network.target
+
+[Service]
+    ExecStart=/home/antidos/antidos_serv.py
+    WorkingDirectory=/home/antidos
+    User=antidos
+    Group=antidos
+    Restart=on-failure
+    RestartSec=3s
+    CPUQuota=100%
+    MemoryLimit=2000M
+
+[Install]
+    WantedBy=multi-user.target

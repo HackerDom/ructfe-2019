@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if /usr/sbin/VBoxControl --nologo guestproperty get team >/dev/null; then
+  printf "Thank you for using our RuCTFE Cloud\n"
+fi
+

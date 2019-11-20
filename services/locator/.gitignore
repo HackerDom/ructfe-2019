@@ -1,0 +1,8 @@
+.gradle
+.idea/
+/build/
+
+!gradle-wrapper.jar
+.gradletasknamecache
+.sessions
+

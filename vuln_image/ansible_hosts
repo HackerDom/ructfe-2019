@@ -1,0 +1,2 @@
+vuln_image ansible_host=127.0.0.1 ansible_port=2222 ansible_user=root
+#vuln_image_yandex ansible_host=84.201.175.1 ansible_port=22 ansible_user=xelez

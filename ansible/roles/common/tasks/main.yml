@@ -1,0 +1,36 @@
+- name: set timezone to Asia/Yekaterinburg
+  file: src=/usr/share/zoneinfo/Asia/Yekaterinburg dest=/etc/localtime state=link force=yes
+  notify: update timezone
+
+- name: generate locales
+  locale_gen: name={{item}} state=present
+  with_items:
+    - en_US.UTF-8
+    - ru_RU.UTF-8
+
+- name: set hostname
+  hostname: name={{inventory_hostname}}
+
+- name: copy hostname file
+  copy: content={{inventory_hostname}} dest=/etc/hostname
+
+- name: place /etc/hosts
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: install basic packages
+  apt:
+    name:
+      - python-pip
+      - htop
+      - nload
+      - iperf
+      - mc
+      - tmux
+      - nano
+    state: latest
+
+- name: set limits
+  copy: src=limits.conf dest=/etc/security/limits.conf
+
+- name: place .bashrc to root
+  copy: src=.bashrc dest=/root/.bashrc

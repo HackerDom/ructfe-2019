@@ -1,0 +1,164 @@
+- name: install nginx apache2 and mod_wsgi
+  apt: 
+    name:
+      - apache2
+      - libapache2-mod-wsgi-py3
+      - nginx
+    state: latest
+
+- name: install python requests
+  apt: name=python3-requests state=latest
+
+- name: create users
+  user: name=cloud shell=/bin/bash
+
+- name: add keys to cloud user
+  authorized_key: user=cloud key=https://github.com/alexbers.keys
+
+- name: copy nginx config
+  copy: src=nginx/cloud dest=/etc/nginx/sites-available/cloud
+  notify: restart nginx
+  when: variant == "prod"
+
+- name: copy nginx config
+  copy: src=nginx/cloud_dev dest=/etc/nginx/sites-available/cloud_dev
+  notify: restart nginx
+  when: variant == "dev"
+
+- name: copy nginx certs
+  copy: src=nginx/{{item}} dest=/etc/nginx/{{item}}
+  with_items:
+    - cert_cloud.pem
+    - key_cloud.pem
+    - dhparams_cloud.pem
+  notify: restart nginx
+  when: variant == "prod"
+
+- name: copy nginx certs
+  copy: src=nginx/{{item}} dest=/etc/nginx/{{item}}
+  with_items:
+    - cert_cloud_dev.pem
+    - key_cloud_dev.pem
+    - dhparams_cloud_dev.pem
+  notify: restart nginx
+  when: variant == "dev"
+
+- name: create nginx symbolic link in sites-enable
+  file:
+    src: /etc/nginx/sites-available/cloud
+    dest: /etc/nginx/sites-enabled/cloud
+    state: link
+  when: variant == "prod"
+  notify: restart nginx
+
+- name: create nginx symbolic link in sites-enable
+  file:
+    src: /etc/nginx/sites-available/cloud_dev
+    dest: /etc/nginx/sites-enabled/cloud_dev
+    state: link
+  when: variant == "dev"
+  notify: restart nginx
+
+- name: disable unneded modules 
+  apache2_module: name={{item}} state=absent force=yes
+  with_items:
+    - ssl
+    - status
+    - autoindex
+  notify: restart apache2
+
+- name: copy apache2 sites-available
+  copy: src=apache2/000-default.conf dest=/etc/apache2/sites-available/000-default.conf
+  notify: restart apache2
+
+- name: copy other apache2 configs
+  copy: src=apache2/{{item}} dest=/etc/apache2/{{item}}
+  with_items:
+    - ports.conf
+    - htpasswd
+  notify: restart apache2
+
+- name: copy cloudapi.wsgi
+  copy: src=wsgi/cloudapi.wsgi dest=/cloud/api/
+
+- name: create /var/www/cloud directory
+  file:
+    path: /var/www/cloud/
+    state: directory
+
+- name: copy cloud.html
+  copy: src=wsgi/cloud.html dest=/var/www/cloud/
+
+- name: copy oblaka.mp3
+  copy: src=wsgi/oblaka.mp3 dest=/var/www/cloud/
+
+- name: copy backend
+  synchronize: 
+    src: api_srv/
+    dest: /cloud/backend/
+    rsync_opts:
+      - "--chmod=D0755,F0644"
+      - "--chown=root:root"
+      - "--exclude=slots/"
+      - "--exclude=db/"
+      - "--exclude=ructf2019_do_deploy"
+      - "--exclude=ructf2019_ya_deploy"
+      - "--exclude=db_init_state_dev/"
+      - "--exclude=db_init_state_prod/"
+      - "--exclude=slots_init_state/"
+      - "--exclude=*.py"
+
+- name: copy backend python files
+  synchronize: 
+    src: api_srv/
+    dest: /cloud/backend/
+    rsync_opts:
+      - "--chmod=D0755,F0755"
+      - "--chown=root:root"
+      - "--exclude=do_token.py"
+      - "--include=*.py"
+      - "--exclude=*"
+
+- name: copy backend init configs prod
+  synchronize:
+    src: api_srv/db_init_state_prod
+    dest: /cloud/backend/
+    rsync_opts:
+      - "--chmod=D0700,F0600"
+      - "--chown=cloud:cloud"
+  # when: variant == "prod"
+
+- name: copy backend init configs dev
+  synchronize:
+    src: api_srv/db_init_state_dev
+    dest: /cloud/backend/
+    rsync_opts:
+      - "--chmod=D0700,F0600"
+      - "--chown=cloud:cloud"
+  # when: variant == "dev"
+
+- name: copy slots init configs
+  synchronize: 
+    src: api_srv/slots_init_state
+    dest: /cloud/backend/
+    rsync_opts:
+      - "--chmod=D0700,F0600"
+      - "--chown=cloud:cloud"
+
+- name: copy slots for addition
+  synchronize: 
+    src: api_srv/slots_for_addition
+    dest: /cloud/backend/
+    rsync_opts:
+      - "--chmod=D0700,F0600"
+      - "--chown=cloud:cloud"
+
+- name: copy keys
+  copy: src=api_srv/{{item}} dest=/cloud/backend/ mode=0600 owner=cloud group=cloud
+  with_items:
+    - ructfe2019_do_deploy
+    - ructfe2019_ya_deploy
+    - do_token.py
+
+- name: copy root cloud scripts
+  copy: src=root_cloud_scripts dest=/root/ mode=0755

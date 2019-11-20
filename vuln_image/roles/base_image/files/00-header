@@ -1,0 +1,19 @@
+#!/bin/sh
+
+setterm --fore green --store 2>/dev/null
+echo
+
+printf '                 777777/                aaaa.         .aa_  aaaaa aaaaa zaaaa   \n'
+printf '                Ru20197                 RuCTFe       .CC?FO HTTTH QWFFF ]QPQE   \n'
+printf '                    /7                  RU "Fe       [Cf \\j  ]R[  QQ    ]Qf     \n'
+printf '                 .aaaaaa                RU _Fe uu uu [Cf     ]U[  WQ    ]Qf     \n'
+printf '                aQQQQQQQaaaaaww         WWWW"  UU UU [Cf     ]C[  QQFFF ]QQEE   \n'
+printf '   j6  aawQQQQQQQQQQZQQQQQQQQWWWW       HH"R.  UU UU [Cf     ]T[  QW    ]Qf     \n'
+printf '    ]fQQQQQQQQQQQQQZZZQQQQQQQWWWWW      HH u\\  UU UU [Cf /k  ]F[  QQ    ]Qf     \n'
+printf '   )T  aawQQQQQQQQQQZQQQQQQQQWWWP"      HH CTf UUuUU "CCCCO  ]E[  QQ    ]Q6EE   \n'
+printf '                 "DDDDDDDDDDDD"         HH  19 "UUU"  \\CCc   ]R[  OO    ]ZZZH   \n'
+printf "\n"
+
+
+printf '                          Welcome aboard RuCTFE 2019!\n'
+printf "\n"
