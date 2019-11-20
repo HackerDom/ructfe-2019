@@ -41,10 +41,13 @@ done
 echo "Deleting port-forwarding for deploy"
 VBoxManage modifyvm "$VM_NAME" --natpf1 delete deploy
 
-echo "VM stoped, exporting"
+echo "VM stopped, exporting"
+VBoxManage export "$VM_NAME" -o "$OUTPUT_IMAGE.temp"
+
+echo "Swapping output image"
 if [ -f "$OUTPUT_IMAGE" ]; then
     mv "$OUTPUT_IMAGE" "$OUTPUT_IMAGE.prev"
 fi
-VBoxManage export "$VM_NAME" -o "$OUTPUT_IMAGE"
+mv "$OUTPUT_IMAGE.temp" "$OUTPUT_IMAGE"
 
 echo "Done"
