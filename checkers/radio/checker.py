@@ -58,6 +58,7 @@ async def _check_api(api: BaseApi, user):
                                                     f"expect = 200, real = {status}")
     return Verdict.OK()
 
+
 async def _check_frontend_api(request: CheckRequest) -> Verdict:
     async with FrontendApi(request.hostname) as api:
         username = utils.generate_random_text()
@@ -136,7 +137,7 @@ async def check_service(request: CheckRequest) -> Verdict:
 async def put_flag_into_the_service(request: PutRequest) -> Verdict:
     username = utils.generate_random_text()
     password = utils.generate_random_text(64, min_length=6)
-    async with Api(request.hostname, 'frontend-api') as api:
+    async with FrontendApi(request.hostname) as api:
         status, user = await api.create_user(username, password)
         if status != 200:
             return Verdict.MUMBLE("Can't create user", f"Wrong status code [user.create],"
@@ -160,7 +161,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     playlist_id, username, password = request.flag_id.split(":")
 
-    async with Api(request.hostname, 'frontend-api') as api:
+    async with FrontendApi(request.hostname) as api:
         status, user = await api.login_user(username, password)
         if status != 200:
             return Verdict.MUMBLE(f"Can't login user", f"Wrong status code [user.login],"
