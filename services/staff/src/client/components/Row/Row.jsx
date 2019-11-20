@@ -11,7 +11,6 @@ export function Row ({ children, gap, className }) {
         width: gap
     };
 
-    console.log(className);
     return (
         <div className={cn(s.row, className)}>
             <div style={style} className={s.leftElementContainer}>

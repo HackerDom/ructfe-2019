@@ -19,3 +19,7 @@
     width: 1px;
     flex: 0 0 auto;
 }
+
+.chatCreation {
+    padding: 10px;
+}

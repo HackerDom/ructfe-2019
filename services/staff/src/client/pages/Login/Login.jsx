@@ -37,7 +37,7 @@ export class Login extends React.Component {
                 </MarginBox>
                 <MarginBox>
                     <div className={s.loginButton}>
-                        <Button text="login" onClick={login.login} />
+                        <Button text="login" onClick={this.onLogin} />
                     </div>
                 </MarginBox>
             </section>
@@ -52,5 +52,11 @@ export class Login extends React.Component {
     onChangePassword = (password) => {
         login.password = password;
         this.setState({ password });
+    };
+
+    onLogin = () => {
+        login
+            .login()
+            .then(this.props.onLogin);
     };
 }

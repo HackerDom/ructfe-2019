@@ -60,7 +60,7 @@ export class Registration extends React.Component {
                     <div className={s.registerButton}>
                         <Button
                             text="register"
-                            onClick={register.register}
+                            onClick={this.onRegister}
                         />
                     </div>
                 </MarginBox>
@@ -86,5 +86,11 @@ export class Registration extends React.Component {
     onChangePassword = (password) => {
         register.password = password;
         this.setState({ password });
+    };
+
+    onRegister = () => {
+        register
+            .register()
+            .then(this.props.onRegister);
     };
 }

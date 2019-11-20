@@ -16,8 +16,6 @@ export function RouteComponent () {
                 <Route path="/" exact={true} component={RedirectComponent} />
                 <Route path="/home" component={Home} />
                 <Route path="/auth" component={Auth} />
-                <Route path="/register" component={Registration} />
-                <Route path="/login" component={Login} />
                 <Route path="/user/:id" component={UserPage} />
                 <Route path="/chats" component={Chats} />
             </Switch>

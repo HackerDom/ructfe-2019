@@ -6,7 +6,7 @@ class Register {
     username = '';
 
     register = () => {
-        fetch('/register', {
+        return fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

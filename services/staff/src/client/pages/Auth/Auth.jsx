@@ -6,10 +6,12 @@ import { Case } from '../../components/Switch/Case';
 import { Registration } from '../Registration/Registration';
 import { Login } from '../Login/Login';
 import { MarginBox } from '../../components/MarginBox/MarginBox';
+import { Redirect } from 'react-router';
 
 const tabs = {
     register: 'register',
-    login: 'login'
+    login: 'login',
+    redirect: 'redirect'
 };
 
 export class Auth extends React.Component {
@@ -28,10 +30,13 @@ export class Auth extends React.Component {
                 <section className={s.form}>
                     <Switch by={this.state.selectedTab}>
                         <Case value={tabs.register}>
-                            <Registration />
+                            <Registration onRegister={this.onRegister} />
                         </Case>
                         <Case value={tabs.login}>
-                            <Login />
+                            <Login onLogin={this.onLogin} />
+                        </Case>
+                        <Case value={tabs.redirect}>
+                            <Redirect to="/chats" />
                         </Case>
                     </Switch>
                 </section>
@@ -41,5 +46,13 @@ export class Auth extends React.Component {
 
     onChangeSelectedTab = (selectedTab) => {
         this.setState({ selectedTab });
+    };
+
+    onRegister = () => {
+        this.setState({ selectedTab: tabs.login });
+    };
+
+    onLogin = () => {
+        this.setState({ selectedTab: tabs.redirect });
     };
 }

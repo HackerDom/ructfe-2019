@@ -1,9 +1,10 @@
 export class Login {
     username = '';
     password = '';
+    userId = null;
 
     login = () => {
-        fetch('/login', {
+        return fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -12,9 +13,15 @@ export class Login {
                 username: this.username,
                 password: this.password
             })
-        }).then(x => console.log(x))
+        })
+            .then(r => r.json())
+            .then(this.onSuccess)
             .catch(x => console.log(x));
     };
+
+    onSuccess = (response) => {
+        this.userId = response.data.userId;
+    }
 }
 
 export const login = new Login();
