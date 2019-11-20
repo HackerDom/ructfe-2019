@@ -108,7 +108,7 @@ async def check_users_searching(api, user):
 
 @checker.define_check
 async def check_service(request: CheckRequest) -> Verdict:
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         first_user = User()
         second_user = User()
         try:
@@ -142,7 +142,7 @@ async def check_service(request: CheckRequest) -> Verdict:
 
 @checker.define_put(vuln_num=1, vuln_rate=1)
 async def put_flag_in_messages(request: PutRequest) -> Verdict:
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         user = User()
         try:
             await api.register(user.get_register_data())
@@ -169,7 +169,7 @@ async def put_flag_in_messages(request: PutRequest) -> Verdict:
 
 @checker.define_put(vuln_num=2, vuln_rate=2)
 async def put_flag_in_deleted_messages(request: PutRequest) -> Verdict:
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         user = User()
         try:
             await api.register(user.get_register_data())
@@ -195,7 +195,7 @@ async def put_flag_in_deleted_messages(request: PutRequest) -> Verdict:
 
 @checker.define_put(vuln_num=3, vuln_rate=2)
 async def put_flag_in_bio(request: PutRequest) -> Verdict:
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         user = User()
         try:
             await api.register(user.get_register_data())
@@ -216,7 +216,7 @@ async def put_flag_in_bio(request: PutRequest) -> Verdict:
 
 @checker.define_get(vuln_num=3)
 async def get_flag_from_bio(request: GetRequest) -> Verdict:
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         user_id = request.flag_id
         try:
             user = await api.get_user(user_id)
@@ -233,7 +233,7 @@ async def get_flag_from_bio(request: GetRequest) -> Verdict:
 @checker.define_get(vuln_num=1)
 async def get_flag_from_messages(request: GetRequest) -> Verdict:
     chat_id, inv_link, message_id = request.flag_id.split(':')
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         user = User()
         try:
             await api.register(user.get_register_data())
@@ -275,7 +275,7 @@ async def get_flag_from_messages(request: GetRequest) -> Verdict:
 @checker.define_get(vuln_num=2)
 async def get_flag_from_deleted_messages(request: GetRequest) -> Verdict:
     admin_username, admin_password, chat_id, message_id = request.flag_id.split(':')
-    async with Api(request.hostname) as api:
+    async with Api(f'{request.hostname}:3000') as api:
         try:
             await api.login(admin_username, admin_password)
         except InvalidResponseException as e:
