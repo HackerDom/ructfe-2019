@@ -2,3 +2,6 @@ storage/*
 .gradle
 .idea
 build
+
+
+!storage/emptyfile
