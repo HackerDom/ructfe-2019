@@ -5,13 +5,20 @@
 
 # Configs:
 PULL_INTERVAL=10 # in seconds
-
+LOG_DIR="./build_logs"
 
 # Cd into script directory
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd "$BASE_DIR"
 
-mkdir -p ./build_logs
+mkdir -p $LOG_DIR
+
+
+function rebuild {
+    git -c color.ui=always status
+    ./scripts/run_before_image_built_hooks.sh
+    ./rebuild_image.sh;
+}
 
 while true; do
     echo "Checking for changes..."
@@ -25,9 +32,10 @@ while true; do
         #pull changes
         git pull;
 
+        LOG_FILE="$LOG_DIR/build-$(date +"%FT%H.%M.%S").log"
+
         echo "-----------------------------------------------------------------"
-        ./scripts/run_before_image_built_hooks.sh
-        ./rebuild_image.sh;
+        rebuild 2>&1 | tee $LOG_FILE
         echo "-----------------------------------------------------------------"
     else
         sleep $PULL_INTERVAL
