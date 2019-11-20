@@ -6,6 +6,7 @@ import subprocess
 import traceback
 import uuid
 import platform
+import sys
 
 from api import Api
 from chklib import Checker, Verdict, \
@@ -42,7 +43,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
     rid = uuid.uuid4()
     id = uuid.uuid4()
 
-    cmd = f'./gradlew run --quiet --args="-m=create -r={rid}.json --id={id} --rid={rid} -f={request.flag}"'
+    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=create -r={rid}.json --id={id} --rid={rid} -f={request.flag}'
     last = await get_out(cmd)
 
     async with Api(request.hostname) as api:
@@ -86,7 +87,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
     for _ in range(50):
-        cmd = f'./gradlew run --quiet --args="-m=iso --id={id} -r={rid}.json --rid={rid} -s={seed}"'
+        cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=iso --id={id} -r={rid}.json --rid={rid} -s={seed}'
         perm_seed = await get_out(cmd)
         async with Api(request.hostname) as api:
             try:
@@ -103,9 +104,9 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         type = downloaded_json['type']
 
         if type == 'REQ_VC':
-            cmd = f'./gradlew run --quiet --args="-m=vc -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}"'
+            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=vc -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}'
         else:
-            cmd = f'./gradlew run --quiet --args="-m=perm -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}"'
+            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=perm -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}'
 
         await get_out(cmd)
 
@@ -142,7 +143,12 @@ async def get_out(cmd):
 
     p = await asyncio.create_subprocess_shell(cmd, shell=True,
                                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=d)
+
     stdout, stderr = await p.communicate()
+
+    if p.returncode:
+        print(stderr, file=sys.stderr)
+
     return stdout.decode('utf-8')
 
 

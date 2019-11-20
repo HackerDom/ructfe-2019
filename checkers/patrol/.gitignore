@@ -1,7 +1,6 @@
 storage/*
 .gradle
 .idea
-build
 chklib/__pycache__
 chklib/models/__pycache__
 chklib/models/verdict/__pycache__
@@ -10,3 +9,7 @@ graph.json
 out.txt
 venv/
 __pycache__/
+build/*
+
+!build/libs/
+!build/libs/patrol-1.0.0.jar

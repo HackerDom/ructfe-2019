@@ -16,7 +16,7 @@ import static java.lang.Long.min;
 public class GraphGenerator {
     public static TreeDecomposition generate(Random random, int n, int w, long bound, double makeEdge) throws FileNotFoundException {
         TreeDecomposition decomposition = TreeDecomposition.generate(random, n, w);
-        System.err.println("Built.");
+        //System.err.println("Built.");
         List<Set<Integer>> g = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
@@ -57,19 +57,19 @@ public class GraphGenerator {
         int e = 0;
 
         for (int i = 0; i < g.size(); i++) {
-            System.err.println(String.format("Edges of %d:", i));
+            //System.err.println(String.format("Edges of %d:", i));
             for (int u: g.get(i)) {
                 e++;
                 System.err.println(String.format("%d ", u));
             }
-            System.err.println();
+            //System.err.println();
         }
 
-        System.err.println(String.format("Total %d edges.", e / 2));
-        System.err.println(String.format("Total %d nodes.", sz[0]));
-        System.err.println(String.format("Total %d comps.", cnt));
-        System.err.println(String.format("Sizes: %s.", sizes.stream()
-            .map(Object::toString).collect(Collectors.joining(" "))));
+        //System.err.println(String.format("Total %d edges.", e / 2));
+        //System.err.println(String.format("Total %d nodes.", sz[0]));
+        //System.err.println(String.format("Total %d comps.", cnt));
+        /*System.err.println(String.format("Sizes: %s.", sizes.stream()
+            .map(Object::toString).collect(Collectors.joining(" "))));*/
 
         File out = new File("out.txt");
         PrintWriter writer = new PrintWriter(new BufferedOutputStream(new FileOutputStream(out)));
@@ -96,7 +96,7 @@ public class GraphGenerator {
         jsonWriter.println(json);
         jsonWriter.flush();
 
-        System.err.flush();
+        //System.err.flush();
 
         long ans = decomposition.maxIS();
 
@@ -104,11 +104,11 @@ public class GraphGenerator {
 
         Set<Integer> is = decomposition.getMaxIS();
 
-        System.err.println(String.format("Weights: %s.", Arrays.stream(weight).boxed()
-            .map(Object::toString).collect(Collectors.joining(" "))));
-        System.err.println(String.format("Ans: %d.", ans));
-        System.err.println(String.format("IS: %s.", is.stream()
-            .map(Object::toString).collect(Collectors.joining(" "))));
+        /*System.err.println(String.format("Weights: %s.", Arrays.stream(weight).boxed()
+            .map(Object::toString).collect(Collectors.joining(" "))));*/
+        //System.err.println(String.format("Ans: %d.", ans));
+        /*System.err.println(String.format("IS: %s.", is.stream()
+            .map(Object::toString).collect(Collectors.joining(" "))));*/
 
         if (n <= 20) {
             long best = (long)1e9;
@@ -126,7 +126,7 @@ public class GraphGenerator {
             assert(best == ans);
         }
 
-        System.err.flush();
+        //System.err.flush();
 
         return decomposition;
     }
@@ -193,7 +193,7 @@ public class GraphGenerator {
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "10").trim());
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "300").trim());
         int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
         int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
         double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
@@ -220,12 +220,12 @@ public class GraphGenerator {
                 System.out.println(g.getId() + " " + _seed);
                 break;
             case "perm":
-                System.err.println("perm built");
+                //System.err.println("perm built");
                 perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps").trim())));
                 patrolRequest = PatrolRequest.perm(_rid, perm);
                 break;
             case "vc":
-                System.err.println("vc built");
+                //System.err.println("vc built");
                 perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps").trim())));
                 Set<Integer> isInIso = modifyVertices(decomposition.getMaxIS(), perm);
                 Set<Integer> vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());

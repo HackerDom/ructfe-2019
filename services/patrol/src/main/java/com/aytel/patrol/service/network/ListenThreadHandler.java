@@ -11,6 +11,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
+import io.netty.util.ReferenceCountUtil;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -61,6 +62,8 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
         } catch (JsonSyntaxException e) {
             ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
             flushAndClose(ctx.channel());
+        } finally {
+            ReferenceCountUtil.release(msg);
         }
     }
 
