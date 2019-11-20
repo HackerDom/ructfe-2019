@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'aytel'
@@ -8,8 +9,8 @@ version '1.0.0'
 sourceCompatibility = 11
 targetCompatibility = 11
 
-apply plugin: 'application'
 mainClassName = 'com.aytel.patrol.checker.GraphGenerator'
+
 application {
     applicationDefaultJvmArgs = ["-Xms512m", "-Xmx4096m", "-Xss1024m"]
 }
