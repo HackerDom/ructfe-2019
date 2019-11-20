@@ -1,0 +1,42 @@
+.form-input {
+    margin: 10px 0;
+    &__input {
+        padding: 5px;
+        font-size: 16px;
+        font-family: 'VCR OSD Mono', sans-serif;
+    }
+}
+
+.form-errors {
+    height: 16px;
+    margin: 5px 0 12px;
+}
+
+.form-error {
+    color: @error;
+}
+
+.form-checkbox {
+    color: @white;
+    &__inner {
+        display: flex;
+    }
+}
+
+.form-buttons {
+    .button {
+        &:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+}
+
+.radio-form {
+    display: inline-block;
+    &__title {
+        color: @white;
+        font-size: 32px;
+        line-height: 36px;
+        margin-bottom: 20px;
+    }
+}

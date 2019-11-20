@@ -1,0 +1,70 @@
+@import './vars.less';
+
+.border-radius-helper(@radius: 5px) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.border-radius-left-helper(@radius: 5px) {
+    -webkit-border-radius: @radius 0 0 @radius;
+    -moz-border-radius: @radius 0 0 @radius;
+    border-radius: @radius 0 0 @radius;
+}
+
+.gradient (@colorStart, @colorEnd, @posX: center, @posY: top) {
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, @colorStart), color-stop(1, @colorEnd));
+    background-image: -moz-linear-gradient(@posX @posY, @colorStart 5%, @colorEnd 100%);
+    background-image: -webkit-linear-gradient(@posX @posY, @colorStart 5%, @colorEnd 100%);
+    background-image: -o-linear-gradient(@posY, @colorStart, @colorEnd);
+    background-image: -ms-linear-gradient(@posY, @colorStart 5%, @colorEnd 100%);
+    background-image: linear-gradient(@posX @posY, @colorStart 5%, @colorEnd 100%);
+    background-color: @colorStart;
+}
+
+.button-gradient-color () {
+    .gradient(#1097d5, #107ad5, to, left)
+}
+
+.noselect () {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none;
+}
+
+.transition (@arguments) {
+    -webkit-transition: @arguments;
+    -moz-transition: @arguments;
+    -o-transition: @arguments;
+    -ms-transition: @arguments;
+    transition: @arguments;
+}
+
+.transform(@arguments) {
+    -webkit-transform: @arguments;
+    -moz-transform: @arguments;
+    -ms-transform: @arguments;
+    -o-transform: @arguments;
+    transform: @arguments;
+}
+
+.transform-origin(@arguments) {
+    -webkit-transform-origin: @arguments;
+    -moz-transform-origin: @arguments;
+    -ms-transform-origin: @arguments;
+    -o-transform-origin: @arguments;
+    transform-origin: @arguments;
+}
+
+.input-placeholder-helper(@rule) {
+    &::-webkit-input-placeholder,
+    &::-moz-placeholder,
+    &::-ms-input-placeholder,
+    &:-ms-input-placeholder,
+    &::placeholder {
+        @rule();
+    }
+}

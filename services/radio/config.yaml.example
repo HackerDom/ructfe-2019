@@ -1,0 +1,12 @@
+db:
+  host: db
+  user: radio
+  database: radio
+  ssl_mode: disable
+paths:
+  template_path: "views"
+  static_path: "static"
+redis:
+  host: redis
+  port: 6379
+  db: 1
