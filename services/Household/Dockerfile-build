@@ -11,4 +11,4 @@ WORKDIR /app/Household/ClientApp
 RUN npm install
 
 
-CMD ["bash", "-c", "cd /app/Household && dotnet restore && dotnet publish -c Release -o publish && rm -rf ./publish/*/"]
+CMD ["bash", "-c", "cd /app/Household && dotnet restore && dotnet publish -c Release -o publish"]
