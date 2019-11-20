@@ -2,7 +2,6 @@ storage/*
 .gradle
 .idea
 build
-gradle
 chklib/__pycache__
 chklib/models/__pycache__
 chklib/models/verdict/__pycache__
