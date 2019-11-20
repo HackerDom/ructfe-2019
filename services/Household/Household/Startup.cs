@@ -8,13 +8,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Household
 {
@@ -26,16 +24,17 @@ namespace Household
         }
 
         public IConfiguration Configuration { get; }
-        public HouseholdConfiguration HouseholdConfiguration => new HouseholdConfiguration(Configuration);
+        private HouseholdConfiguration HouseholdConfiguration => new HouseholdConfiguration(Configuration);
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            IdentityModelEventSource.ShowPII = true;
+            IdentityModelEventSource.ShowPII = true; ///
+
             services.AddTransient(p => new HouseholdConfiguration(p.GetService<IConfiguration>()));
             services.AddTransient(p => new ProductsImportHandler(p.GetService<ILogger<ProductsImportHandler>>()));
 
-            services.AddDbContext<HouseholdDbContext>(DefineSqlServer);
+            services.AddDbContext<HouseholdDbContext>(
+                o => DatabaseSystemFeatures.DefineSqlServer(o, HouseholdConfiguration));
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<HouseholdDbContext>();
@@ -47,12 +46,15 @@ namespace Household
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-           var credential = new SigningCredentials(
-                CertificateLoader.GetECDsaSecurityKey("12345"),
-                IdentityServerConstants.ECDsaSigningAlgorithm.ES512.ToString());
+            var key = CertificateLoader.LoadRsaSecurityKey(HouseholdConfiguration.KeyPath);
+
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, HouseholdDbContext>(
-                    options => { options.SigningCredential = credential; });
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddOperationalStore<HouseholdDbContext>()
+                .AddIdentityResources()
+                .AddSigningCredential(key, IdentityServerConstants.RsaSigningAlgorithm.PS512)
+                .AddApiResources()
+                .AddClients();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -68,7 +70,6 @@ namespace Household
             services.AddAutoMapper(typeof(Startup));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -95,11 +96,11 @@ namespace Household
             // the request credentials and setting the user on the request context
             app.UseAuthentication();
 
-            // 3
-            app.UseAuthorization();
-
             // 3.5? The IdentityServer middleware that exposes the Open ID Connect endpoints
             app.UseIdentityServer();
+
+            // 3
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => // 4
             {
@@ -115,20 +116,6 @@ namespace Household
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
-        }
-
-        private void DefineSqlServer(DbContextOptionsBuilder options)
-        {
-            var type = HouseholdConfiguration.DataBaseSystem;
-            switch (type)
-            {
-                //case "MSSQL":
-                //    options.UseSqlServer(Configuration.GetConnectionString("DataBaseContext"));
-                //    break;
-                case "PostgreSQL":
-                    options.UseNpgsql(Configuration.GetConnectionString("DataBaseContext"));
-                    break;
-            }
         }
     }
 }

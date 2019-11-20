@@ -64,36 +64,24 @@ namespace Household.DataBase
                 .WithMany(d => d.DishesInMenu)
                 .HasForeignKey(i => i.MenuId);
 
+            var getDateExpression = DatabaseSystemFeatures.SqlGetDate(configuration);
             builder.Entity<Product>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql(SqlGetDate());
+                .HasDefaultValueSql(getDateExpression);
             builder.Entity<Ingredient>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql(SqlGetDate());
+                .HasDefaultValueSql(getDateExpression);
             builder.Entity<Dish>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql(SqlGetDate());
+                .HasDefaultValueSql(getDateExpression);
             builder.Entity<DishInMenu>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql(SqlGetDate());
+                .HasDefaultValueSql(getDateExpression);
             builder.Entity<Menu>()
                 .Property(b => b.CreatedDate)
-                .HasDefaultValueSql(SqlGetDate());
+                .HasDefaultValueSql(getDateExpression);
 
             base.OnModelCreating(builder);
-        }
-
-        private string SqlGetDate()
-        {
-            switch (configuration.DataBaseSystem)
-            {
-                case "MSSQL":
-                    return "getdate()";
-                case "PostgreSQL":
-                    return "(now() at time zone 'utc')";
-            }
-
-            return null;
         }
     }
 }

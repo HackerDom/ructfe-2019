@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
-using Household.Controllers;
-using Household.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace Household.Utils
@@ -18,14 +17,19 @@ namespace Household.Utils
 
         public ApiResult<ProductImportModel[]> ProcessImport(Stream data)
         {
-            //var s = new XmlSerializer(typeof(ProductImportModel[]), new XmlRootAttribute("product"));
-            //var dd = (ProductImportModel)s.Deserialize(data);
-
             var serializer = new XmlSerializer(typeof(ProductsImportList));
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Parse,
+                XmlResolver = new XmlUrlResolver()
+            };
+
+            using XmlReader reader = XmlReader.Create(data, settings);
+
             try
             {
-                var d = (ProductsImportList) serializer.Deserialize(data);
-                return ApiResult<ProductImportModel[]>.Success(d.Product);
+                var serializedData = serializer.Deserialize(reader) as ProductsImportList;
+                return ApiResult<ProductImportModel[]>.Success(serializedData?.Product);
             }
             catch (Exception e)
             {
