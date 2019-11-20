@@ -1,5 +1,9 @@
 FROM golang:1.13-buster
 
+RUN set -eux; \
+	groupadd -r radio --gid=999; \
+	useradd -r -g radio --uid=999 --home-dir=/app --shell=/bin/bash radio;
+
 ENV APP_DIR /app
 ENV SECRET_PATH /run/secrets/
 RUN mkdir -p $APP_DIR

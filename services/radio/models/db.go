@@ -12,6 +12,8 @@ import (
 const maxConnectionLifetime = time.Hour
 const maxOpenConns = 100
 
+const retryCount = 15
+
 var db *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
@@ -25,13 +27,18 @@ func InitDB() (*gorm.DB, error) {
 		conf.DB.Password,
 		conf.DB.SSLMode,
 	)
-	db, err = gorm.Open("postgres", pgConnectionString)
-	if err != nil {
-		time.Sleep(15 * time.Second)
+	count := 0
+	for {
 		db, err = gorm.Open("postgres", pgConnectionString)
-		if err != nil {
+		if count >= retryCount {
 			return db, err
 		}
+		if err != nil {
+			count++
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		break
 	}
 	dbInstance := db.DB()
 	dbInstance.SetMaxOpenConns(maxOpenConns)
