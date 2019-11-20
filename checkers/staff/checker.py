@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import traceback
 
 from api import Api
