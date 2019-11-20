@@ -26,6 +26,7 @@ while true; do
         git pull;
 
         echo "-----------------------------------------------------------------"
+        ./scripts/run_before_image_built_hooks.sh 
         ./rebuild_image.sh;
         echo "-----------------------------------------------------------------"
     else
