@@ -1,7 +1,9 @@
 import React from 'react';
 import s from './UserPage.css';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { Text } from '../../components/Text/Text';
+import { MarginBox } from '../../components/MarginBox/MarginBox';
+import { BorderBox } from '../../components/BorderBox/BorderBox';
+import { Row } from '../../components/Row/Row';
 
 export class UserPage extends React.Component {
     constructor (props) {
@@ -18,34 +20,41 @@ export class UserPage extends React.Component {
         })
             .then(response => {
                 response.json().then(json => {
-                    this.setState({ user: { ...json } });
+                    this.setState({ user: { ...json.data } });
                 });
             })
             .catch(error => console.error(error));
     }
 
     render () {
-        console.log(this.state);
+        const FORM_GAP = 160;
         return (<article className={s.formContainer}>
-            <section className={s.form}>
-                <Paper className={s.root}>
-                    <div className={s.contentWrapper}>
-                        <Typography className={s.field} variant="h4" component="h3">
-                        Username: {this.state.user ? this.state.user.username : undefined}
-                        </Typography>
-                        <Typography className={s.field} variant="h5" component="h3">
-                        First name: {this.state.user ? this.state.user.firstName : undefined}
-                        </Typography>
-                        <Typography className={s.field} variant="h5" component="h3">
-                        Last name: {this.state.user ? this.state.user.lastName : undefined}
-                        </Typography>
-                        <Typography className={s.field} component="p">
-                        User's biography: <br/>
-                            {this.state.user ? this.state.user.biography : undefined}
-                        </Typography>
-                    </div>
-                </Paper>
-            </section>
+            <BorderBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text='Username: '/>
+                        <Text text={this.state.user ? this.state.user.username : undefined}/>
+                    </Row>
+                </MarginBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text={'First name: '}/>
+                        <Text text={this.state.user ? this.state.user.firstName : undefined}/>
+                    </Row>
+                </MarginBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text={'Last name:'}/>
+                        <Text text={this.state.user ? this.state.user.lastName : undefined}/>
+                    </Row>
+                </MarginBox>
+                <MarginBox>
+                    <Row gap={FORM_GAP}>
+                        <Text text={'User\'s biography:'}/>
+                        <Text text={this.state.user ? this.state.user.biography : undefined}/>
+                    </Row>
+                </MarginBox>
+            </BorderBox>
         </article>
         );
     }

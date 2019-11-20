@@ -1,14 +1,10 @@
+@import "../../colors.css";
+
 .formContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
+    background: var(--black);
 }
 
-.form {
-    width: 70%;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    height: 80%;
-}
