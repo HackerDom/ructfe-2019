@@ -202,7 +202,7 @@ public class GraphGenerator {
         TreeDecomposition decomposition = generate(random, _n, _w, _bound, _p);
         Graph g = decomposition.getG();
 
-        File out = new File(cmd.getOptionValue("r"));
+        File out = new File("temp/" + cmd.getOptionValue("r"));
         FileWriter writer = new FileWriter(out);
 
         PatrolRequest patrolRequest;

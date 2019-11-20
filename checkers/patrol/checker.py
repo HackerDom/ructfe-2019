@@ -20,20 +20,20 @@ async def check_service(request: CheckRequest) -> Verdict:
     d['type'] = 'LIST'
 
     id = uuid.uuid4()
-    with open(f'{id}.json', 'w') as f:
+    with open(f'temp/{id}.json', 'w') as f:
         json.dump(d, f)
     async with Api(request.hostname) as api:
         try:
-            downloaded_json = (await api.send_and_get(f'{id}.json'))
+            downloaded_json = (await api.send_and_get(f'temp/{id}.json'))
         except Exception as e:
-            os.remove(f'{id}.json')
+            os.remove(f'temp/{id}.json')
             return Verdict.DOWN(str(e), traceback.format_exc())
 
     if 'type' not in downloaded_json:
-        os.remove(f'{id}.json')
+        os.remove(f'temp/{id}.json')
         return Verdict.MUMBLE("Bad json", "'type' not in answer")
 
-    os.remove(f'{id}.json')
+    os.remove(f'temp/{id}.json')
     return Verdict.OK()
 
 
@@ -47,16 +47,16 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
 
     async with Api(request.hostname) as api:
         try:
-            downloaded_json = (await api.send_and_get(f'{rid}.json'))
+            downloaded_json = (await api.send_and_get(f'temp/{rid}.json'))
         except Exception as e:
-            os.remove(f'{rid}.json')
+            os.remove(f'temp/{rid}.json')
             return Verdict.DOWN(str(e), traceback.format_exc())
 
     if 'flag' not in downloaded_json or downloaded_json['flag'] != request.flag:
-        os.remove(f'{rid}.json')
+        os.remove(f'temp/{rid}.json')
         return Verdict.MUMBLE("Bad json", "'flag' not in answer or it's incorrect")
 
-    os.remove(f'{rid}.json')
+    os.remove(f'temp/{rid}.json')
     return Verdict.OK(last)
 
 
@@ -71,18 +71,18 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     d['graphId'] = id
     d['reqId'] = rid
 
-    with open(f'{rid}.json', 'w') as f:
+    with open(f'temp/{rid}.json', 'w') as f:
         json.dump(d, f)
 
     async with Api(request.hostname) as api:
         try:
-            downloaded_json = (await api.send_and_get(f'{rid}.json'))
+            downloaded_json = (await api.send_and_get(f'temp/{rid}.json'))
         except Exception as e:
-            os.remove(f'{rid}.json')
+            os.remove(f'temp/{rid}.json')
             return Verdict.DOWN(str(e), traceback.format_exc())
 
     if 'graph' not in downloaded_json:
-        os.remove(f'{rid}.json')
+        os.remove(f'temp/{rid}.json')
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
     for _ in range(50):
@@ -90,14 +90,14 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         perm_seed = await get_out(cmd)
         async with Api(request.hostname) as api:
             try:
-                downloaded_json = (await api.send_and_get(f'{rid}.json'))
+                downloaded_json = (await api.send_and_get(f'temp/{rid}.json'))
             except Exception as e:
-                os.remove(f'{rid}.json')
+                os.remove(f'temp/{rid}.json')
                 return Verdict.DOWN(str(e), traceback.format_exc())
 
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'REQ_VC' and downloaded_json['type'] != 'REQ_PERM'):
-            os.remove(f'{rid}.json')
+            os.remove(f'temp/{rid}.json')
             return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
 
         type = downloaded_json['type']
@@ -111,27 +111,27 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
 
         async with Api(request.hostname) as api:
             try:
-                downloaded_json = (await api.send_and_get(f'{rid}.json'))
+                downloaded_json = (await api.send_and_get(f'temp/{rid}.json'))
             except Exception as e:
-                os.remove(f'{rid}.json')
+                os.remove(f'temp/{rid}.json')
                 return Verdict.DOWN(str(e), traceback.format_exc())
 
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'CONTINUE' and downloaded_json['type'] != 'OK'):
-            os.remove(f'{rid}.json')
+            os.remove(f'temp/{rid}.json')
             return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
 
         if downloaded_json['type'] == 'OK':
             if 'flag' not in downloaded_json:
-                os.remove(f'{rid}.json')
+                os.remove(f'temp/{rid}.json')
                 return Verdict.CORRUPT("Bad json", "'flag' not in answer")
             if downloaded_json['flag'] != request.flag:
-                os.remove(f'{rid}.json')
+                os.remove(f'temp/{rid}.json')
                 return Verdict.CORRUPT("Invalid flag", "Invalid flag")
-            os.remove(f'{rid}.json')
+            os.remove(f'temp/{rid}.json')
             return Verdict.OK()
 
-    os.remove(f'{rid}.json')
+    os.remove(f'temp/{rid}.json')
     return Verdict.MUMBLE("Bad responses", "Too many requests")
 
 
