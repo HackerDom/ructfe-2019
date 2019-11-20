@@ -29,6 +29,12 @@ class LoginForm extends React.Component {
         };
     }
 
+    loginUser() {
+        const { loginUser } = this.props;
+        const { username, password } = this.state;
+        loginUser({ username, password });
+    }
+
     onInputHandler(fieldName, fieldValue, e) {
         const isValid = e.target.validity.valid;
         const value = isValid ? e.target.value : fieldValue;
@@ -48,7 +54,11 @@ class LoginForm extends React.Component {
             <div className='register-form__username'>
                 <Input id='username' name='username' type="text"
                     errors={errors.username}
+                    onEnterPress={() => {
+                        this.loginUser();
+                    }}
                     inputAttrs={{
+                        autoFocus: true,
                         value: username,
                         placeholder: 'Username',
                         pattern: '^[\\d\\w]+$',
@@ -60,6 +70,9 @@ class LoginForm extends React.Component {
             <div className='register-form__password'>
                 <PasswordInput id='password' name='password'
                     errors={errors.password || errors.__all__}
+                    onEnterPress={() => {
+                        this.loginUser();
+                    }}
                     inputAttrs={{
                         value: password,
                         placeholder: 'Password',
@@ -71,7 +84,7 @@ class LoginForm extends React.Component {
             </div>
             <div className='register-form__submit'>
                 <Button title='Sign In' modifiers={['white']} onClick={() => {
-                    loginUser({ username, password });
+                    this.loginUser();
                 }} />
             </div>
         </div>;

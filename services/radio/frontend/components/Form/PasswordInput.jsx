@@ -13,6 +13,7 @@ export default class PasswordInput extends React.Component {
         inputAttrs: PropTypes.shape({}),
         onKeyPress: PropTypes.func,
         onPasswordGenerate: PropTypes.func,
+        onEnterPress: PropTypes.func,
         classes: PropTypes.arrayOf(PropTypes.string),
         errors: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.string), PropTypes.string]),
         withGenerator: PropTypes.bool
@@ -23,6 +24,7 @@ export default class PasswordInput extends React.Component {
         onChange: () => {},
         inputAttrs: {},
         onKeyPress: () => {},
+        onEnterPress: () => {},
         classes: [],
         onPasswordGenerate: () => {},
         withGenerator: true
@@ -52,6 +54,7 @@ export default class PasswordInput extends React.Component {
             onChange,
             inputAttrs,
             onKeyPress,
+            onEnterPress,
             withGenerator
         } = this.props;
 
@@ -66,6 +69,11 @@ export default class PasswordInput extends React.Component {
                 <div className='form-input-password_wrapper'>
                     <input id={id} type='password' name={name}
                         onKeyPress={onKeyPress.bind(this)}
+                        onKeyDown={(e) => {
+                            if (e.keyCode === 13) {
+                                onEnterPress(e);
+                            }
+                        }}
                         className='form-input__input'
                         onChange={onChange.bind(this)}
                         ref={this.passwordInputRef}

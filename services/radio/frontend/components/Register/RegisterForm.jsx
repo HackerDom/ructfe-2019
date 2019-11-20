@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import Button from '../Button/Button';
 import Input from '../Form/Input';
 import PasswordInput from '../Form/PasswordInput';
-import Errors from '../Form/Errors';
 
 import { registerUser } from '../../actions/register/actions';
 
@@ -39,9 +38,20 @@ class RegisterForm extends React.Component {
         });
     }
 
-    render() {
-        const { registerUser, errors } = this.props;
+    registerUser() {
+        const { registerUser } = this.props;
         const {
+            // eslint-disable-next-line camelcase
+            username, password, repeated_password
+        } = this.state;
+
+        registerUser({ username, password, repeated_password });
+    }
+
+    render() {
+        const { errors } = this.props;
+        const {
+            // eslint-disable-next-line camelcase
             username, password, repeated_password
         } = this.state;
 
@@ -50,7 +60,11 @@ class RegisterForm extends React.Component {
             <div className='register-form__username'>
                 <Input id='username' name='username' type="text"
                     errors={errors.username}
+                    onEnterPress={() => {
+                        this.registerUser();
+                    }}
                     inputAttrs={{
+                        autoFocus: true,
                         placeholder: 'Username',
                         value: username,
                         pattern: '^[\\d\\w]+$',
@@ -62,6 +76,9 @@ class RegisterForm extends React.Component {
             <div className='register-form__password'>
                 <PasswordInput id='password' name='password'
                     errors={errors.password}
+                    onEnterPress={() => {
+                        this.registerUser();
+                    }}
                     inputAttrs={{
                         placeholder: 'Password',
                         value: password,
@@ -74,6 +91,9 @@ class RegisterForm extends React.Component {
             <div className='register-form__password'>
                 <PasswordInput id='repeated_password' name='repeated_password'
                     errors={errors.repeated_password || errors.__all__}
+                    onEnterPress={() => {
+                        this.registerUser();
+                    }}
                     inputAttrs={{
                         placeholder: 'Repeat password',
                         value: repeated_password,
@@ -85,7 +105,7 @@ class RegisterForm extends React.Component {
             </div>
             <div className='register-form__submit'>
                 <Button title='Sign Up' modifiers={['white', 'register']} onClick={() => {
-                    registerUser({ username, password, repeated_password });
+                    this.registerUser();
                 }} />
             </div>
         </div>;

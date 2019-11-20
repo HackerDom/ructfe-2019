@@ -12,7 +12,7 @@ type SignInForm struct {
 }
 
 type PlaylistForm struct {
-	Name        string `json:"name" validate:"required,alphanumunicode,min=1,max=256"`
+	Name        string `json:"name" validate:"required,min=1,max=256"`
 	Description string `json:"description"`
 	Private     bool   `json:"is_private"`
 }

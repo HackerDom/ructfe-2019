@@ -51,7 +51,7 @@ export default class RadioApp extends React.Component {
                     <Route exact path='/signin/*' component={LoginPage}></Route>
                     <Route exact path='/our-users/' component={OurUsersPage}></Route>
 
-                    <Route exact path='/playlist/:id/' component={MainPage}></Route>
+                    <Route exact path='/playlist/:playlistId/' component={MainPage}></Route>
                     <Route exact path='/share/playlist/:h/' component={PlaylistSharePage}></Route>
                     <Route exact path='/' component={MainPage}></Route>
                 </Switch>

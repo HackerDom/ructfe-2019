@@ -8,7 +8,7 @@ import { Switch, Route } from 'react-router-dom';
 import Button from '../Button/Button';
 import PlaylistForm from './PlaylistForm';
 import PlaylistList from './PlaylistList';
-import PlaylistDetail from './PlaylistDetail';
+import PlaylistBlock from './PlaylistBlock';
 
 class Playlist extends React.Component {
     static propTypes = {
@@ -41,17 +41,17 @@ class Playlist extends React.Component {
                     }} onAccept={() => {
                         this.setState({ isAddFormOpen: false });
                     }}/>}
-                    <div className='playlist-add-button'>
+                    {!isAddFormOpen && <div className='playlist-add-button'>
                         <Button title='+ Add playlist' onClick={() => {
                             this.setState({
                                 isAddFormOpen: true
                             });
                         }} />
-                    </div>
+                    </div>}
                 </div>
             </div>
             <Switch>
-                <Route exact path='/playlist/:id/' component={PlaylistDetail}></Route>
+                <Route exact path='/playlist/:playlistId/' component={PlaylistBlock}></Route>
             </Switch>
         </div>;
     }

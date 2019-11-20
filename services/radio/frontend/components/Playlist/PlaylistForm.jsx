@@ -50,6 +50,7 @@ class PlaylistForm extends React.Component {
         const {
             errors, onAccept, onReject, createPlaylist
         } = this.props;
+        // eslint-disable-next-line camelcase
         const { name, description, is_private } = this.state;
 
         return <div className='playlist-add-form radio-form'>
@@ -57,9 +58,9 @@ class PlaylistForm extends React.Component {
                 <Input id='name' name='name' type="text"
                     errors={errors.name}
                     inputAttrs={{
+                        autoFocus: true,
                         placeholder: 'Name',
                         value: name,
-                        pattern: '^[\\d\\w]+$',
                         onInput: (e) => {
                             this.onInputHandler('name', name, e);
                         }
