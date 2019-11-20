@@ -1,0 +1,4 @@
+storage/*
+.gradle
+.idea
+build

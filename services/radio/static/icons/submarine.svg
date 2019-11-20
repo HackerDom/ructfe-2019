@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 171 144">
+    <defs>
+        <style>.cls-1{fill:#d1d95f;}.cls-2{fill:#c0c757;}.cls-3{fill:#d5d99c;}.cls-4{fill:#9da600;}.cls-5{fill:#cccccf;}.cls-6{fill:#0e70ad;}.cls-7{fill:#0092ff;}.cls-8{fill:#56b9e1;}</style>
+    </defs>
+    <title>lodkaРесурс 3</title>
+    <g id="lodka" data-name="lodka">
+        <g id="l" data-name="l">
+            <polygon class="cls-1" points="108 0 108 9 99 9 99 18 90 18 90 0 108 0" />
+            <rect class="cls-2" x="90" y="18" width="9" height="18" />
+            <rect class="cls-1" x="90" y="36" width="9" height="18" />
+            <polygon class="cls-2" points="90 36 90 54 81 54 81 63 72 63 72 36 90 36" />
+            <rect class="cls-3" x="99" y="36" width="9" height="18" />
+            <rect class="cls-1" x="108" y="36" width="9" height="18" />
+            <rect class="cls-2" x="90" y="54" width="27" height="9" />
+            <rect class="cls-4" x="81" y="54" width="9" height="9" />
+            <rect class="cls-5" x="135" y="63" width="9" height="9" />
+            <rect class="cls-6" x="144" y="63" width="18" height="9" />
+            <polygon class="cls-1" points="135 63 135 72 126 72 126 81 108 81 108 90 99 90 99 81 81 81 81 90 72 90 72 81 54 81 54 99 63 99 63 90 72 90 72 108 36 108 36 72 45 72 45 63 135 63" />
+            <rect class="cls-5" x="126" y="72" width="9" height="36" />
+            <polygon class="cls-7" points="162 81 162 108 153 108 153 90 135 90 135 72 153 72 153 81 162 81" />
+            <rect class="cls-8" x="153" y="72" width="9" height="9" />
+            <rect class="cls-6" x="162" y="72" width="9" height="36" />
+            <polygon class="cls-3" points="72 81 72 90 63 90 63 99 54 99 54 81 72 81" />
+            <polygon class="cls-3" points="126 81 126 99 117 99 117 90 108 90 108 81 126 81" />
+            <rect class="cls-5" x="81" y="81" width="18" height="9" />
+            <polygon class="cls-1" points="126 99 126 108 108 108 108 90 117 90 117 99 126 99" />
+            <rect class="cls-6" x="135" y="90" width="18" height="18" />
+            <polygon class="cls-6" points="99 99 99 108 81 108 81 90 90 90 90 99 99 99" />
+            <rect class="cls-5" x="72" y="90" width="9" height="18" />
+            <rect class="cls-8" x="90" y="90" width="9" height="9" />
+            <rect class="cls-5" x="99" y="90" width="9" height="18" />
+            <polygon class="cls-2" points="153 117 153 126 45 126 45 117 36 117 36 108 81 108 81 117 99 117 99 108 135 108 135 117 153 117" />
+            <rect class="cls-5" x="135" y="108" width="36" height="9" />
+            <rect class="cls-5" x="81" y="108" width="18" height="9" />
+            <rect class="cls-2" x="27" y="81" width="9" height="18" />
+            <polygon class="cls-4" points="171 117 171 126 162 126 162 135 153 135 153 144 45 144 45 135 36 135 36 126 27 126 27 99 36 99 36 117 45 117 45 126 153 126 153 117 171 117" />
+            <rect class="cls-1" x="9" y="72" width="18" height="9" />
+            <rect class="cls-3" x="9" y="81" width="18" height="9" />
+            <rect class="cls-1" x="9" y="90" width="18" height="18" />
+            <rect class="cls-2" y="90" width="9" height="9" />
+            <rect class="cls-4" y="99" width="9" height="18" />
+            <rect class="cls-2" x="9" y="108" width="18" height="27" />
+        </g>
+    </g>
+</svg>

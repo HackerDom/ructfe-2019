@@ -1,0 +1,32 @@
+.radio-nav {
+    background-color: @black;
+    display: flex;
+    align-items: center;
+}
+
+.radio-nav-item {
+    display: inline-block;
+    padding: 7px 10px;
+    margin: 18px 12px;
+    font-weight: 600;
+    font-size: 18px;
+    text-decoration: none;
+    color: @yellow;
+    &--with-border {
+        .border-radius-helper(4px);
+        border: 1px solid @white;
+    }
+}
+
+.logo-nav {
+    display: flex;
+    align-items: center;
+    .logo-nav-text {
+        margin-right: 10px
+    }
+}
+
+.logo-nav-text {
+    font-size: 26px;
+    color: @white;
+}

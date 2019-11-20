@@ -5,7 +5,7 @@ import asynchttpserver, asyncdispatch
 var flags = initTable[string, string]()
 var server = newAsyncHttpServer()
 
-# test
+# example service
 proc cb(req: Request) {.async.} =
   {.gcsafe.}:
     case req.reqMethod
