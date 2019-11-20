@@ -48,7 +48,7 @@ suspend fun clearCookieAndGoLoginPage(call: ApplicationCall) {
 @ExperimentalStdlibApi
 fun main() {
     init()
-    val manager = UserManager()
+    val userManager = UserManager()
     val server = embeddedServer(Netty, 8080) {
         install(FreeMarker) {
             templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
@@ -77,9 +77,9 @@ fun main() {
             get("/info") {
                 val session = call.sessions.get<AuthSession>()
                 session?.uid?.let { uid ->
-                    val user = manager.userById(uid)
+                    val user = userManager.userById(uid)
                     user?.let {
-                        val info = manager.info(user)
+                        val info = userManager.info(user)
                         call.respondBytes(
                             decodeMessage(info.key, info.message),
                             ContentType("application", "json")
@@ -90,7 +90,7 @@ fun main() {
             post("/login") {
                 val content = call.receiveChannel().toByteArray().decodeToString()
                 val userPair = Json.parse(UserPair.serializer(), content)
-                manager.validate(userPair)?.let { user ->
+                userManager.validate(userPair)?.let { user ->
                     call.sessions.set(AuthSession(user.id.value))
                     call.respondRedirect("/")
                     return@post
@@ -101,13 +101,13 @@ fun main() {
                 val rawRegData = call.receiveChannel().toByteArray().decodeToString()
                 val regData = Json.parse(RegisterData.serializer(), rawRegData)
 
-                if (manager.isUserExists(regData.name)) {
+                if (userManager.isUserExists(regData.name)) {
                     call.respond(
                         HttpStatusCode.BadRequest,
                         "Username ${regData.name} already exist"
                     )
                 } else {
-                    val newUserId = manager.createNewUser(regData)
+                    val newUserId = userManager.createNewUser(regData)
                     call.sessions.set(AuthSession(newUserId))
                     call.respondRedirect("/")
                 }
@@ -126,7 +126,7 @@ fun main() {
             get("/") {
                 val session = call.sessions.get<AuthSession>()
                 session?.uid?.let { uid ->
-                    val user = manager.userById(uid)
+                    val user = userManager.userById(uid)
                     user?.let {
                         call.respond(FreeMarkerContent("draw.ftl", mapOf("username" to user.name)))
                     }
@@ -135,9 +135,9 @@ fun main() {
             get("/users") {
                 val session = call.sessions.get<AuthSession>()
                 session?.uid?.let { uid ->
-                    val user = manager.userById(uid)
+                    val user = userManager.userById(uid)
                     user?.let {
-                        val rawUsers = manager.users.map { usr ->
+                        val rawUsers = userManager.users.map { usr ->
                             Json.stringify(UserPosData.serializer(), usr.toPosData())
                         }
                             .toString()
@@ -148,19 +148,6 @@ fun main() {
             }
             get("/logout") {
                 clearCookieAndGoLoginPage(call)
-            }
-            get("/kreker") {
-                val session = call.sessions.get<AuthSession>()
-
-                val user = manager.userById(1)
-                user?.let {
-                    val info = manager.info(user)
-                    call.respondBytes(
-//                        "hello world!".encodeToByteArray(),
-                        decodeMessage(info.key, info.message),
-                        ContentType("application", "json")
-                    )
-                }
             }
         }
     }

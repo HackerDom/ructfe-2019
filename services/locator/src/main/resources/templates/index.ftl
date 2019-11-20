@@ -9,10 +9,6 @@
     <br>
     ${info}
     ${info.field1}
-    <#--    <#list fields as item>-->
-
-    <#--        ${info["${item}"]}-->
-    <#--    </#list>-->
 </p>
 </body>
 </html>
