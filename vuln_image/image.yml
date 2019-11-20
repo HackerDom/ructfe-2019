@@ -16,3 +16,4 @@
     - bay_cloud_config
     - { role: service, service_name: example_service }
     - { role: service, service_name: locator }
+    - { role: service, service_name: patrol }
