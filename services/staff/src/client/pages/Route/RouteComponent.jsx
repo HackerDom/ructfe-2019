@@ -8,6 +8,7 @@ import { RedirectComponent } from './RedirectComponent';
 import { UserPage } from '../UserPage/UserPage';
 import { Chats } from '../Chats/Chats';
 import { Auth } from '../Auth/Auth';
+import { UsersSearching } from '../UsersSearching/UsersSearching'
 
 export function RouteComponent () {
     return (
@@ -18,6 +19,7 @@ export function RouteComponent () {
                 <Route path="/auth" component={Auth} />
                 <Route path="/user/:id" component={UserPage} />
                 <Route path="/chats" component={Chats} />
+                <Route path="/search" component={UsersSearching} />
             </Switch>
         </BrowserRouter>
     );

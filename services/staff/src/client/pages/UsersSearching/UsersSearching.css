@@ -1,8 +1,11 @@
+@import "../../colors.css";
+
 .formContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
+    background: var(--black);
 }
 
 .form {
@@ -17,4 +20,7 @@
 .outerForm {
     width: 600px;
     height: 400px;
+}
+
+.loginButton {
 }

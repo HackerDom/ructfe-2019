@@ -1,0 +1,6 @@
+@import "../../colors.css";
+
+.boarderBox {
+    border: 1px solid var(--yellow);
+    padding: 5px;
+}
