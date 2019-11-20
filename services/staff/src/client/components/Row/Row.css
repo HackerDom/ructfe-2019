@@ -14,3 +14,7 @@
     transform: translateY(50%);
     width: 100%;
 }
+
+.rightElement {
+    flex: 1 0 auto;
+}
