@@ -24,6 +24,30 @@
     box-sizing: border-box;
 }
 
-.messages {
+.messagesContainer {
+    position: relative;
     flex: 1 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.messages {
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.message {
+    margin: 12px;
+}
+
+.messageText {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--white);
+    color: var(--white);
+    display: inline-block;
 }

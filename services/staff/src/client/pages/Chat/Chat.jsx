@@ -3,15 +3,24 @@ import s from './Chat.css';
 import { Input } from '../../components/Input/Input';
 import { Button } from '../../components/Button/Button';
 import { Row } from '../../components/Row/Row';
+import * as uuid from 'uuid';
 
 export class Chat extends React.Component {
-    state = { name: 'Chat name', messageDraft: '' };
+    state = {
+        name: 'Chat name',
+        messageDraft: '',
+        messages: []
+    };
 
     render () {
         return (
             <section className={s.chat}>
                 <h2 className={s.chatName}>{this.state.name}</h2>
-                <section className={s.messages} />
+                <div className={s.messagesContainer}>
+                    <section className={s.messages}>
+                        {this.state.messages.map(this.renderMessage)}
+                    </section>
+                </div>
                 <Row className={s.chatSender} gap={85}>
                     <Button text="send" onClick={this.onMessageSend} />
                     <Input
@@ -19,6 +28,14 @@ export class Chat extends React.Component {
                         onChange={this.onChangeMessageDraft}
                     />
                 </Row>
+            </section>
+        );
+    }
+
+    renderMessage ({ text }) {
+        return (
+            <section className={s.message} key={uuid()}>
+                <div className={s.messageText}>{text}</div>
             </section>
         );
     }
