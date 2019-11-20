@@ -1,4 +1,5 @@
 build:
+	yarn install
 	yarn build
 	mkdir -p .build
 	cp -r ./static ./.build

@@ -11,5 +11,3 @@ RUN apt-get install -y yarn
 ENV APP_DIR /go/src/github.com/HackerDom/ructfe-2019/services/radio/
 RUN mkdir -p $APP_DIR
 WORKDIR $APP_DIR
-
-RUN yarn install
