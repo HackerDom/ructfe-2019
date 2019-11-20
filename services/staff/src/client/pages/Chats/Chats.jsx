@@ -41,9 +41,7 @@ export class Chats extends React.Component {
     };
 
     createChat = () => {
-        chats
-            .createChat()
-            ;
+        chats.createChat();
     };
 
     onChangeChatName = (chatName) => {
