@@ -5,7 +5,7 @@ from typing import Tuple, Dict
 from networking.masking_connector import get_agent
 from aiohttp.client import ClientTimeout
 
-PORT = os.getenv('RADIO_PORT', 80)
+PORT = os.getenv('RADIO_PORT', 4553)
 
 
 class BaseApi:

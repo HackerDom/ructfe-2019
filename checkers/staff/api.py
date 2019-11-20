@@ -8,9 +8,11 @@ from networking.masking_connector import get_agent
 class Api:
     def __init__(self, service_url: str) -> dict:
         self.service_url = service_url
+        jar = aiohttp.CookieJar(unsafe=True)
         self.session = aiohttp.ClientSession(
             timeout=ClientTimeout(total=10),
-            headers={"User-Agent": get_agent()}
+            headers={"User-Agent": get_agent()},
+            cookie_jar=jar
         )
 
     async def create(self, chat_name: str) -> dict:
