@@ -1,8 +1,10 @@
 FROM node:latest
+# RUN set -eux; \
+	# groupadd -r example --gid=999; \
+	# useradd -r -g example --uid=999 --home-dir=/app --shell=/bin/bash example;
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-COPY package.json /usr/src/app/
-RUN npm install
 COPY . /usr/src/app
-EXPOSE 3000
+RUN npm install
+# USER example
 CMD [ "npm", "run", "prod" ]
