@@ -18,3 +18,4 @@
     - { role: service, service_name: locator }
     - { role: service, service_name: patrol }
     - { role: service, service_name: radio }
+    - { role: service, service_name: staff }
