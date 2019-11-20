@@ -4,11 +4,12 @@ services:
     build: .
     ports:
       - "8080:8080"
-    volumes:
-      - ./db:/var/lib/mysql
     restart: on-failure
-  mysql:
-    image: mysql:5.7
+    image: ubuntu
+  db:
+    image: "postgres"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=locator
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=locator
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data

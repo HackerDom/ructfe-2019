@@ -9,9 +9,9 @@ import java.sql.Connection.TRANSACTION_SERIALIZABLE
 
 fun init() {
     Database.connect(
-        "jdbc:mysql://mysql:3306/locator",
-        driver = "com.mysql.jdbc.Driver",
-        user = "root", password = "root"
+        "jdbc:postgresql://db:5432/locator",
+        driver = "org.postgresql.Driver",
+        user = "postgres"
     )
     TransactionManager.manager.defaultIsolationLevel = TRANSACTION_SERIALIZABLE
     transaction {
