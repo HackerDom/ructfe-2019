@@ -4,6 +4,7 @@ BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd "$BASE_DIR"
 
 VM_NAME="ructfe2019-base"
+TEMP_IMAGE="images/.ructfe2019-deploy.ova"
 OUTPUT_IMAGE="images/ructfe2019-deploy.ova"
 SSH_PORT=2222
 SSH_HOST=127.0.0.1
@@ -42,12 +43,12 @@ echo "Deleting port-forwarding for deploy"
 VBoxManage modifyvm "$VM_NAME" --natpf1 delete deploy
 
 echo "VM stopped, exporting"
-VBoxManage export "$VM_NAME" -o "$OUTPUT_IMAGE.temp"
+VBoxManage export "$VM_NAME" -o "$TEMP_IMAGE"
 
 echo "Swapping output image"
 if [ -f "$OUTPUT_IMAGE" ]; then
     mv "$OUTPUT_IMAGE" "$OUTPUT_IMAGE.prev"
 fi
-mv "$OUTPUT_IMAGE.temp" "$OUTPUT_IMAGE"
+mv "$TEMP_IMAGE" "$OUTPUT_IMAGE"
 
 echo "Done"
