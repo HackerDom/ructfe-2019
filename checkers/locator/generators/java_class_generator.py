@@ -473,19 +473,9 @@ class ClassWriter:
     def get_class(self):
         return self.buffer.getvalue()
 
-
-def main():
-    with open("/Users/daniil.sharko/git/ructfe-2019/services/locator/B.class", "rb") as class_file:
-        class_content = class_file.read()
-    cr = ClassBuilder(class_content)
-    cr.add_field("ab120")
-    clazz = cr.get_class()
-
-    cw = ClassWriter(clazz)
-    print(clazz)
-    with open("/Users/daniil.sharko/git/ructfe-2019/services/locator/MyNew.class", "wb") as new_class_file:
-        new_class_file.write(cw.get_class())
-
-
-if __name__ == '__main__':
-    main()
+# cb = ClassBuilder(class_content)
+# cb.add_field("field")
+# clazz = cb.get_class()
+#
+# cw = ClassWriter(clazz)
+# cw.get_class()

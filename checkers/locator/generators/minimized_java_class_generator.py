@@ -1,14 +1,14 @@
 pack = lambda a, b: [b] if a == "b" else [b // 256, b % 256]
 
 
-def make_class(field_names):
+def make_class(class_name, field_names):
     constant_pool = [None, ("a", (3, 13)), ("b", 14),
                      ("b", 15), ("c", ('<init>', 4)),
                      ("c", ('()V', 5)), ("c", ('Code', 6)),
                      ("c", ('', 7)), ("c", ('', 8)),
-                     ("c", ('this', 9)), ("c", ('LB;', 10)),
+                     ("c", ('this', 9)), ("c", (f'L{class_name};', 10)),
                      ("c", ('', 11)), ("c", ('', 12)),
-                     ("d", (4, 5)), ("c", ('B', 14)),
+                     ("d", (4, 5)), ("c", (class_name, 14)),
                      ("c", ('java/lang/Object', 15))]
     fields = []
 
@@ -58,4 +58,4 @@ def make_class(field_names):
     res = []
     for line in buffer:
         res.extend(line)
-    return res
+    return bytes(res)
