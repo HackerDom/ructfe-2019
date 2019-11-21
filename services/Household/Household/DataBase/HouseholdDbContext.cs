@@ -68,8 +68,32 @@ namespace Household.DataBase
 
             builder.Entity<DishInMenu>()
                 .HasOne(item => item.Menu)
-                .WithMany(m => m.DishesInMenu)
+                .WithMany(menu => menu.DishesInMenu)
                 .HasForeignKey(item => item.MenuId);
+
+            // Dish and Order relation
+            builder.Entity<DishInOrder>()
+                .HasKey(dishInMenu => new
+                {
+                    dishInMenu.DishId,
+                    dishInMenu.OrderId
+                });
+
+            builder.Entity<DishInOrder>()
+                .HasOne(item => item.Dish)
+                .WithMany(dish => dish.Orders)
+                .HasForeignKey(item => item.DishId);
+
+            builder.Entity<DishInOrder>()
+                .HasOne(item => item.Order)
+                .WithMany(order => order.DishesInOrder)
+                .HasForeignKey(item => item.OrderId);
+
+            //// Menu and Order relation
+            //builder.Entity<Order>()
+            //    .HasOne(order => order.Menu)
+            //    .WithMany(menu => menu.Orders)
+            //    .HasForeignKey(order => order.MenuId);
 
             SetSizeConstraint(builder);
             SetDefaultCreatedDate(builder);
@@ -81,10 +105,12 @@ namespace Household.DataBase
         {
             builder.Entity<Product>()
                 .Property(product => product.Name)
+                .IsRequired()
                 .HasMaxLength(100);
 
             builder.Entity<Dish>()
                 .Property(dish => dish.Name)
+                .IsRequired()
                 .HasMaxLength(100);
             builder.Entity<Dish>()
                 .Property(dish => dish.Description)

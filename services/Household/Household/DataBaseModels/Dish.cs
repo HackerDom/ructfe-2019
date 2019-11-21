@@ -15,6 +15,7 @@ namespace Household.DataBaseModels
 
         public List<Ingredient> Ingredients { get; set; }
         public List<DishInMenu> Menus { get; set; }
+        public List<DishInOrder> Orders { get; set; }
 
         public double Protein => CalculatePortionValue(Ingredients.Sum(i => i.Protein));
         public double Fat => CalculatePortionValue(Ingredients.Sum(i => i.Fat));

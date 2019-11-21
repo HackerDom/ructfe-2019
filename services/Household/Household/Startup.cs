@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace Household
 {
@@ -65,6 +66,15 @@ namespace Household
 
             services.AddRazorPages();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Apishka",
+                    Version = "v1"
+                });
+            });
+
             services.AddAutoMapper(typeof(Startup));
         }
 
@@ -79,10 +89,19 @@ namespace Household
             else
             {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts();
             }
 
             app.UseRouting();
+
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.DocumentTitle = "Swagger UI - QuickApp";
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Apishka Name V1");
+                });
+            }
 
             app.UseStaticFiles();
             if (!env.IsDevelopment())

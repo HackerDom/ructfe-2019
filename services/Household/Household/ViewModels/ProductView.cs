@@ -1,4 +1,6 @@
-﻿namespace Household.ViewModels
+﻿using System;
+
+namespace Household.ViewModels
 {
     public class ProductView
     {
@@ -8,5 +10,6 @@
         public double Fat { get; set; }
         public double Carbohydrate { get; set; }
         public double Calories { get; set; }
+        public DateTime Created { get; set; }
     }
 }

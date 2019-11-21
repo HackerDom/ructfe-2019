@@ -11,5 +11,6 @@ namespace Household.DataBaseModels
         public string Name { get; set; }
         public string Description { get; set; }
         public List<DishInMenu> DishesInMenu { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }

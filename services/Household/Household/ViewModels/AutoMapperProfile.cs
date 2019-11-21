@@ -42,13 +42,25 @@ namespace Household.ViewModels
             CreateMap<DishViewCook, Dish>();
 
             CreateMap<Menu, MenuView>()
-                .ForMember(mvm => mvm.DishIds,
+                .ForMember(menuView => menuView.DishIds,
                     map => map.MapFrom(menu =>
                         menu.DishesInMenu.Select(dishInMenu => dishInMenu.Dish.Id)));
             CreateMap<MenuView, Menu>()
-                .ForMember(mvm => mvm.DishesInMenu,
-                    map => map.MapFrom(menu =>
-                        menu.DishIds.Select(dish => new DishInMenu
+                .ForMember(menu => menu.DishesInMenu,
+                    map => map.MapFrom(menuView =>
+                        menuView.DishIds.Select(dish => new DishInMenu
+                        {
+                            DishId = dish
+                        })));
+
+            CreateMap<Order, OrderView>()
+                .ForMember(orderView => orderView.DishIds,
+                    map => map.MapFrom(order =>
+                        order.DishesInOrder.Select(dishInOrder => dishInOrder.Dish.Id)));
+            CreateMap<OrderView, Order>()
+                .ForMember(order => order.DishesInOrder,
+                    map => map.MapFrom(orderView =>
+                        orderView.DishIds.Select(dish => new DishInMenu
                         {
                             DishId = dish
                         })));

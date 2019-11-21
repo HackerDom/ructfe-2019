@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 namespace Household.ViewModels
 {
-    public class MenuView
+    public class OrderView
     {
         public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public int MenuId { get; set; }
         public List<int> DishIds { get; set; }
         public DateTime Created { get; set; }
     }
