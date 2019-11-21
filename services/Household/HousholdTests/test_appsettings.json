@@ -8,6 +8,6 @@
     "AllowedHosts": "*",
     "DataBaseSystem": "PostgreSQL",
     "ConnectionStrings": {
-        "DataBaseContext": "Host=localhost;Port=5432;Database=HouseholdDatabase;Username=postgres;Password=adminhip"
+        "DataBaseContext": "Host=localhost;Port=5432;Database=TestHouseholdDatabase;Username=postgres;Password=adminhip"
     }
 }

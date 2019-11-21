@@ -57,7 +57,8 @@ namespace HouseholdTests.UnitTests
             products.Value[2].Name.Should().Be("Avocado");
         }
 
-        [Test] // not work because there are no DB and no length error from DB
+        [Test]
+        [Ignore("don't work because there are no DB and no length error from DB")]
         public void Should_not_work_with_long_server_file_xxe()
         {
             var xmlStream = File.OpenRead(xxePath_LongLocalFile);

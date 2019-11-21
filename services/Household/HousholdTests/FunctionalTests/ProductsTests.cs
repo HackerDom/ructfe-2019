@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Household.ViewModels;
 using HouseholdTests.Infrastructure;
+using HouseholdTests.Utils;
 using NUnit.Framework;
 
 namespace HouseholdTests.FunctionalTests
@@ -39,6 +40,21 @@ namespace HouseholdTests.FunctionalTests
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
             getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
+        }
+
+        [Test]
+        public async Task Should_return_bad_request_when_create_product_with_long_name()
+        {
+            var user = await env.RegisterNewUser().ConfigureAwait(false);
+
+            var product = new ProductViewModel
+            {
+                Name = Generator.GetRandomString(200)
+            };
+
+            var createResult = await user.Client.Post("/api/Products", product).ConfigureAwait(false);
+            createResult.EnsureStatusCode(HttpStatusCode.BadRequest);
+            createResult.Message.Should().Be("22001: значение не умещается в тип character varying(100)");
         }
 
         [Test]

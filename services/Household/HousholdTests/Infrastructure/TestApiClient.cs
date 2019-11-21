@@ -5,7 +5,6 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using HouseholdTests.Utils;
 using Newtonsoft.Json;
 
 namespace HouseholdTests.Infrastructure
@@ -68,9 +67,7 @@ namespace HouseholdTests.Infrastructure
                         return new ApiResult<T>(response, stringContent as T);
                     }
 
-                    e.ChangeMessage($"Failed to deserialize service response as type '{typeof(T)}': '{stringContent}'.\n"
-                                    + e.Message);
-                    throw;
+                    return new ApiResult<T>(response, message: stringContent);
                 }
             }
 

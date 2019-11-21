@@ -14,7 +14,7 @@ namespace Household.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class DishesController : ControllerBase
+    public class DishesController : HouseholdControllerBase
     {
         private readonly HouseholdDbContext dataBase;
         private readonly IMapper mapper;
@@ -25,12 +25,6 @@ namespace Household.Controllers
             this.mapper = mapper;
         }
 
-        /// <summary>
-        /// Список доступных блюд
-        /// </summary>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
-        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<Page<DishViewModel>>> GetDishes(int skip = 0, int take = 100)
         {
@@ -65,7 +59,6 @@ namespace Household.Controllers
             return page;
         }
 
-        // GET: api/Dishes/5
         [HttpGet("{id}")]
         public ActionResult<DishViewModel> GetDish(int id)
         {
@@ -87,21 +80,20 @@ namespace Household.Controllers
             return GetViewModel(dish);
         }
 
-        // POST: api/Dishes
         [HttpPost]
         public async Task<ActionResult<DishViewModel>> PostDish(DishViewModel dishViewModel)
         {
             var dish = GetDataModel(dishViewModel);
             dataBase.Dishes.Add(dish);
-            await dataBase.SaveChangesAsync();
 
-            return CreatedAtAction(
-                "GetDish",
-                new
-                {
-                    id = dish.Id
-                },
-                GetViewModel(dish));
+            var saveResult = await dataBase.SaveChanges();
+            if (saveResult.IsFail)
+                return ResponseFromApiResult(saveResult);
+
+            return CreatedAtAction("GetDish", new
+            {
+                id = dish.Id
+            }, GetViewModel(dish));
         }
 
         private DishViewModel GetViewModel(Dish dishDataModel)
@@ -116,11 +108,6 @@ namespace Household.Controllers
             dishDataModel.CreatedBy = GetUserId();
 
             return dishDataModel;
-        }
-
-        private string GetUserId()
-        {
-            return User.Claims.ToArray()[5].Value;
         }
     }
 }

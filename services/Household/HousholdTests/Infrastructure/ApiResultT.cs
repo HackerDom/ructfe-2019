@@ -9,15 +9,16 @@ namespace HouseholdTests.Infrastructure
     public class ApiResult<T>
     {
         public HttpStatusCode StatusCode => response.StatusCode;
-        public string Message => response.ReasonPhrase;
+        public string Message { get; }
         public T Value { get; }
 
         private readonly HttpResponseMessage response;
 
-        public ApiResult(HttpResponseMessage response, T value = default)
+        public ApiResult(HttpResponseMessage response, T value = default, string message = null)
         {
             this.response = response;
             Value = value;
+            Message = message ?? response.ReasonPhrase;
         }
 
         public void EnsureStatusCode(HttpStatusCode code)

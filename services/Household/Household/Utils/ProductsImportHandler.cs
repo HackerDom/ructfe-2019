@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,9 @@ namespace Household.Utils
             catch (Exception e)
             {
                 log.LogError(e, "Something went wrong while parsing products list");
-                return ApiResult<ProductImportModel[]>.Failure(e.Message);
+                return ApiResult<ProductImportModel[]>.Failure(
+                    "Something went wrong while parsing products list",
+                    HttpStatusCode.BadRequest);
             }
         }
     }

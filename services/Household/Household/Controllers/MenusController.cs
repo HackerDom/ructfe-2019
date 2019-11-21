@@ -12,7 +12,7 @@ namespace Household.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MenusController : ControllerBase
+    public class MenusController : HouseholdControllerBase
     {
         private readonly HouseholdDbContext dataBase;
         private readonly IMapper mapper;
@@ -23,7 +23,6 @@ namespace Household.Controllers
             this.mapper = mapper;
         }
 
-        // GET: api/Menus
         [HttpGet]
         public async Task<ActionResult<Page<MenuViewModel>>> GetMenus(int skip = 0, int take = 100)
         {
@@ -50,7 +49,6 @@ namespace Household.Controllers
             return page;
         }
 
-        // GET: api/Menus/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MenuViewModel>> GetMenu(int id)
         {
@@ -64,15 +62,20 @@ namespace Household.Controllers
             return mapper.Map<MenuViewModel>(menu);
         }
 
-        // POST: api/Menus
         [HttpPost]
         public async Task<ActionResult<MenuViewModel>> PostMenu(MenuViewModel menuViewModel)
         {
             var menu = mapper.Map<Menu>(menuViewModel);
             dataBase.Menus.Add(menu);
-            await dataBase.SaveChangesAsync();
 
-            return CreatedAtAction("GetMenu", new {id = menu.Id}, mapper.Map<MenuViewModel>(menu));
+            var saveResult = await dataBase.SaveChanges();
+            if (saveResult.IsFail)
+                return ResponseFromApiResult(saveResult);
+
+            return CreatedAtAction("GetMenu", new
+            {
+                id = menu.Id
+            }, mapper.Map<MenuViewModel>(menu));
         }
     }
 }

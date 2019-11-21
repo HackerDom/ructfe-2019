@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Household.DataBase;
@@ -12,7 +13,6 @@ using Household.ViewModels;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace Household.Controllers
@@ -20,25 +20,19 @@ namespace Household.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : HouseholdControllerBase
     {
         private readonly HouseholdDbContext dataBase;
         private readonly IMapper mapper;
-        private readonly ILogger<ProductsController> log;
-        private readonly HouseholdConfiguration configuration;
         private readonly ProductsImportHandler importHandler;
 
         public ProductsController(
             HouseholdDbContext dataBase,
             IMapper mapper,
-            ILogger<ProductsController> log,
-            HouseholdConfiguration configuration,
             ProductsImportHandler importHandler)
         {
             this.dataBase = dataBase;
             this.mapper = mapper;
-            this.log = log;
-            this.configuration = configuration;
             this.importHandler = importHandler;
         }
 
@@ -96,7 +90,10 @@ namespace Household.Controllers
         {
             var product = GetDataModel(productViewModel);
             dataBase.Products.Add(product);
-            await dataBase.SaveChangesAsync();
+
+            var saveResult = await dataBase.SaveChanges();
+            if (saveResult.IsFail)
+                return ResponseFromApiResult(saveResult);
 
             return CreatedAtAction("GetProduct", new
             {
@@ -118,16 +115,17 @@ namespace Household.Controllers
 
             var (streamedFileContent, fileName) = loadResult.Value;
 
-            // todo: check extension
+            var processImportResult = importHandler.ProcessImport(streamedFileContent);
 
-            var productViews = importHandler.ProcessImport(streamedFileContent);
+            if (processImportResult.IsFail)
+                return ResponseFromApiResult(processImportResult);
 
-            if (productViews.IsFail)
-                return UnprocessableEntity("Something went wrong during parsing");
-
-            var products = productViews.Value.Select(GetDataModel).ToList();
+            var products = processImportResult.Value.Select(GetDataModel).ToList();
             dataBase.Products.AddRange(products);
-            await dataBase.SaveChangesAsync();
+
+            var saveResult = await dataBase.SaveChanges();
+            if (saveResult.IsFail)
+                return ResponseFromApiResult(saveResult);
 
             var userId = GetUserId();
             var totalCount = await dataBase.Products
@@ -151,7 +149,8 @@ namespace Household.Controllers
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
                 return ApiResult<(Stream FileContent, string FileName)>.Failure(
-                    $"The request couldn't be processed because of ContentType: {Request.ContentType}");
+                    $"The request couldn't be processed because of ContentType: {Request.ContentType}",
+                    HttpStatusCode.BadRequest);
             }
 
             var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType)); //_defaultFormOptions.MultipartBoundaryLengthLimit);
@@ -162,19 +161,22 @@ namespace Household.Controllers
             if (!hasContentDispositionHeader)
             {
                 return ApiResult<(Stream FileContent, string FileName)>.Failure(
-                    "The request couldn't be processed because of absent ContentDisposition");
+                    "The request couldn't be processed because of absent ContentDisposition",
+                    HttpStatusCode.BadRequest);
             }
 
-            // This check assumes that there's a file present without form data. If form data is present, this method immediately fails and returns the model error.
+            // This check assumes that there's a file present without form data.
+            // If form data is present, this method immediately fails and returns the model error.
             if (!MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
             {
                 return ApiResult<(Stream FileContent, string FileName)>.Failure(
-                    $"The request couldn't be processed because of ContentDisposition {contentDisposition}");
+                    $"The request couldn't be processed because of ContentDisposition {contentDisposition}",
+                    HttpStatusCode.BadRequest);
             }
 
             var streamedFileContent = section.Body;
             if (!ModelState.IsValid)
-                return ApiResult<(Stream FileContent, string FileName)>.Failure("");
+                return ApiResult<(Stream FileContent, string FileName)>.Failure("", HttpStatusCode.BadRequest);
 
             return ApiResult<(Stream FileContent, string FileName)>
                 .Success((streamedFileContent, contentDisposition.FileName.Value));
@@ -200,11 +202,6 @@ namespace Household.Controllers
             productDataModel.CreatedBy = GetUserId();
 
             return productDataModel;
-        }
-
-        private string GetUserId()
-        {
-            return User.Claims.ToArray()[5].Value;
         }
     }
 }

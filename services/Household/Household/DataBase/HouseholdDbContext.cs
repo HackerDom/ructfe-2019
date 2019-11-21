@@ -1,24 +1,30 @@
-﻿using Household.DataBaseModels;
+﻿using System.Net;
+using Household.DataBaseModels;
 using Household.Utils;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace Household.DataBase
 {
     public class HouseholdDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         private readonly HouseholdConfiguration configuration;
+        private readonly ILogger<HouseholdDbContext> logger;
 
         public HouseholdDbContext(
             DbContextOptions<HouseholdDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions,
-            HouseholdConfiguration configuration)
+            HouseholdConfiguration configuration,
+            ILogger<HouseholdDbContext> logger)
             : base(options, operationalStoreOptions)
         {
             this.configuration = configuration;
-            //Database.EnsureDeleted();
+            this.logger = logger;
+
             // ReSharper disable once VirtualMemberCallInConstructor
             Database.EnsureCreated();
         }
@@ -93,6 +99,26 @@ namespace Household.DataBase
                 .HasDefaultValueSql(getDateExpression);
 
             base.OnModelCreating(builder);
+        }
+
+        public new async Task<ApiResult<int>> SaveChanges()
+        {
+            try
+            {
+                var savedCount = await base.SaveChangesAsync();
+                return ApiResult<int>.Success(savedCount);
+            }
+
+            catch (DbUpdateConcurrencyException e)
+            {
+                logger.LogError(e, "Concurrency error while updating database");
+                return ApiResult<int>.Failure("Concurrency error while updating database", HttpStatusCode.InternalServerError);
+            }
+            catch (DbUpdateException e)
+            {
+                logger.LogError(e, "Error while updating database");
+                return ApiResult<int>.Failure(e.InnerException?.Message, HttpStatusCode.BadRequest);
+            }
         }
     }
 }
