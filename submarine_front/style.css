@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap&subset=cyrillic,cyrillic-ext');
+
+body {
+	font-family: 'Press Start 2P';
+	background-color: black;
+	color: white;
+	text-align: center;
+}
+
+img {
+	width: 50%;
+	padding: 5px;
+
+}
+
+
+a {
+	color: #d1d95f;
+}
+a:hover {
+	color: #d1d95f;
+	 text-decoration: none;
+}
+
+a:visited {
+	color: #d1d95f;
+}
+
+
+a.service {
+	color: white;
+}
+a.service:hover {
+	color: white;
+	 text-decoration: none;
+}
+
+a.service:visited {
+	color: white;
+}
+
+
+.grid-container {
+  padding: 10rem 1rem 1rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "locator patrol staff radio household docs engine";
+}
+
+.locator { grid-area: locator; }
+
+.patrol { grid-area: patrol; }
+
+.staff { grid-area: staff; }
+
+.radio { grid-area: radio; }
+
+.household { grid-area: household; }
+
+.docs { grid-area: docs; }
+
+.engine { grid-area: engine; }
