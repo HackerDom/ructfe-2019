@@ -1,0 +1,13 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.child {
+    display: inline-flex;
+}
+
+/*.rightElement {*/
+/*    display: inline-flex;*/
+/*}*/

@@ -1,0 +1,8 @@
+@import "../../colors.css";
+
+.text {
+    color: var(--white);
+    font-size: 18px;
+    font-family: sans-serif;
+    user-select: none;
+}

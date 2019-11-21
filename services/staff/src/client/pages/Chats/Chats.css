@@ -1,0 +1,25 @@
+@import "../../colors.css";
+
+.chats {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--black);
+    height: 100%;
+
+}
+
+.chatsNames {
+    flex: 0 0 auto;
+    width: 300px;
+}
+
+.divider {
+    background-color: var(--white);
+    height: 100%;
+    width: 1px;
+    flex: 0 0 auto;
+}
+
+.chatCreation {
+    padding: 10px;
+}

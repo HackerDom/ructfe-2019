@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Users</h1>
+
+  <div id="users_table"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+$(document).ready(function(){
+  $.get("/get_users")
+  .done(function(data) {
+    var table = $('<table>').addClass('table').addClass('table-dark').addClass('table-striped');
+    var tbody = $('<tbody>');
+    $.each(data.users, function(index, value) {
+      tbody.append($('<tr>').text(value).addClass('text-center'));
+    });
+    table.append(tbody)
+    $('#users_table').append(table);
+  })
+});
+{% endblock %}

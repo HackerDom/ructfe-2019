@@ -1,0 +1,53 @@
+@import "../../colors.css";
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.chatName {
+    flex: 0 0 auto;
+    color: var(--white);
+    box-sizing: border-box;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.chatSender {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 60px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+.messagesContainer {
+    position: relative;
+    flex: 1 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.messages {
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.message {
+    margin: 12px;
+}
+
+.messageText {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--white);
+    color: var(--white);
+    display: inline-block;
+}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Sign note{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Sign</h1>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="login">Login: </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control input-sm" id="login">
+    </div>
+  </div>
+
+  <div class="form-group">
+      <label class="control-label col-sm-2" for="data">Data: </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control input-sm" id="data">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="algo">Algo: </label>
+    <div class="col-sm-10">
+      <select class="custom-select" id="algo">
+        <option>lwe</option>
+        <option>stop</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-2">
+      <button type="button" class="btn btn-dark" id="sign">Sign</button>
+    </div>
+  </div>
+
+  <div class="form-inline">
+    <label class="control-label col-sm-2" for="pub_key">Public key: </label>
+    <div class="well well-sm col-sm-10">
+      <samp id="pub_key"></samp>
+    </div>
+  </div>
+
+  <div class="form-inline">
+    <label class="control-label col-sm-2" for="hash">Message hash: </label>
+    <div class="well well-sm col-sm-10">
+      <samp id="hash"></samp>
+    </div>
+  </div>
+
+  <div class="form-inline">
+    <label class="control-label col-sm-2" for="signature">Signature: </label>
+    <div class="well well-sm col-sm-10">
+      <samp id="signature"></samp>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+$(document).ready(function(){
+  $("#sign").click(function() {
+    var login = $("#login").val();
+    var algo = $("#algo option:selected").text();
+    var context = $("#data").val();
+    $.get("/get_pub_key", {"login": login, "algo": algo})
+    .done(function(data) {
+      $("#pub_key").text(data.pub_key);
+    });
+    $.post("/sign", {"login":login, "algo": algo, "data": context})
+    .done(function(data) {
+      $("#hash").text(data.h);
+      $("#signature").text(data.s);
+    });
+  });
+});
+{% endblock %}

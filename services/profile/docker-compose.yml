@@ -1,0 +1,39 @@
+version: '3.2'
+
+services:
+  redis:
+    image: redis
+    restart: always
+
+  lwe:
+    build: dockers/lwe
+    restart: always
+    stop_grace_period: 5s
+    volumes:
+      - ./dockers/lwe:/app
+    command: gunicorn --chdir /app service.api:app -b :11111 --reload --worker-class aiohttp.GunicornWebWorker --access-logfile -
+    links:
+      - redis
+
+  stop:
+    build: dockers/stop
+    restart: always
+    stop_grace_period: 5s
+    volumes:
+      - ./dockers/stop:/app
+    command: gunicorn --chdir /app service.api:app -b :11111 --reload --worker-class aiohttp.GunicornWebWorker --access-logfile -
+    links:
+      - redis
+
+  main:
+    build: dockers/main
+    restart: always
+    stop_grace_period: 5s
+    volumes:
+      - ./dockers/main:/app
+    command: gunicorn --chdir /app service.app:app -b :20561 --reload --access-logfile -
+    ports:
+      - "20561:20561"
+    links:
+      - stop
+      - lwe

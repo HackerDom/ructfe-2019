@@ -1,4 +1,8 @@
 ---
+- name: Uploading service
+  debug:
+    msg: "Uploading {{ service_name }}"
+
 - name: Create service user
   user:
     name: "{{ service_name }}"
