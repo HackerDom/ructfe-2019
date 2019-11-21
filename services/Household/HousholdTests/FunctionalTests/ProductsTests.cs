@@ -22,7 +22,7 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_create_product_and_retrieve_it()
         {
-            var user = await env.RegisterNewUser().ConfigureAwait(false);
+            var user = await env.RegisterNewUser();
 
             var product = new ProductViewModel
             {
@@ -33,10 +33,10 @@ namespace HouseholdTests.FunctionalTests
                 Protein = 0.1
             };
 
-            var createResult = await user.Client.Post("/api/Products", product).ConfigureAwait(false);
+            var createResult = await user.Client.Post("/api/Products", product);
             createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            var getResult = await user.Client.Get<ProductViewModel>($"/api/Products/{createResult.Value.Id}").ConfigureAwait(false);
+            var getResult = await user.Client.Get<ProductViewModel>($"/api/Products/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
             getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
@@ -45,14 +45,14 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_return_bad_request_when_create_product_with_long_name()
         {
-            var user = await env.RegisterNewUser().ConfigureAwait(false);
+            var user = await env.RegisterNewUser();
 
             var product = new ProductViewModel
             {
                 Name = Generator.GetRandomString(200)
             };
 
-            var createResult = await user.Client.Post("/api/Products", product).ConfigureAwait(false);
+            var createResult = await user.Client.Post("/api/Products", product);
             createResult.EnsureStatusCode(HttpStatusCode.BadRequest);
             createResult.Message.Should().Be("22001: значение не умещается в тип character varying(100)");
         }
@@ -60,11 +60,11 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_create_several_product_and_retrieve_list()
         {
-            var user = await env.RegisterNewUser().ConfigureAwait(false);
+            var user = await env.RegisterNewUser();
 
             await PostTestProductsToServer(user);
 
-            var getProducts = await user.Client.Get<Page<ProductViewModel>>("api/products").ConfigureAwait(false);
+            var getProducts = await user.Client.Get<Page<ProductViewModel>>("api/products");
             getProducts.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getProducts.Value;
 
@@ -77,12 +77,12 @@ namespace HouseholdTests.FunctionalTests
         [Test]
         public async Task Should_create_several_product_and_retrieve_as_list_with_skip_and_take()
         {
-            var user = await env.RegisterNewUser().ConfigureAwait(false);
+            var user = await env.RegisterNewUser();
 
             await PostTestProductsToServer(user);
 
             var getProducts = await user.Client.Get<Page<ProductViewModel>>(
-                $"api/products?skip={testProducts.Length - 2}&take={1}").ConfigureAwait(false);
+                $"api/products?skip={testProducts.Length - 2}&take={1}");
             getProducts.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getProducts.Value;
 
@@ -132,7 +132,7 @@ namespace HouseholdTests.FunctionalTests
         {
             foreach (var product in testProducts)
             {
-                var createResult = await user.Client.Post("api/products", product).ConfigureAwait(false);
+                var createResult = await user.Client.Post("api/products", product);
                 createResult.EnsureStatusCode(HttpStatusCode.Created);
             }
         }

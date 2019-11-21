@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Household.DataBaseModels;
 using Microsoft.AspNetCore.Authorization;
@@ -69,30 +70,36 @@ namespace Household.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             logger.LogInformation($"ModelState.IsValid: {ModelState.IsValid}");
-            if (ModelState.IsValid)
+
+            if (!ModelState.IsValid)
+                return Page();
+
+            if (!Enum.TryParse(Input.Role, out Role role))
             {
-                var user = new ApplicationUser
-                {
-                    UserName = Input.Email,
-                    Email = Input.Email
-                };
-                var result = await userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("User created a new account with password.");
-
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                ModelState.AddModelError("Form", $"Wrong role: {Input.Role}. Expected '{Roles[0]}' or '{Roles[1]}'");
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+            var user = new ApplicationUser
+            {
+                UserName = Input.Email,
+                Email = Input.Email,
+                Role = role,
+                RegistrationDate = DateTime.UtcNow
+            };
+            var result = await userManager.CreateAsync(user, Input.Password);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+                return Page();
+            }
+
+            logger.LogInformation("User created a new account with password.");
+
+            await signInManager.SignInAsync(user, isPersistent: false);
+            return LocalRedirect(returnUrl);
         }
     }
 }

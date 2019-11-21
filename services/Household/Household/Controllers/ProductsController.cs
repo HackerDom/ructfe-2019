@@ -29,7 +29,7 @@ namespace Household.Controllers
         public ProductsController(
             HouseholdDbContext dataBase,
             IMapper mapper,
-            ProductsImportHandler importHandler)
+            ProductsImportHandler importHandler) : base(dataBase)
         {
             this.dataBase = dataBase;
             this.mapper = mapper;
@@ -45,17 +45,14 @@ namespace Household.Controllers
                 return BadRequest("Parameter skip should be greater or equal to 0");
             take = Math.Min(take, 100);
 
-            var userId = GetUserId();
             var items = await dataBase.Products
-                .Where(p => p.CreatedBy == userId)
+                .Where(p => p.CreatedBy == CurrentUser.Id)
                 .Skip(skip).Take(take)
-                .ToArrayAsync()
-                .ConfigureAwait(false);
+                .ToArrayAsync();
 
             var totalCount = await dataBase.Products
-                .Where(p => p.CreatedBy == userId)
-                .CountAsync()
-                .ConfigureAwait(false);
+                .Where(p => p.CreatedBy == CurrentUser.Id)
+                .CountAsync();
 
             var page = new Page<ProductViewModel>
             {
@@ -70,14 +67,14 @@ namespace Household.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
-            var product = await dataBase.Products.FindAsync(id).ConfigureAwait(false);
+            var product = await dataBase.Products.FindAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            if (product.CreatedBy != GetUserId())
+            if (product.CreatedBy != CurrentUser.Id)
             {
                 return Unauthorized();
             }
@@ -113,7 +110,7 @@ namespace Household.Controllers
                 return BadRequest(ModelState);
             }
 
-            var (streamedFileContent, fileName) = loadResult.Value;
+            var (streamedFileContent, _) = loadResult.Value;
 
             var processImportResult = importHandler.ProcessImport(streamedFileContent);
 
@@ -127,11 +124,9 @@ namespace Household.Controllers
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
-            var userId = GetUserId();
             var totalCount = await dataBase.Products
-                .Where(p => p.CreatedBy == userId)
-                .CountAsync()
-                .ConfigureAwait(false);
+                .Where(p => p.CreatedBy == CurrentUser.Id)
+                .CountAsync();
 
             var page = new Page<ProductViewModel>
             {
@@ -191,7 +186,7 @@ namespace Household.Controllers
         private Product GetDataModel(ProductViewModel productViewModel)
         {
             var productDataModel = mapper.Map<Product>(productViewModel);
-            productDataModel.CreatedBy = GetUserId();
+            productDataModel.CreatedBy = CurrentUser.Id;
 
             return productDataModel;
         }
@@ -199,7 +194,7 @@ namespace Household.Controllers
         private Product GetDataModel(ProductImportModel productViewModel)
         {
             var productDataModel = mapper.Map<Product>(productViewModel);
-            productDataModel.CreatedBy = GetUserId();
+            productDataModel.CreatedBy = CurrentUser.Id;
 
             return productDataModel;
         }

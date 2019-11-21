@@ -17,7 +17,7 @@ namespace Household.Controllers
         private readonly HouseholdDbContext dataBase;
         private readonly IMapper mapper;
 
-        public MenusController(HouseholdDbContext dataBase, IMapper mapper)
+        public MenusController(HouseholdDbContext dataBase, IMapper mapper) : base(dataBase)
         {
             this.dataBase = dataBase;
             this.mapper = mapper;
@@ -35,9 +35,10 @@ namespace Household.Controllers
             var items = await dataBase.Menus
                 .Include(m => m.DishesInMenu)
                 .Skip(skip).Take(take)
-                .ToArrayAsync().ConfigureAwait(false);
+                .ToArrayAsync();
 
-            var totalCount = await dataBase.Menus.CountAsync().ConfigureAwait(false);
+            var totalCount = await dataBase.Menus
+                .CountAsync();
 
             var page = new Page<MenuViewModel>
             {

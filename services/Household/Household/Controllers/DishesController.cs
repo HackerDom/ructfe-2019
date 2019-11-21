@@ -19,7 +19,7 @@ namespace Household.Controllers
         private readonly HouseholdDbContext dataBase;
         private readonly IMapper mapper;
 
-        public DishesController(HouseholdDbContext dataBase, IMapper mapper)
+        public DishesController(HouseholdDbContext dataBase, IMapper mapper) : base(dataBase)
         {
             this.dataBase = dataBase;
             this.mapper = mapper;
@@ -34,20 +34,16 @@ namespace Household.Controllers
                 return BadRequest("Parameter skip should be greater or equal to 0");
             take = Math.Min(take, 100);
 
-            var userId = GetUserId();
-
             var items = await dataBase.Dishes
-                .Where(p => p.CreatedBy == userId)
+                .Where(p => p.CreatedBy == CurrentUser.Id)
                 .Include(d => d.Ingredients)
                 .ThenInclude(ing => ing.Product)
                 .Skip(skip).Take(take)
-                .ToArrayAsync()
-                .ConfigureAwait(false);
+                .ToArrayAsync();
 
             var totalCount = await dataBase.Dishes
-                .Where(p => p.CreatedBy == userId)
-                .CountAsync()
-                .ConfigureAwait(false);
+                .Where(p => p.CreatedBy == CurrentUser.Id)
+                .CountAsync();
 
             var page = new Page<DishViewModel>
             {
@@ -72,7 +68,7 @@ namespace Household.Controllers
                 return NotFound();
             }
 
-            if (dish.CreatedBy != GetUserId())
+            if (dish.CreatedBy != CurrentUser.Id)
             {
                 return Unauthorized();
             }
@@ -105,7 +101,7 @@ namespace Household.Controllers
         private Dish GetDataModel(DishViewModel dishViewModel)
         {
             var dishDataModel = mapper.Map<Dish>(dishViewModel);
-            dishDataModel.CreatedBy = GetUserId();
+            dishDataModel.CreatedBy = CurrentUser.Id;
 
             return dishDataModel;
         }

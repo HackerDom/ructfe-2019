@@ -191,8 +191,7 @@ namespace HouseholdTests.FunctionalTests
             }
 
             // act
-            var getDishes = await user.Client.Get<Page<DishViewModel>>("api/Dishes")
-                .ConfigureAwait(false);
+            var getDishes = await user.Client.Get<Page<DishViewModel>>("api/Dishes");
             getDishes.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getDishes.Value;
 
