@@ -19,7 +19,8 @@ namespace Household.DataBase
         {
             this.configuration = configuration;
             //Database.EnsureDeleted();
-            Database.EnsureCreated(); // создаем бд с новой схемой
+            // ReSharper disable once VirtualMemberCallInConstructor
+            Database.EnsureCreated();
         }
 
         internal DbSet<Product> Products { get; set; }
@@ -28,57 +29,67 @@ namespace Household.DataBase
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Product>()
+                .Property(product => product.Name)
+                .HasMaxLength(100);
+            builder.Entity<Dish>()
+                .Property(dish => dish.Name)
+                .HasMaxLength(100);
+            builder.Entity<Menu>()
+                .Property(menu => menu.Name)
+                .HasMaxLength(100);
+
             // Product and Dish relation
             builder.Entity<Ingredient>()
-                .HasKey(t => new
+                .HasKey(ingredient => new
                 {
-                    t.ProductId,
-                    t.DishId
+                    ingredient.ProductId,
+                    ingredient.DishId
                 });
 
             builder.Entity<Ingredient>()
-                .HasOne(i => i.Product)
-                .WithMany(p => p.Ingredients)
-                .HasForeignKey(i => i.ProductId);
+                .HasOne(item => item.Product)
+                .WithMany(product => product.Ingredients)
+                .HasForeignKey(item => item.ProductId);
 
             builder.Entity<Ingredient>()
-                .HasOne(i => i.Dish)
-                .WithMany(d => d.Ingredients)
-                .HasForeignKey(i => i.DishId);
+                .HasOne(item => item.Dish)
+                .WithMany(dish => dish.Ingredients)
+                .HasForeignKey(item => item.DishId);
 
             // Dish and Menu relation
             builder.Entity<DishInMenu>()
-                .HasKey(t => new
+                .HasKey(dishInMenu => new
                 {
-                    t.DishId,
-                    t.MenuId
+                    dishInMenu.DishId,
+                    dishInMenu.MenuId
                 });
 
             builder.Entity<DishInMenu>()
-                .HasOne(i => i.Dish)
-                .WithMany(p => p.Menus)
-                .HasForeignKey(i => i.DishId);
+                .HasOne(item => item.Dish)
+                .WithMany(dish => dish.Menus)
+                .HasForeignKey(item => item.DishId);
 
             builder.Entity<DishInMenu>()
-                .HasOne(i => i.Menu)
-                .WithMany(d => d.DishesInMenu)
-                .HasForeignKey(i => i.MenuId);
+                .HasOne(item => item.Menu)
+                .WithMany(m => m.DishesInMenu)
+                .HasForeignKey(item => item.MenuId);
 
             var getDateExpression = DatabaseSystemFeatures.SqlGetDate(configuration);
             builder.Entity<Product>()
-                .Property(b => b.CreatedDate)
+                .Property(product => product.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
             builder.Entity<Ingredient>()
-                .Property(b => b.CreatedDate)
+                .Property(ingredient => ingredient.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
             builder.Entity<Dish>()
-                .Property(b => b.CreatedDate)
+                .Property(dish => dish.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
             builder.Entity<DishInMenu>()
-                .Property(b => b.CreatedDate)
+                .Property(dishInMenu => dishInMenu.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
             builder.Entity<Menu>()
-                .Property(b => b.CreatedDate)
+                .Property(menu => menu.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
 
             base.OnModelCreating(builder);

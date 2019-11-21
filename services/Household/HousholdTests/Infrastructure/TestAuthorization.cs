@@ -109,7 +109,7 @@ namespace HouseholdTests.Infrastructure
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 OidcConstants.AuthenticationSchemes.AuthorizationHeaderBearer, tokenResponse.AccessToken);
 
-            ParseAndValidateTokenWithPublicKey(tokenResponse.AccessToken);
+            //ParseAndValidateTokenWithPublicKey(tokenResponse.AccessToken);
         }
 
         private static (string CodeVerifier, string CodeChallenge) GetCodesForPKCE()

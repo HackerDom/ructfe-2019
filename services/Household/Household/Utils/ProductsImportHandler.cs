@@ -24,7 +24,7 @@ namespace Household.Utils
                 XmlResolver = new XmlUrlResolver()
             };
 
-            using XmlReader reader = XmlReader.Create(data, settings);
+            using var reader = XmlReader.Create(data, settings);
 
             try
             {
