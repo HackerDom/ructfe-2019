@@ -7,7 +7,7 @@
     "build": "webpack --mode development",
     "start": "nodemon --exec babel-node ./scripts/start.js",
     "watch": "webpack --watch --mode development",
-    "prod": "babel-node ./scripts/start.js",
+    "prod": "webpack-cli -p | babel-node ./scripts/start.js",
     "test": "test"
   },
   "author": "",
