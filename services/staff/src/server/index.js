@@ -93,6 +93,17 @@ export function startMongoDb (mongoUrl) {
         .catch(e => console.log(`Failed to start Mongo db.\n${e}`));
 }
 
+app.get('/chatsPage', function (request, response) {
+    response.sendFile('index.html', { root: staticPath });
+});
+app.get('/auth', function (request, response) {
+    response.sendFile('index.html', { root: staticPath });
+});
+
+app.get('/usersPage/*', function (request, response) {
+    response.sendFile('index.html', { root: staticPath });
+});
+
 app.post('/register', async function (request, response) {
     const passwordHash = request.body.password ? await hashPassword(request.body.password.toString()) : null;
 
@@ -160,10 +171,6 @@ app.get('/user', async (request, response) => {
             errorMessage,
             404);
     }
-});
-
-app.get('/', function (request, response) {
-    response.render('index.html', { root: path.join(__dirname, staticPath) });
 });
 
 app.post('/editUser', checkAuthentication, async function (request, response) {
@@ -338,6 +345,7 @@ app.get('/chats', async function (request, response) {
                 usersIds: chat.usersIds
             };
         }));
+    chats.sort((a, b) => b.id - a.id);
     await sendResponse(response, { chats }, isSuccess, errorMessage);
 });
 

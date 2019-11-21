@@ -3,7 +3,6 @@ import s from './Row.css';
 import cn from 'classnames';
 
 export function Row ({ children, gap, className }) {
-    console.log(children);
     if (children.length <= 1) {
         throw new Error('Row should contain at least one element');
     }
