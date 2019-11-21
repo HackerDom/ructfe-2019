@@ -3,9 +3,10 @@ import s from './Row.css';
 import cn from 'classnames';
 
 export function Row ({ children, gap, className }) {
-    // if (children.length !== 2) {
-    //     throw new Error('Row should contain two children');
-    // }
+    console.log(children);
+    if (children.length <= 1) {
+        throw new Error('Row should contain at least one element');
+    }
 
     const style = {
         width: gap
@@ -13,10 +14,8 @@ export function Row ({ children, gap, className }) {
 
     return (
         <div className={cn(s.row, className)}>
-            {children.map(child => <div style={style} className={s.child}>{child}</div>)}
-            {/*<div style={style} className={s.child}>{children}</div>*/}
-            {/*<div style={style} className={s.child}>{children[0]}</div>*/}
-            {/*<div className={s.child}>{children[1]}</div>*/}
+            <div style={style} className={s.child}>{children[0]}</div>
+            {children.slice(1).map(child => <div className={s.child}>{child}</div>)}
         </div>
     );
 }
