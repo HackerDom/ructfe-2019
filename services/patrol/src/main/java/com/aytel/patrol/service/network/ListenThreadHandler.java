@@ -68,8 +68,9 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
     }
 
     private PatrolResponse handle(PatrolRequest patrolRequest, ChannelHandlerContext ctx) {
-        if (!check(patrolRequest)) {
-            return PatrolResponse.failed(patrolRequest.reqId);
+        String checked = check(patrolRequest);
+        if (checked != null) {
+            return PatrolResponse.failed(patrolRequest.reqId, checked);
         }
 
         Graph graph;
@@ -83,7 +84,7 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                     boolean mode = random.nextBoolean();
                     info = config.getRequestInfo(patrolRequest.reqId);
                     if (info == null) {
-                        return PatrolResponse.failed(patrolRequest.reqId);
+                        return PatrolResponse.failed(patrolRequest.reqId, "i don't know such req_id");
                     }
                     info.setLastIso(patrolRequest.graph);
                     if (mode) {
@@ -99,7 +100,7 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                         return getPatrolResponseIfSuccess(patrolRequest, graph, info);
                     } else {
                         config.removeRequestInfo(patrolRequest.reqId);
-                        return PatrolResponse.failed(patrolRequest.reqId);
+                        return PatrolResponse.failed(patrolRequest.reqId, "wrong vc");
                     }
                 case SEND_PERM:
                     int[] perm = patrolRequest.perm;
@@ -109,18 +110,18 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                         return getPatrolResponseIfSuccess(patrolRequest, graph, info);
                     } else {
                         config.removeRequestInfo(patrolRequest.reqId);
-                        return PatrolResponse.failed(patrolRequest.reqId);
+                        return PatrolResponse.failed(patrolRequest.reqId, "wrong perm");
                     }
                 case GET_GRAPH:
                     info = config.getRequestInfo(patrolRequest.reqId);
                     if (info != null) {
-                        return PatrolResponse.failed(patrolRequest.reqId);
+                        return PatrolResponse.failed(patrolRequest.reqId, "no such graph");
                     }
                     config.createRequestInfo(patrolRequest.reqId, patrolRequest.graphId);
                     return PatrolResponse.graph(patrolRequest.reqId, config.getGraph(patrolRequest.graphId));
                 case PUT_GRAPH:
                     if (config.hasGraph(patrolRequest.graph.getId())) {
-                        return PatrolResponse.failed(patrolRequest.reqId);
+                        return PatrolResponse.failed(patrolRequest.reqId, "already have this graph");
                     } else {
                         config.putGraph(patrolRequest.graph);
                         return PatrolResponse.flag(patrolRequest.reqId, patrolRequest.graph.getDescription());
@@ -129,7 +130,7 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                     throw new RuntimeException();
             }
         } catch (Exception e) {
-            return PatrolResponse.failed(patrolRequest.reqId);
+            return PatrolResponse.failed(patrolRequest.reqId, "smth gone wrong");
         }
     }
 
@@ -185,20 +186,22 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
         return firstEdges.containsAll(secondEdges) && secondEdges.containsAll(firstEdges);
     }
 
-    private boolean check(PatrolRequest patrolRequest) {
+    private String check(PatrolRequest patrolRequest) {
         switch (patrolRequest.type) {
             case LIST:
-                return true;
+                return null;
             case SEND_ISO:
-                return patrolRequest.reqId != null && patrolRequest.graphId != null && patrolRequest.graph != null;
+                return !(patrolRequest.reqId != null && patrolRequest.graphId != null && patrolRequest.graph != null)
+                    ? "" : null;
             case SEND_PERM:
-                return patrolRequest.reqId != null && patrolRequest.perm != null;
+                return !(patrolRequest.reqId != null && patrolRequest.perm != null) ? "" : null;
             case SEND_VC:
-                return patrolRequest.reqId != null && patrolRequest.vc != null;
+                return !(patrolRequest.reqId != null && patrolRequest.vc != null) ? "" : null;
             case GET_GRAPH:
-                return patrolRequest.reqId != null && patrolRequest.graphId != null;
+                return !(patrolRequest.reqId != null && patrolRequest.graphId != null) ? "" : null;
             case PUT_GRAPH:
-                return patrolRequest.reqId != null && patrolRequest.graphId != null && patrolRequest.graph != null;
+                return !(patrolRequest.reqId != null && patrolRequest.graphId != null && patrolRequest.graph != null)
+                    ? "" : null;
             default:
                 throw new RuntimeException();
         }

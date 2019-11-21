@@ -14,10 +14,11 @@ public class PatrolResponse {
         this.type = Type.LIST;
     }
 
-    public static PatrolResponse failed(String reqId) {
+    public static PatrolResponse failed(String reqId, String reason) {
         PatrolResponse patrolResponse = new PatrolResponse();
         patrolResponse.reqId = reqId;
         patrolResponse.type = Type.FAILED;
+        patrolResponse.flag = reason;
         return patrolResponse;
     }
 
