@@ -37,17 +37,24 @@ def get_note_verify(algo, login, note_hash, signature):
 def get_pub_key():
     login = request.args.get('login')
     algo = request.args.get('algo')
+
+    if algo not in ALGOS:
+        return {'error': 'Wrong algo'}, 400
+
     if not db.check_login(login):
         db.save_login(login)
+
     return get_pub_key_by_login(algo, login)
 
 @app.route('/sign', methods=['POST'])
 def sign():
     login = request.form['login']
     algo = request.form['algo']
-    note = {
-        'data': request.form['data']
-    }
+    
+    if algo not in ALGOS:
+        return {'error': 'Wrong algo'}, 400
+    
+    note = {'data': request.form['data']}
     note_hash = md5(dumps(note).encode()).hexdigest()
 
     signature = get_note_sign(algo, login, note_hash)
@@ -59,6 +66,10 @@ def sign():
 def verify():
     login = request.form['login']
     algo = request.form['algo']
+
+    if algo not in ALGOS:
+        return {'error': 'Wrong algo'}, 400
+
     signature = request.form['s']
     note_hash = request.form['h']
 
@@ -68,7 +79,6 @@ def verify():
     result = get_note_verify(algo, login, note_hash, signature)
     if result and result['res']:
         body = db.get_note(algo, note_hash)
-        print(body)
         return body
 
 @app.route('/get_users')
@@ -80,6 +90,10 @@ def get_users():
 def get_notes():
     login = request.args.get('login')
     algo = request.args.get('algo')
+
+    if algo not in ALGOS:
+        return {'error': 'Wrong algo'}, 400
+
     notes = db.get_notes(login, algo)
     return {'notes': list(notes)}
 

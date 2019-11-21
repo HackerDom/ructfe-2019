@@ -55,6 +55,7 @@
 {% block scripts %}
 $(document).ready(function(){
   $("#verify").click(function() {
+    $("#data").text('');
     var login = $("#login").val();
     var algo = $("#algo option:selected").text();
     var hash = $("#hash").val();
@@ -62,12 +63,7 @@ $(document).ready(function(){
     $.post("/verify", {"login":login, "algo": algo, "s": signature, "h": hash})
     .done(function(data) {
       $("#data").text(data.data);
-      $("#error").text('');
     })
-    .fail(function() {
-      $("#data").text('');
-      $("#error").text('ERROR');
-    });
   });
 });
 {% endblock %}
