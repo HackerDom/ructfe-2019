@@ -26,6 +26,7 @@ import io.ktor.util.hex
 import io.ktor.util.toByteArray
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonParsingException
 import managers.UserManager
 import messages.RegisterData
 import messages.UserPair
@@ -88,14 +89,18 @@ fun main() {
                 } ?: call.respondRedirect("/login_page")
             }
             post("/login") {
-                val content = call.receiveChannel().toByteArray().decodeToString()
-                val userPair = Json.parse(UserPair.serializer(), content)
-                userManager.validate(userPair)?.let { user ->
-                    call.sessions.set(AuthSession(user.id.value))
-                    call.respondRedirect("/")
-                    return@post
+                try {
+                    val content = call.receiveChannel().toByteArray().decodeToString()
+                    val userPair = Json.parse(UserPair.serializer(), content)
+                    userManager.validate(userPair)?.let { user ->
+                        call.sessions.set(AuthSession(user.id.value))
+                        call.respondRedirect("/")
+                        return@post
+                    }
+                    call.respond(HttpStatusCode.BadRequest)
+                } catch (e: JsonParsingException) {
+                    call.respond(HttpStatusCode.BadRequest)
                 }
-                call.respond(HttpStatusCode.BadRequest)
             }
             post("/register") {
                 val rawRegData = call.receiveChannel().toByteArray().decodeToString()

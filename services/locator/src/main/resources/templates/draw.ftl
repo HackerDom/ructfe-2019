@@ -6,7 +6,7 @@
 </head>
 <body onload="init()" id="body">
 
-<label id="user-label">Hello, ${username}!</label>
+<label id="user-label">${username}</label>
 
 <div class="pointer" id="pointer">
     <div></div>
