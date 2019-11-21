@@ -4,17 +4,10 @@
     align-items: center;
 }
 
-.leftElementContainer {
-    position: relative;
+.child {
+    display: inline-flex;
 }
 
-.leftElement {
-    position: absolute;
-    bottom: 50%;
-    transform: translateY(50%);
-    width: 100%;
-}
-
-.rightElement {
-    flex: 1 0 auto;
-}
+/*.rightElement {*/
+/*    display: inline-flex;*/
+/*}*/
