@@ -35,16 +35,6 @@ namespace Household.DataBase
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Product>()
-                .Property(product => product.Name)
-                .HasMaxLength(100);
-            builder.Entity<Dish>()
-                .Property(dish => dish.Name)
-                .HasMaxLength(100);
-            builder.Entity<Menu>()
-                .Property(menu => menu.Name)
-                .HasMaxLength(100);
-
             // Product and Dish relation
             builder.Entity<Ingredient>()
                 .HasKey(ingredient => new
@@ -81,6 +71,38 @@ namespace Household.DataBase
                 .WithMany(m => m.DishesInMenu)
                 .HasForeignKey(item => item.MenuId);
 
+            SetSizeConstraint(builder);
+            SetDefaultCreatedDate(builder);
+
+            base.OnModelCreating(builder);
+        }
+
+        private void SetSizeConstraint(ModelBuilder builder)
+        {
+            builder.Entity<Product>()
+                .Property(product => product.Name)
+                .HasMaxLength(100);
+
+            builder.Entity<Dish>()
+                .Property(dish => dish.Name)
+                .HasMaxLength(100);
+            builder.Entity<Dish>()
+                .Property(dish => dish.Description)
+                .HasMaxLength(200);
+            builder.Entity<Dish>()
+                .Property(dish => dish.Recipe)
+                .HasMaxLength(500);
+
+            builder.Entity<Menu>()
+                .Property(menu => menu.Name)
+                .HasMaxLength(100);
+            builder.Entity<Menu>()
+                .Property(menu => menu.Description)
+                .HasMaxLength(100);
+        }
+
+        private void SetDefaultCreatedDate(ModelBuilder builder)
+        {
             var getDateExpression = DatabaseSystemFeatures.SqlGetDate(configuration);
             builder.Entity<Product>()
                 .Property(product => product.CreatedDate)
@@ -97,8 +119,6 @@ namespace Household.DataBase
             builder.Entity<Menu>()
                 .Property(menu => menu.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
-
-            base.OnModelCreating(builder);
         }
 
         public new async Task<ApiResult<int>> SaveChanges()

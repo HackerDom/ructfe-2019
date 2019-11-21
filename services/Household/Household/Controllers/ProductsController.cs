@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Household.DataBase;
@@ -12,8 +10,6 @@ using Household.Utils;
 using Household.ViewModels;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Net.Http.Headers;
 
 namespace Household.Controllers
 {
@@ -37,7 +33,7 @@ namespace Household.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Page<ProductViewModel>>> GetProducts(int skip = 0, int take = 100)
+        public async Task<ActionResult<Page<ProductView>>> GetProducts(int skip = 0, int take = 100)
         {
             if (take < 1)
                 return BadRequest("Parameter take should be greater then 0");
@@ -54,7 +50,7 @@ namespace Household.Controllers
                 .Where(p => p.CreatedBy == CurrentUser.Id)
                 .CountAsync();
 
-            var page = new Page<ProductViewModel>
+            var page = new Page<ProductView>
             {
                 Skip = skip,
                 Take = take,
@@ -65,26 +61,24 @@ namespace Household.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
+        public async Task<ActionResult<ProductView>> GetProduct(int id)
         {
             var product = await dataBase.Products.FindAsync(id);
 
-            if (product == null)
+            if (product == null || product.CreatedBy != CurrentUser.Id)
             {
                 return NotFound();
-            }
-
-            if (product.CreatedBy != CurrentUser.Id)
-            {
-                return Unauthorized();
             }
 
             return GetViewModel(product);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductViewModel>> PostProduct(ProductViewModel productViewModel)
+        public async Task<ActionResult<ProductView>> PostProduct(ProductView productViewModel)
         {
+            if (CurrentUser.Role != Role.Cook)
+                return NotAllowed();
+
             var product = GetDataModel(productViewModel);
             dataBase.Products.Add(product);
 
@@ -100,8 +94,11 @@ namespace Household.Controllers
 
         [HttpPost]
         [Route("import")]
-        public async Task<ActionResult<Page<ProductViewModel>>> Import()
+        public async Task<ActionResult<Page<ProductView>>> Import()
         {
+            if (CurrentUser.Role != Role.Cook)
+                return NotAllowed();
+
             var loadResult = await LoadFile();
             if (loadResult.IsFail)
             {
@@ -128,7 +125,7 @@ namespace Household.Controllers
                 .Where(p => p.CreatedBy == CurrentUser.Id)
                 .CountAsync();
 
-            var page = new Page<ProductViewModel>
+            var page = new Page<ProductView>
             {
                 Skip = -1,
                 Take = products.Count,
@@ -139,64 +136,26 @@ namespace Household.Controllers
             return Ok(page);
         }
 
-        private async Task<ApiResult<(Stream FileContent, string FileName)>> LoadFile()
+        private ProductView GetViewModel(Product product)
         {
-            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
-            {
-                return ApiResult<(Stream FileContent, string FileName)>.Failure(
-                    $"The request couldn't be processed because of ContentType: {Request.ContentType}",
-                    HttpStatusCode.BadRequest);
-            }
-
-            var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType)); //_defaultFormOptions.MultipartBoundaryLengthLimit);
-            var reader = new MultipartReader(boundary, Request.Body);
-            var section = await reader.ReadNextSectionAsync();
-
-            var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition);
-            if (!hasContentDispositionHeader)
-            {
-                return ApiResult<(Stream FileContent, string FileName)>.Failure(
-                    "The request couldn't be processed because of absent ContentDisposition",
-                    HttpStatusCode.BadRequest);
-            }
-
-            // This check assumes that there's a file present without form data.
-            // If form data is present, this method immediately fails and returns the model error.
-            if (!MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
-            {
-                return ApiResult<(Stream FileContent, string FileName)>.Failure(
-                    $"The request couldn't be processed because of ContentDisposition {contentDisposition}",
-                    HttpStatusCode.BadRequest);
-            }
-
-            var streamedFileContent = section.Body;
-            if (!ModelState.IsValid)
-                return ApiResult<(Stream FileContent, string FileName)>.Failure("", HttpStatusCode.BadRequest);
-
-            return ApiResult<(Stream FileContent, string FileName)>
-                .Success((streamedFileContent, contentDisposition.FileName.Value));
+            var productView = mapper.Map<ProductView>(product);
+            return productView;
         }
 
-        private ProductViewModel GetViewModel(Product productDataModel)
+        private Product GetDataModel(ProductView productView)
         {
-            var productViewModel = mapper.Map<ProductViewModel>(productDataModel);
-            return productViewModel;
+            var product = mapper.Map<Product>(productView);
+            product.CreatedBy = CurrentUser.Id;
+
+            return product;
         }
 
-        private Product GetDataModel(ProductViewModel productViewModel)
+        private Product GetDataModel(ProductImportModel productImportModel)
         {
-            var productDataModel = mapper.Map<Product>(productViewModel);
-            productDataModel.CreatedBy = CurrentUser.Id;
+            var product = mapper.Map<Product>(productImportModel);
+            product.CreatedBy = CurrentUser.Id;
 
-            return productDataModel;
-        }
-
-        private Product GetDataModel(ProductImportModel productViewModel)
-        {
-            var productDataModel = mapper.Map<Product>(productViewModel);
-            productDataModel.CreatedBy = CurrentUser.Id;
-
-            return productDataModel;
+            return product;
         }
     }
 }

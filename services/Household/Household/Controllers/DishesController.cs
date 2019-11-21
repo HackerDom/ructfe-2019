@@ -26,7 +26,7 @@ namespace Household.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Page<DishViewModel>>> GetDishes(int skip = 0, int take = 100)
+        public async Task<ActionResult<Page<DishViewCook>>> GetDishes(int skip = 0, int take = 100)
         {
             if (take < 1)
                 return BadRequest("Parameter take should be greater then 0");
@@ -45,18 +45,18 @@ namespace Household.Controllers
                 .Where(p => p.CreatedBy == CurrentUser.Id)
                 .CountAsync();
 
-            var page = new Page<DishViewModel>
+            var page = new Page<DishViewCook>
             {
                 Skip = skip,
                 Take = take,
                 TotalCount = totalCount,
-                Items = items.Select(GetViewModel).ToArray()
+                Items = items.Select(GetViewCook).ToArray()
             };
             return page;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<DishViewModel> GetDish(int id)
+        public ActionResult<DishView> GetDish(int id)
         {
             var dish = dataBase.Dishes
                 .Include(d => d.Ingredients)
@@ -70,16 +70,19 @@ namespace Household.Controllers
 
             if (dish.CreatedBy != CurrentUser.Id)
             {
-                return Unauthorized();
+                return GetViewCustomer(dish);
             }
 
-            return GetViewModel(dish);
+            return GetViewCook(dish);
         }
 
         [HttpPost]
-        public async Task<ActionResult<DishViewModel>> PostDish(DishViewModel dishViewModel)
+        public async Task<ActionResult<DishViewCook>> PostDish(DishViewCook dishView)
         {
-            var dish = GetDataModel(dishViewModel);
+            if (CurrentUser.Role != Role.Cook)
+                return NotAllowed();
+
+            var dish = GetDataModel(dishView);
             dataBase.Dishes.Add(dish);
 
             var saveResult = await dataBase.SaveChanges();
@@ -89,18 +92,24 @@ namespace Household.Controllers
             return CreatedAtAction("GetDish", new
             {
                 id = dish.Id
-            }, GetViewModel(dish));
+            }, GetViewCook(dish));
         }
 
-        private DishViewModel GetViewModel(Dish dishDataModel)
+        private DishViewCook GetViewCook(Dish dishDataModel)
         {
-            var dishViewModel = mapper.Map<DishViewModel>(dishDataModel);
+            var dishViewModel = mapper.Map<DishViewCook>(dishDataModel);
             return dishViewModel;
         }
 
-        private Dish GetDataModel(DishViewModel dishViewModel)
+        private DishViewCustomer GetViewCustomer(Dish dishDataModel)
         {
-            var dishDataModel = mapper.Map<Dish>(dishViewModel);
+            var dishViewModel = mapper.Map<DishViewCustomer>(dishDataModel);
+            return dishViewModel;
+        }
+
+        private Dish GetDataModel(DishViewCook dishView)
+        {
+            var dishDataModel = mapper.Map<Dish>(dishView);
             dishDataModel.CreatedBy = CurrentUser.Id;
 
             return dishDataModel;

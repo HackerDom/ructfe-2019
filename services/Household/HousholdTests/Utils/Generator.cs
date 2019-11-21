@@ -9,23 +9,26 @@ namespace HouseholdTests.Utils
     {
         private static readonly Random random = new Random();
 
-        public static ProductViewModel GetRandomProduct()
+        public static ProductView GetRandomProduct()
         {
-            var product = new ProductViewModel {Name = GetRandomString()};
-            product.Protein = random.Next(100);
+            var product = new ProductView
+            {
+                Name = GetRandomString(),
+                Protein = random.Next(100)
+            };
             product.Fat = random.Next(100 - (int) product.Protein);
             product.Carbohydrate = random.Next(100 - (int) product.Protein - (int) product.Fat);
             product.Calories = 4 * (product.Protein + product.Carbohydrate) + 9 * product.Fat;
             return product;
         }
 
-
-        public static DishViewModel GetRandomDish(ProductViewModel[] registeredProducts)
+        public static DishViewCook GetRandomDish(ProductView[] registeredProducts)
         {
-            var dish = new DishViewModel
+            var dish = new DishViewCook
             {
                 Name = GetRandomString(),
                 Description = GetRandomString(100),
+                Recipe = GetRandomString(500),
                 PortionWeight = random.Next(50, 500)
             };
 
@@ -34,10 +37,10 @@ namespace HouseholdTests.Utils
                 .OrderBy(x => random.Next())
                 .Take(ingredientsCount);
 
-            var ingredients = new List<IngredientViewModel>();
+            var ingredients = new List<IngredientView>();
             foreach (var product in someProducts)
             {
-                ingredients.Add(new IngredientViewModel
+                ingredients.Add(new IngredientView
                 {
                     ProductId = product.Id,
                     Weight = random.Next(1000)
@@ -47,7 +50,6 @@ namespace HouseholdTests.Utils
             dish.Ingredients = ingredients.ToArray();
             return dish;
         }
-
 
         public static string GetRandomString(int length = 10)
         {

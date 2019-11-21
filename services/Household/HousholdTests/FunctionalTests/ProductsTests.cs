@@ -24,7 +24,7 @@ namespace HouseholdTests.FunctionalTests
         {
             var user = await env.RegisterNewUser();
 
-            var product = new ProductViewModel
+            var product = new ProductView
             {
                 Name = "Морковь",
                 Calories = 10,
@@ -36,7 +36,7 @@ namespace HouseholdTests.FunctionalTests
             var createResult = await user.Client.Post("/api/Products", product);
             createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            var getResult = await user.Client.Get<ProductViewModel>($"/api/Products/{createResult.Value.Id}");
+            var getResult = await user.Client.Get<ProductView>($"/api/Products/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
             getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
@@ -47,7 +47,7 @@ namespace HouseholdTests.FunctionalTests
         {
             var user = await env.RegisterNewUser();
 
-            var product = new ProductViewModel
+            var product = new ProductView
             {
                 Name = Generator.GetRandomString(200)
             };
@@ -64,7 +64,7 @@ namespace HouseholdTests.FunctionalTests
 
             await PostTestProductsToServer(user);
 
-            var getProducts = await user.Client.Get<Page<ProductViewModel>>("api/products");
+            var getProducts = await user.Client.Get<Page<ProductView>>("api/products");
             getProducts.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getProducts.Value;
 
@@ -81,7 +81,7 @@ namespace HouseholdTests.FunctionalTests
 
             await PostTestProductsToServer(user);
 
-            var getProducts = await user.Client.Get<Page<ProductViewModel>>(
+            var getProducts = await user.Client.Get<Page<ProductView>>(
                 $"api/products?skip={testProducts.Length - 2}&take={1}");
             getProducts.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getProducts.Value;
@@ -92,9 +92,9 @@ namespace HouseholdTests.FunctionalTests
             productsList.Items.Should().ContainSingle().Which.Should().BeEquivalentTo(testProducts[^2], options => options.Excluding(p => p.Id));
         }
 
-        private readonly ProductViewModel[] testProducts = new[]
+        private readonly ProductView[] testProducts = new[]
         {
-            new ProductViewModel
+            new ProductView
             {
                 Name = "Помидор",
                 Calories = 20,
@@ -102,7 +102,7 @@ namespace HouseholdTests.FunctionalTests
                 Fat = 0,
                 Protein = 0.1
             },
-            new ProductViewModel
+            new ProductView
             {
                 Name = "Яйцо",
                 Calories = 140,
@@ -110,7 +110,7 @@ namespace HouseholdTests.FunctionalTests
                 Fat = 9,
                 Protein = 11
             },
-            new ProductViewModel
+            new ProductView
             {
                 Name = "Картофель",
                 Calories = 80,
@@ -118,7 +118,7 @@ namespace HouseholdTests.FunctionalTests
                 Fat = 0,
                 Protein = 0.1
             },
-            new ProductViewModel
+            new ProductView
             {
                 Name = "Лук",
                 Calories = 30,

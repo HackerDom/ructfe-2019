@@ -41,7 +41,7 @@ namespace HouseholdTests.Infrastructure
             {
                 new KeyValuePair<string, string>("Input.Email", user.Login),
                 new KeyValuePair<string, string>("Input.Password", user.Password),
-                new KeyValuePair<string, string>("Input.Role", "Cooker")
+                new KeyValuePair<string, string>("Input.Role", "Cook")
             };
 
             // Регистрация - ставятся куки "idsrv.session" и ".AspNetCore.Identity.Application"

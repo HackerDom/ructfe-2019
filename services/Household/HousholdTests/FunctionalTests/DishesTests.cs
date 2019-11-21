@@ -28,7 +28,7 @@ namespace HouseholdTests.FunctionalTests
 
             var products = new[]
             {
-                new ProductViewModel
+                new ProductView
                 {
                     Name = "Яблоко",
                     Calories = 42,
@@ -36,7 +36,7 @@ namespace HouseholdTests.FunctionalTests
                     Fat = 1,
                     Protein = 1
                 },
-                new ProductViewModel
+                new ProductView
                 {
                     Name = "Яйцо куриное",
                     Calories = 42,
@@ -44,7 +44,7 @@ namespace HouseholdTests.FunctionalTests
                     Fat = 1,
                     Protein = 1
                 },
-                new ProductViewModel
+                new ProductView
                 {
                     Name = "Мука",
                     Calories = 42,
@@ -52,7 +52,7 @@ namespace HouseholdTests.FunctionalTests
                     Fat = 1,
                     Protein = 1
                 },
-                new ProductViewModel
+                new ProductView
                 {
                     Name = "Сахар",
                     Calories = 42,
@@ -65,41 +65,45 @@ namespace HouseholdTests.FunctionalTests
 
             var ingredients = new[]
             {
-                new IngredientViewModel
+                new IngredientView
                 {
                     Weight = 400,
                     ProductId = products[0].Id
                 },
-                new IngredientViewModel
+                new IngredientView
                 {
                     Weight = 65,
                     ProductId = products[1].Id
                 },
-                new IngredientViewModel
+                new IngredientView
                 {
                     Weight = 100,
                     ProductId = products[2].Id
                 },
-                new IngredientViewModel
+                new IngredientView
                 {
                     Weight = 40,
                     ProductId = products[3].Id
                 }
             };
 
-            var newDish = new DishViewModel
+            var newDish = new DishViewCook
             {
-                Description = "Ароматные, нежные, кисло-сладкие оладушки с ярким вкусом печеного яблочка",
                 Name = "Яблочные оладьи",
                 PortionWeight = 150,
-                Ingredients = ingredients
+                Ingredients = ingredients,
+                Description = "Ароматные, нежные, кисло-сладкие оладушки с ярким вкусом печеного яблочка",
+                Recipe = "1. Яблоко очистите от кожуры и натрите на мелкой тёрке.\r\n2. Кефир взбейте с яйцами." +
+                         "\r\n3. Добавьте муку, соль, сахар и соду. Перемешайте, чтобы масса получилась без комков." +
+                         "\r\n4. Засыпьте тёртое яблоко. Снова хорошо размешайте.\r\n5. В сковороде разогрейте масло " +
+                         "на среднем огне. Сформируйте оладьи и обжаривайте по 2–4 минуты с каждой стороны."
             };
 
             // act
             var createResult = await user.Client.Post("/api/Dishes", newDish);
             createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            var getResult = await user.Client.Get<DishViewModel>($"/api/Dishes/{createResult.Value.Id}");
+            var getResult = await user.Client.Get<DishViewCook>($"/api/Dishes/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
             // assert
@@ -120,14 +124,14 @@ namespace HouseholdTests.FunctionalTests
 
             var products = new[]
             {
-                new ProductViewModel
+                new ProductView
                 {
                     Protein = 20,
                     Fat = 2,
                     Carbohydrate = 8,
                     Calories = 130
                 },
-                new ProductViewModel
+                new ProductView
                 {
                     Protein = 10,
                     Fat = 5,
@@ -139,19 +143,19 @@ namespace HouseholdTests.FunctionalTests
 
             var ingredients = new[]
             {
-                new IngredientViewModel
+                new IngredientView
                 {
                     ProductId = products[0].Id,
                     Weight = 50
                 },
-                new IngredientViewModel
+                new IngredientView
                 {
                     ProductId = products[1].Id,
                     Weight = 100
                 }
             };
 
-            var newDish = new DishViewModel
+            var newDish = new DishViewCook
             {
                 PortionWeight = 300,
                 Ingredients = ingredients
@@ -161,7 +165,7 @@ namespace HouseholdTests.FunctionalTests
             var createResult = await user.Client.Post("/api/Dishes", newDish);
             createResult.EnsureStatusCode(HttpStatusCode.Created);
 
-            var getResult = await user.Client.Get<DishViewModel>($"/api/Dishes/{createResult.Value.Id}");
+            var getResult = await user.Client.Get<DishViewCook>($"/api/Dishes/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
             var dish = getResult.Value;
 
@@ -191,7 +195,7 @@ namespace HouseholdTests.FunctionalTests
             }
 
             // act
-            var getDishes = await user.Client.Get<Page<DishViewModel>>("api/Dishes");
+            var getDishes = await user.Client.Get<Page<DishViewCook>>("api/Dishes");
             getDishes.EnsureStatusCode(HttpStatusCode.OK);
             var productsList = getDishes.Value;
 
@@ -208,7 +212,7 @@ namespace HouseholdTests.FunctionalTests
                     .Excluding(dish => dish.PortionCarbohydrate));
         }
 
-        private static async Task RegisterProducts(TestApiClient client, IEnumerable<ProductViewModel> products)
+        private static async Task RegisterProducts(TestApiClient client, IEnumerable<ProductView> products)
         {
             foreach (var product in products)
             {

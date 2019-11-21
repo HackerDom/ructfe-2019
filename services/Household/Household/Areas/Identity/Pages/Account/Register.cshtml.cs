@@ -57,7 +57,7 @@ namespace Household.Areas.Identity.Pages.Account
         public readonly string[] Roles =
         {
             Role.Customer.ToString(),
-            Role.Cooker.ToString()
+            Role.Cook.ToString()
         };
 
         public void OnGetAsync(string returnUrl = null)

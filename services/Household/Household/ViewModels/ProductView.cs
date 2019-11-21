@@ -1,6 +1,6 @@
 ﻿namespace Household.ViewModels
 {
-    public class ProductViewModel
+    public class ProductView
     {
         public int Id { get; set; }
         public string Name { get; set; }

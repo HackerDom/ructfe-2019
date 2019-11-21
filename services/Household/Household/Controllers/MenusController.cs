@@ -24,7 +24,7 @@ namespace Household.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Page<MenuViewModel>>> GetMenus(int skip = 0, int take = 100)
+        public async Task<ActionResult<Page<MenuView>>> GetMenus(int skip = 0, int take = 100)
         {
             if (take < 1)
                 return BadRequest("Parameter take should be greater then 0");
@@ -40,18 +40,18 @@ namespace Household.Controllers
             var totalCount = await dataBase.Menus
                 .CountAsync();
 
-            var page = new Page<MenuViewModel>
+            var page = new Page<MenuView>
             {
                 Skip = skip,
                 Take = take,
                 TotalCount = totalCount,
-                Items = items.Select(mapper.Map<MenuViewModel>).ToArray()
+                Items = items.Select(mapper.Map<MenuView>).ToArray()
             };
             return page;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MenuViewModel>> GetMenu(int id)
+        public async Task<ActionResult<MenuView>> GetMenu(int id)
         {
             var menu = await dataBase.Menus.FindAsync(id);
 
@@ -60,12 +60,15 @@ namespace Household.Controllers
                 return NotFound();
             }
 
-            return mapper.Map<MenuViewModel>(menu);
+            return mapper.Map<MenuView>(menu);
         }
 
         [HttpPost]
-        public async Task<ActionResult<MenuViewModel>> PostMenu(MenuViewModel menuViewModel)
+        public async Task<ActionResult<MenuView>> PostMenu(MenuView menuViewModel)
         {
+            if (CurrentUser.Role != Role.Cook)
+                return NotAllowed();
+
             var menu = mapper.Map<Menu>(menuViewModel);
             dataBase.Menus.Add(menu);
 
@@ -76,7 +79,7 @@ namespace Household.Controllers
             return CreatedAtAction("GetMenu", new
             {
                 id = menu.Id
-            }, mapper.Map<MenuViewModel>(menu));
+            }, mapper.Map<MenuView>(menu));
         }
     }
 }
