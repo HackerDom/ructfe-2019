@@ -11,6 +11,23 @@ targetCompatibility = 11
 
 mainClassName = 'com.aytel.patrol.checker.GraphGenerator'
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.aytel.patrol.checker.GraphGenerator'
+        )
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Main-Class': 'com.aytel.patrol.checker.GraphGenerator'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 application {
     applicationDefaultJvmArgs = ["-Xms512m", "-Xmx4096m", "-Xss1024m"]
 }

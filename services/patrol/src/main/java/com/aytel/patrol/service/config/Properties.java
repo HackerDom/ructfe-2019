@@ -127,7 +127,7 @@ public class Properties {
     }
 
     public static class RequestInfo {
-        private int requestsLeft = 30;
+        private int requestsLeft = 7;
         private String graphId;
         private Graph lastIso;
         private long lastTouch = System.currentTimeMillis();
