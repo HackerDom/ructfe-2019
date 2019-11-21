@@ -7,14 +7,38 @@ import { Page, Product } from '../../common';
   templateUrl: './products-add.component.html'
 })
 export class ProductsAddComponent {
-  public products: Product[];
-  public totalCount: number;
+  public product: Product;
+  public uploadedCount: number;
+  public error: string;
+  public loading: boolean;
+  http: HttpClient;
+  baseUrl: string;
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Page<Product>>(baseUrl + 'api/products').subscribe(result => {
-        this.products = result.items;
-        this.totalCount = result.totalCount;
+    this.http = http;
+    this.baseUrl = baseUrl;
+    this.loading = false;
+  }
+
+  addNew() {
+    this.product = null;
+  }
+
+  addProduct(name: string, calories: number, protein: number, fat: number, carbohydrate: number) {
+    this.loading = true;
+    this.product = null;
+    this.error = null;
+
+    let newProduct = new Product(name, calories, protein, fat, carbohydrate);
+
+    this.http.post<Product>(this.baseUrl + 'api/products', newProduct).subscribe(result => {
+        this.loading = false;
+        this.product = result;
       },
-      error => console.error(error));
+      error => {
+        console.error(error);
+        this.loading = false;
+        this.error = error.error;
+      });
   }
 }

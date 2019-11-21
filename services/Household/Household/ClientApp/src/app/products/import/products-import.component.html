@@ -2,40 +2,26 @@
 
 <p>You should upload file from Ministry</p>
 
-
-<!--<input style="display: none"
-           id="fileInput"
-           #fileInput
-           type="file" (change)="onFileSelected($event)">
-<button type="button" (click)="fileInput.click()">Pick File</button>
-<button type="button" (click)="onUpload()">Upload</button>
-
-<br/>
-<br/>-->
-
-
 <input type="file"
        (change)="onFileSelected($event)"
        enctype="multipart/form-data">
 <br/>
+<br/>
 <button class="btn btn-normal" type="button" (click)="onUpload()">Upload</button>
-
 <br/>
 <br/>
-<br/>
+<p *ngIf="loading">Loading...</p>
+<p *ngIf="error">There are error during uploading: {{error}}</p>
+<p *ngIf="totalCount">Uploaded products: {{uploadedCount}}. Total available products: {{totalCount}}.</p>
 
-
-<p *ngIf="totalCount">Uploaded products: {{uploadedCount}}. Available products: {{totalCount}}.</p>
-
-<!--// хорошо бы табличку с распознавшимися продуктами и подтверждение их добавления-->
 <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="products">
   <thead>
   <tr>
-    <th>Название</th>
-    <th>Калорийность</th>
-    <th>Белки</th>
-    <th>Жиры</th>
-    <th>Углеводы</th>
+    <th>Name</th>
+    <th>Calories</th>
+    <th>Protein</th>
+    <th>Fat</th>
+    <th>Carbohydrate</th>
   </tr>
   </thead>
   <tbody>
@@ -48,3 +34,5 @@
   </tr>
   </tbody>
 </table>
+<br/>
+<br/>

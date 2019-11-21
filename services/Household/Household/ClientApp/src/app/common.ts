@@ -6,12 +6,20 @@ export interface Page<T> {
 }
 
 
-export interface Product {
+export class Product {
   name: string;
   protein: number;
   fat: number;
   carbohydrate: number;
   calories: number;
+
+  constructor(name: string, calories: number, protein: number, fat: number, carbohydrate: number) {
+    this.name = name;
+    this.calories = calories;
+    this.protein = protein;
+    this.fat = fat;
+    this.carbohydrate = carbohydrate;
+  }
 }
 
 

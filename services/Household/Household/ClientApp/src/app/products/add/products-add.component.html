@@ -1,28 +1,61 @@
-<h1 id="tableLabel">Продукты</h1>
+<h1 id="tableLabel">Add new product</h1>
 
-<p *ngIf="totalCount">Доступные для использования продукты: {{totalCount}}</p>
 
-<p *ngIf="!products">
-  <em>Loading...</em>
-</p>
+<div *ngIf="!product">
+  <div class="form-group">
+    <label>Product name</label>
+    <input class="form-control" name="name" [(ngModel)]="name"/>
+  </div>
+  <div class="form-group">
+    <label>Calories</label>
+    <input type="number" class="form-control" name="calories" [(ngModel)]="calories"/>
+  </div>
+  <div class="form-group">
+    <label>Protein</label>
+    <input type="number" class="form-control" name="protein" [(ngModel)]="protein"/>
+  </div>
+  <div class="form-group">
+    <label>Fat</label>
+    <input type="number" class="form-control" name="fat" [(ngModel)]="fat"/>
+  </div>
+  <div class="form-group">
+    <label>Carbohydrate</label>
+    <input type="number" class="form-control" name="carbohydrate" [(ngModel)]="carbohydrate"/>
+  </div>
+  <div class="form-group">
+    <button class="btn btn-normal" (click)="addProduct(name, calories, protein, fat, carbohydrate)">Add</button>
+  </div>
+  <p *ngIf="loading">Loading...</p>
+  <p *ngIf="error">There are error during creating: {{error}}</p>
+</div>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="products">
-  <thead>
-  <tr>
-    <th>Название</th>
-    <th>Калорийность</th>
-    <th>Белки</th>
-    <th>Жиры</th>
-    <th>Углеводы</th>
-  </tr>
-  </thead>
+<p *ngIf="product">Successfully created product: {{product.name}}</p>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="product">
   <tbody>
-  <tr *ngFor="let product of products">
+  <tr>
+    <td>Name</td>
     <td>{{ product.name }}</td>
+  </tr>
+  <tr>
+    <td>Calories</td>
     <td>{{ product.calories }}</td>
+  </tr>
+  <tr>
+    <td>Protein</td>
     <td>{{ product.protein }}</td>
+  </tr>
+  <tr>
+    <td>Fat</td>
     <td>{{ product.fat }}</td>
+  </tr>
+  <tr>
+    <td>Carbohydrate</td>
     <td>{{ product.carbohydrate }}</td>
   </tr>
   </tbody>
 </table>
+<div class="form-group" *ngIf="product">
+  <button class="btn btn-normal" (click)="addNew()">Add one more</button>
+</div>
+<br/>
+<br/>

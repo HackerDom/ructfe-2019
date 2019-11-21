@@ -7,8 +7,6 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { ProductsAddComponent } from './products/add/products-add.component';
 import { ProductsImportComponent } from './products/import/products-import.component';
 import { ProductsListComponent } from './products/list/products-list.component';
@@ -23,8 +21,6 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
     ProductsAddComponent,
     ProductsImportComponent,
     ProductsListComponent,
@@ -38,8 +34,6 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
     ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
       { path: 'products/add', component: ProductsAddComponent, canActivate: [AuthorizeGuard] },
       { path: 'products/import', component: ProductsImportComponent, canActivate: [AuthorizeGuard] },
       { path: 'products/list', component: ProductsListComponent, canActivate: [AuthorizeGuard] },

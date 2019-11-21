@@ -28,8 +28,6 @@ namespace Household
 
         public void ConfigureServices(IServiceCollection services)
         {
-            IdentityModelEventSource.ShowPII = true; ///
-
             services.AddTransient(p => new HouseholdConfiguration(p.GetService<IConfiguration>()));
             services.AddTransient(p => new ProductsImportHandler(p.GetService<ILogger<ProductsImportHandler>>()));
 
@@ -76,33 +74,31 @@ namespace Household
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                IdentityModelEventSource.ShowPII = true;
             }
             else
             {
                 app.UseExceptionHandler("/Error");
-                //app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
-            app.UseRouting(); // 1
+            app.UseRouting();
 
-            app.UseStaticFiles(); // not secure 
+            app.UseStaticFiles();
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
             }
 
-            // 2
-            // The authentication middleware that is responsible for validating
-            // the request credentials and setting the user on the request context
+            // The authentication middleware that is responsible for validating the request credentials and setting the user on the request context
             app.UseAuthentication();
 
-            // 3.5? The IdentityServer middleware that exposes the Open ID Connect endpoints
+            // The IdentityServer middleware that exposes the Open ID Connect endpoints
             app.UseIdentityServer();
 
-            // 3
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => // 4
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
@@ -110,7 +106,7 @@ namespace Household
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp"; // To learn more about options for serving an Angular SPA from ASP.NET Core, see https://go.microsoft.com/fwlink/?linkid=864501
+                spa.Options.SourcePath = "ClientApp";
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");

@@ -36,7 +36,7 @@ namespace Household.Utils
             {
                 log.LogError(e, "Something went wrong while parsing products list");
                 return ApiResult<ProductImportModel[]>.Failure(
-                    "Something went wrong while parsing products list",
+                    "Something went wrong while parsing products list. There is error in XML document",
                     HttpStatusCode.BadRequest);
             }
         }
