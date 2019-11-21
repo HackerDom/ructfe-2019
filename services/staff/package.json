@@ -4,10 +4,10 @@
   "description": "staff service",
   "main": "./src/server/index.js",
   "scripts": {
-    "build": "webpack --mode development",
+    "build": "webpack --mode production",
     "start": "nodemon --exec babel-node ./scripts/start.js",
     "watch": "webpack --watch --mode development",
-    "prod": "webpack-cli -p | babel-node ./scripts/start.js",
+    "prod": "npm run build | babel-node ./scripts/start.js",
     "test": "test"
   },
   "author": "",
