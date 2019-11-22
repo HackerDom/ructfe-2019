@@ -1,5 +1,3 @@
-import { login } from './login';
-
 export class Chats {
     chatName = '';
 
@@ -50,6 +48,17 @@ export class Chats {
         })
             .then(r => r.json())
             .then(r => r.data.messages);
+    };
+
+    getInvite = (chatId) => {
+        return fetch(`/inviteLink?chatId=${chatId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(r => r.json())
+            .then(r => r.data.inviteLink);
     };
 }
 

@@ -7,5 +7,11 @@ export function Switch ({ by, children }) {
         }
     }
 
+    for (const child of children) {
+        if (child.props.value === 'default') {
+            return child;
+        }
+    }
+
     throw new Error('no such case');
 }

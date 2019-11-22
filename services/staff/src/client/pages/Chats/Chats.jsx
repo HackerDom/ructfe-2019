@@ -6,6 +6,9 @@ import { Button } from '../../components/Button/Button';
 import { Input } from '../../components/Input/Input';
 import { chats } from '../../models/chats';
 import { login } from '../../models/login';
+import { Switch } from '../../components/Switch/Switch';
+import { Case } from '../../components/Switch/Case';
+import { Text } from '../../components/Text/Text';
 
 export class Chats extends React.Component {
     state = {
@@ -13,7 +16,8 @@ export class Chats extends React.Component {
         addingChatName: '',
         selectedChatId: 'none',
         selectedChatName: '',
-        selectedChatMessages: []
+        selectedChatMessages: [],
+        invite: ''
     };
 
     componentDidMount () {
@@ -42,11 +46,21 @@ export class Chats extends React.Component {
                     />
                 </section>
                 <section className={s.divider} />
-                <Chat
-                    name={this.state.selectedChatName}
-                    messages={this.state.selectedChatMessages}
-                    onMessageSend={this.onMessageSend}
-                />
+                <Switch by={this.state.selectedChatId}>
+                    <Case value="none">
+                        <div className={s.centerBox}>
+                            <Text text="Select chat" />
+                        </div>
+                    </Case>
+                    <Case value="default">
+                        <Chat
+                            name={this.state.selectedChatName}
+                            messages={this.state.selectedChatMessages}
+                            onMessageSend={this.onMessageSend}
+                            invite={this.state.invite}
+                        />
+                    </Case>
+                </Switch>
             </section>
         );
     }
@@ -59,6 +73,14 @@ export class Chats extends React.Component {
                     .chats
                     .find(c => c.id === id)
                     .item
+            }));
+        chats.getInvite(id)
+            .then((a) => {
+                console.log(a);
+                return a;
+            })
+            .then(invite => this.setState({
+                invite: invite.toString()
             }));
         this.setState({ selectedChatId: id });
     };
