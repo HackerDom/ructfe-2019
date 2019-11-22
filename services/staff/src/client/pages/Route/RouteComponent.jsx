@@ -17,7 +17,7 @@ export function RouteComponent () {
                 <Route path="/auth" component={Auth} />
                 <Route path="/chatsPage" component={Chats} />
                 <Route path="/search" component={UsersSearching} />
-                <Route path="/usersPage/:id" component={UserPage} />
+                <Route path="/usersPage" component={UserPage} />
             </Switch>
         </BrowserRouter>
     );

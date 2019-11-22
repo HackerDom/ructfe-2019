@@ -124,7 +124,7 @@ export class UsersSearching extends React.Component {
                     </article>
                 </Case>
                 <Case value={redirectState.user}>
-                    <Redirect to={`/user/${this.state.id}`}/>
+                    <Redirect to={`/usersPage?id=${this.state.id}`}/>
                 </Case>
             </Switch>
         );

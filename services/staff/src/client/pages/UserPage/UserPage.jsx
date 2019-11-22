@@ -4,11 +4,13 @@ import { Text } from '../../components/Text/Text';
 import { MarginBox } from '../../components/MarginBox/MarginBox';
 import { BorderBox } from '../../components/BorderBox/BorderBox';
 import { Row } from '../../components/Row/Row';
+import queryString from 'query-string';
 
 export class UserPage extends React.Component {
     constructor (props) {
         super(props);
-        this.state = { id: props.match.params.id };
+        const values = queryString.parse(this.props.location.search);
+        this.state = { id: values.id };
     }
 
     componentDidMount () {
