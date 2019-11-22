@@ -18,7 +18,6 @@ export class Chats extends React.Component {
         selectedChatName: '',
         selectedChatMessages: [],
         selectedChatInvite: '',
-        joinInvite: '',
         selectedChatAccess: 'loading'
     };
 
@@ -61,18 +60,13 @@ export class Chats extends React.Component {
                             onMessageSend={this.onMessageSend}
                             invite={this.state.selectedChatInvite}
                             access={this.state.selectedChatAccess}
+                            onJoinChat={this.onJoinChat}
                         />
                     </Case>
                 </Switch>
             </section>
         );
     }
-
-    onChangeJoinInvite = (invite) => {
-        this.setState({
-            joinInvite: invite
-        });
-    };
 
     selectChat = (id) => {
         chats.getChatMessages(id)
@@ -121,5 +115,14 @@ export class Chats extends React.Component {
                     { id: r.id, text: message, ownerId: login.userId }
                 ]
             }));
+    };
+
+    onJoinChat = (invite) => {
+        const chatId = this.state.selectedChatId;
+
+        chats.joinChat(
+            chatId,
+            invite
+        ).then(() => this.selectChat(chatId));
     };
 }

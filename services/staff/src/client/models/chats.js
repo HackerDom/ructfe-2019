@@ -60,6 +60,19 @@ export class Chats {
             .then(r => r.json())
             .then(r => r.data.inviteLink);
     };
+
+    joinChat = (chatId, inviteLink) => {
+        return fetch('/joinChat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chatId,
+                inviteLink
+            })
+        }).then(r => r.json());
+    };
 }
 
 export const chats = new Chats();

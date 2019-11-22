@@ -262,7 +262,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
     const chatId = request.body.chatId;
     const inviteLink = request.body.inviteLink;
 
-    const isValid = fieldsAreExist(chatId.toString(), inviteLink.toString());
+    const isValid = fieldsAreExist(chatId, inviteLink);
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);

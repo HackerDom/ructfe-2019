@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Text } from '../../components/Text/Text';
 
 export class Chat extends React.Component {
-    state = { messageDraft: '' };
+    state = { messageDraft: '', invite: '' };
 
     render () {
         if (this.props.access === 'loading') {
@@ -25,10 +25,10 @@ export class Chat extends React.Component {
                     <Text text="You have not access to this chat" />
                     <Text text="Join chat via invite" />
                     <Input
-                        value={this.state.joinInvite}
-                        onChange={this.onChangeJoinInvite}
+                        value={this.state.invite}
+                        onChange={this.onChangeInvite}
                     />
-                    <Button text="join" />
+                    <Button text="join" onClick={this.props.onJoinChat} />
                 </div>
             );
         }
@@ -80,5 +80,13 @@ export class Chat extends React.Component {
         this.setState({
             messageDraft: ''
         });
+    };
+
+    onChangeInvite = (invite) => {
+        this.setState({ invite });
+    };
+
+    onJoinChat = () => {
+        this.props.onJoinChat(this.state.invite);
     };
 }
