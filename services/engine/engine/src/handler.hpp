@@ -52,8 +52,9 @@ public:
 
     static int check_fuel() {
         char const* f_name = getenv("QUERY_STRING");
-            
-        if (f_name == NULL) {
+        char const* p_size_s = getenv("CONTENT_LENGTH");
+
+        if (f_name == NULL || p_size_s == NULL) {
             return http::bad_request();
         }
         
@@ -63,8 +64,11 @@ public:
             return http::not_found();
         }
 
-        std::string property;
-        std::cin >> property;
+        size_t p_size = std::stoi(std::string(p_size_s));
+        
+        char buffer[p_size];
+        std::cin.read(buffer, p_size);
+        std::string property(buffer, buffer + p_size);
 
         try {
             auto result = f.get().check(property);
@@ -72,7 +76,7 @@ public:
             http::ok();
 
             for (auto p : result) {
-                std::cout << "[" << p.start() << " -> " << p.end() << "] (" << p.size() << ")" << std::endl;
+                std::cout << property.substr(p.start(), p.size()) << " " << "(" << p.start() << " -> " << p.end() << ")" << std::endl;
             }
         }
         catch (...) {
