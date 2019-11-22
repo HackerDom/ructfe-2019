@@ -1,0 +1,8 @@
+- /build.sh
+- /HouseholdTest/
+- /Household/
+- /Household.sln
+- /docker-compose-build.yaml
+- /Dockerfile-build
+- /.vs/
+- /.gitignore
