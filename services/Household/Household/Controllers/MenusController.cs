@@ -34,6 +34,11 @@ namespace Household.Controllers
 
             var items = await dataBase.Menus
                 .Include(m => m.DishesInMenu)
+                .ThenInclude(dishInMenu => dishInMenu.Dish)
+                .ThenInclude(dish => dish.Ingredients)
+                .ThenInclude(ingredient => ingredient.Product)
+                .Include(m => m.Orders)
+                .ThenInclude(o => o.DishesInOrder)
                 .Skip(skip).Take(take)
                 .ToArrayAsync();
 
@@ -45,22 +50,29 @@ namespace Household.Controllers
                 Skip = skip,
                 Take = take,
                 TotalCount = totalCount,
-                Items = items.Select(mapper.Map<MenuView>).ToArray()
+                Items = items.Select(GetViewModel).ToArray()
             };
             return page;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MenuView>> GetMenu(int id)
+        public ActionResult<MenuView> GetMenu(int id)
         {
-            var menu = await dataBase.Menus.FindAsync(id);
+            var menu = dataBase.Menus
+                .Include(m => m.DishesInMenu)
+                .ThenInclude(dishInMenu => dishInMenu.Dish)
+                .ThenInclude(dish => dish.Ingredients)
+                .ThenInclude(ingredient => ingredient.Product)
+                .Include(m => m.Orders)
+                .ThenInclude(o => o.DishesInOrder)
+                .FirstOrDefault(m => m.Id == id);
 
             if (menu == null)
             {
                 return NotFound();
             }
 
-            return mapper.Map<MenuView>(menu);
+            return GetViewModel(menu);
         }
 
         [HttpPost]
@@ -69,19 +81,33 @@ namespace Household.Controllers
             if (CurrentUser.Role != Role.Cook)
                 return NotAllowed();
 
-            var menu = mapper.Map<Menu>(menuViewModel);
+            var menu = GetDataModel(menuViewModel);
             dataBase.Menus.Add(menu);
 
             var saveResult = await dataBase.SaveChanges();
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
-            var createdMenu = (await GetMenu(menu.Id)).Value;
+            var createdMenu = GetMenu(menu.Id).Value;
 
             return CreatedAtAction("GetMenu", new
             {
                 id = menu.Id
             }, createdMenu);
+        }
+
+        private MenuView GetViewModel(Menu menu)
+        {
+            var menuView = mapper.Map<MenuView>(menu);
+            return menuView;
+        }
+
+        private Menu GetDataModel(MenuView menuView)
+        {
+            var menu = mapper.Map<Menu>(menuView);
+            menu.CreatedBy = CurrentUser.Id;
+
+            return menu;
         }
     }
 }

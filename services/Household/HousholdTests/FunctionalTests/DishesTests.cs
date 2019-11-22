@@ -66,13 +66,15 @@ namespace HouseholdTests.FunctionalTests
             menu = createdMenu.Value;
 
             var user = await env.RegisterNewUser(Role.Customer);
-            var userMenu = user.Client.Get<MenuView>($"/api/menus/{menu.Id}");
-
+            var getUserMenu = await user.Client.Get<MenuView>($"/api/menus/{menu.Id}");
+            var userMenu = getUserMenu.Value;
             userMenu.Should().BeEquivalentTo(menu);
 
-            var userDish = user.Client.Get<DishViewCustomer>($"/api/dishes/{menu.DishIds[0]}");
+            var getUserDish = await user.Client.Get<DishViewCustomer>($"/api/dishes/{menu.DishIds[0]}");
+            var userDish = getUserDish.Value;
 
-            var getProduct = user.Client.Get<ProductView>($"/api/products/{dish.Ingredients[0].ProductId}");
+            var getUserProduct = await user.Client.Get<ProductView>($"/api/products/{dish.Ingredients[0].ProductId}");
+            var userProduct = getUserProduct.Value;
 
             var order = new OrderView
             {

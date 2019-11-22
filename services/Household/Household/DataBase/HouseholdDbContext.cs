@@ -146,6 +146,9 @@ namespace Household.DataBase
             builder.Entity<Menu>()
                 .Property(menu => menu.CreatedDate)
                 .HasDefaultValueSql(getDateExpression);
+            builder.Entity<Order>()
+                .Property(order => order.CreatedDate)
+                .HasDefaultValueSql(getDateExpression);
         }
 
         public new async Task<ApiResult<int>> SaveChanges()

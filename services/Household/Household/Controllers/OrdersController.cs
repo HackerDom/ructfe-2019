@@ -26,6 +26,8 @@ namespace Household.Controllers
         [HttpGet]
         public async Task<ActionResult<Page<OrderView>>> GetOrders(int skip = 0, int take = 100)
         {
+            /// todo: list orders for cooker
+
             if (take < 1)
                 return BadRequest("Parameter take should be greater then 0");
             if (skip < 0)
@@ -35,6 +37,8 @@ namespace Household.Controllers
             var items = await dataBase.Orders
                 .Where(p => p.CreatedBy == CurrentUser.Id)
                 .Include(m => m.DishesInOrder)
+                .ThenInclude(dishInOrder => dishInOrder.Dish)
+                .Include(o => o.Menu)
                 .Skip(skip).Take(take)
                 .ToArrayAsync();
 
@@ -47,16 +51,19 @@ namespace Household.Controllers
                 Skip = skip,
                 Take = take,
                 TotalCount = totalCount,
-                Items = items.Select(mapper.Map<OrderView>).ToArray()
+                Items = items.Select(GetViewModel).ToArray()
             };
             return page;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderView>> GetOrder(int id)
+        public ActionResult<OrderView> GetOrder(int id)
         {
-            var order = await dataBase.Orders.FindAsync(id);
-            /// todo: full order? with dishes
+            var order = dataBase.Orders
+                .Include(o => o.DishesInOrder)
+                .ThenInclude(dishInOrder => dishInOrder.Dish)
+                .Include(o => o.Menu)
+                .FirstOrDefault(o => o.Id == id);
 
             if (order == null)
             {
@@ -68,13 +75,13 @@ namespace Household.Controllers
                 return NotFound();
             }
 
-            return mapper.Map<OrderView>(order);
+            return GetViewModel(order);
         }
 
         [HttpPost]
         public async Task<ActionResult<OrderView>> PostOrder(OrderView orderView)
         {
-            var order = mapper.Map<Order>(orderView);
+            var order = GetDataModel(orderView);
 
             /// todo: check dishes are from menu
 
@@ -84,12 +91,26 @@ namespace Household.Controllers
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
-            var createdOrder = (await GetOrder(order.Id)).Value;
+            var createdOrder = GetOrder(order.Id).Value;
 
             return CreatedAtAction("GetOrder", new
             {
                 id = order.Id
             }, createdOrder);
+        }
+
+        private OrderView GetViewModel(Order order)
+        {
+            var orderView = mapper.Map<OrderView>(order);
+            return orderView;
+        }
+
+        private Order GetDataModel(OrderView orderView)
+        {
+            var order = mapper.Map<Order>(orderView);
+            order.CreatedBy = CurrentUser.Id;
+
+            return order;
         }
     }
 }

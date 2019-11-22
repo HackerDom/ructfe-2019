@@ -60,7 +60,7 @@ namespace Household.ViewModels
             CreateMap<OrderView, Order>()
                 .ForMember(order => order.DishesInOrder,
                     map => map.MapFrom(orderView =>
-                        orderView.DishIds.Select(dish => new DishInMenu
+                        orderView.DishIds.Select(dish => new DishInOrder
                         {
                             DishId = dish
                         })));
