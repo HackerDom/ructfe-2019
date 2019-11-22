@@ -38,6 +38,7 @@
         - pycrypto
         - pillow
         - aiohttp
+        - numpy
 
   - name: build engine checker
     command: ./build.sh

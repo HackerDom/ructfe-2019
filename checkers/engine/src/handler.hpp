@@ -35,8 +35,14 @@ public:
             fread(buffer + 1, sizeof(char), WORD_LENGTH - 1, random);
 
             for (k = 0; k < WORD_LENGTH; k++) {
-                if (buffer[k] == 0) {
+                switch (buffer[k]) {
+                case '\x00':
                     buffer[k] = 1;
+                    break;
+
+                case '=':
+                    buffer[k] = 255;
+                    break;
                 }
             }
             
