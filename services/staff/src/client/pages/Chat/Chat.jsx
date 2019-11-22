@@ -64,18 +64,35 @@ export class Chat extends React.Component {
         );
     }
 
-    renderMessage ({ text, ownerId }) {
+    renderMessage = ({ text, ownerId, id, isDeleted }) => {
         return (
             <section className={s.message} key={uuid()}>
-                <BorderBox style={{ width: '100%', display: 'flex', alignItems: 'center'}}>
+                <BorderBox style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                     <Link to={`/usersPage?id=${ownerId}`}>
                         <Button text='Owner' styles={{ fontSize: '12px', textAlign: 'center', margin: 'auto 0' }}/>
                     </Link>
                     <div className={s.messageText}>{text}</div>
-                    <Button text='Delete' onClick={() => {}} styles={{ marginLeft: 'auto', fontSize: '12px' }}/>
+                    {isDeleted
+                        ? <Text text='DELETED' style={{ marginLeft: 'auto', fontSize: '12px' }}/>
+                        : <Button text='Delete' onClick={() => this.onDeletion(id)} styles={{ marginLeft: 'auto', fontSize: '12px' }}/>}
                 </BorderBox>
             </section>
         );
+    }
+
+    onDeletion = (id) => {
+        fetch('/deleteMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messageId: id
+            })
+        }).catch(x => console.log(x))
+            .then(x => {
+                this.props.readMessages();
+            });
     }
 
     onChangeMessageDraft = (message) => {

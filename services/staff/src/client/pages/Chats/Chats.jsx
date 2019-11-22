@@ -27,6 +27,11 @@ export class Chats extends React.Component {
                 chats = chats.map(c => ({ id: c.id, item: c.name }));
                 this.setState({ chats });
             });
+        setInterval(() => {
+            if (this.state.selectedChatId) {
+                this.readMessages();
+            }
+        }, 5000);
     }
 
     render () {
@@ -61,6 +66,7 @@ export class Chats extends React.Component {
                             invite={this.state.selectedChatInvite}
                             access={this.state.selectedChatAccess}
                             onJoinChat={this.onJoinChat}
+                            readMessages={this.readMessages}
                         />
                     </Case>
                 </Switch>
@@ -68,7 +74,8 @@ export class Chats extends React.Component {
         );
     }
 
-    selectChat = (id) => {
+    readMessages = (id = this.state.selectedChatId) => {
+        console.log(id);
         chats.getChatMessages(id)
             .then(messages => this.setState({
                 selectedChatMessages: messages,
@@ -81,6 +88,10 @@ export class Chats extends React.Component {
             .catch((e) => this.setState({
                 selectedChatAccess: 'no'
             }));
+    }
+
+    selectChat = (id) => {
+        this.readMessages(id);
         chats.getInvite(id)
             .then(invite => this.setState({
                 selectedChatInvite: invite.toString()
@@ -108,13 +119,14 @@ export class Chats extends React.Component {
         chats.sendMessage(
             this.state.selectedChatId,
             message
-        )
-            .then(r => this.setState({
+        ).then(r => {
+            this.setState({
                 selectedChatMessages: [
                     ...this.state.selectedChatMessages,
-                    { id: r.id, text: message, ownerId: login.userId }
+                    { id: r.messageId, text: message, ownerId: login.userId }
                 ]
-            }));
+            });
+        });
     };
 
     onJoinChat = (invite) => {

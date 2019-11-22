@@ -542,7 +542,7 @@ function hasAccessToWriteMessages (userId, usersIds) {
 }
 
 function hasAccessToDeleteMessage (userId, message) {
-    return parseInt(message.ownerId) === parseInt(userId);
+    return String(message.ownerId) === String(userId);
 }
 
 function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {
