@@ -9,7 +9,7 @@ module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
     return {
         stats: { modules: false },
-        entry: { main: './src/client/index.jsx' },
+        entry: ['babel-polyfill', './src/client/index.jsx'],
         resolve: { extensions: ['.js', '.jsx'] },
         devServer: {
             port: 3000
