@@ -30,9 +30,15 @@ public:
         size_t i, k;
 
         for (i = 0; i < flag.length() - 1; i++) {
-            buffer[i] = flag.at(i);
+            buffer[0] = flag.at(i);
 
-            fread(buffer + i, sizeof(char), WORD_LENGTH - i, random);
+            fread(buffer + 1, sizeof(char), WORD_LENGTH - 1, random);
+
+            for (k = 0; k < WORD_LENGTH; k++) {
+                if (buffer[k] == 0) {
+                    buffer[k] = 1;
+                }
+            }
             
             f.add(std::string(buffer));
         }
