@@ -4,6 +4,7 @@ import { Input } from '../../components/Input/Input';
 import { Button } from '../../components/Button/Button';
 import { Row } from '../../components/Row/Row';
 import * as uuid from 'uuid';
+import { Link } from 'react-router-dom';
 
 export class Chat extends React.Component {
     state = { messageDraft: '' };
@@ -14,8 +15,9 @@ export class Chat extends React.Component {
                 <header className={s.header}>
                     <h2 className={s.chatName}>{this.props.name}</h2>
                     <section className={s.headerButtons}>
-                        <Button text="Members" onClick={() => {}} />
-                        <Button text="Search" onClick={() => {}} />
+                        <Link to="/search">
+                            <Button text="search" />
+                        </Link>
                     </section>
                 </header>
                 <div className={s.messagesContainer}>
