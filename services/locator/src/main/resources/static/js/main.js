@@ -47,7 +47,7 @@ function toBase64(buffer) {
     return window.btoa(binary);
 }
 
-const fieldNameRegex = /^[a-zA-Z]{3,50}$/;
+const fieldNameRegex = /^[a-zA-Z0-9]{3,50}$/;
 
 
 function getContent() {
@@ -64,7 +64,7 @@ function getContent() {
         d[key] = value;
     }
     keys.sort();
-    let key = toBase64(make_class(keys));
+    let key = toBase64(encode(keys));
     let message = keys.map(function (key) {
             return d[key].length.toString();
         }).join(":") + ":" +
