@@ -24,12 +24,12 @@ export class ProductsAddComponent {
     this.product = null;
   }
 
-  addProduct(name: string, calories: number, protein: number, fat: number, carbohydrate: number) {
+    addProduct(name: string, manufacturer: string, calories: number, protein: number, fat: number, carbohydrate: number) {
     this.loading = true;
     this.product = null;
     this.error = null;
 
-    let newProduct = new Product(name, calories, protein, fat, carbohydrate);
+    let newProduct = new Product(name, manufacturer, calories, protein, fat, carbohydrate);
 
     this.http.post<Product>(this.baseUrl + 'api/products', newProduct).subscribe(result => {
         this.loading = false;

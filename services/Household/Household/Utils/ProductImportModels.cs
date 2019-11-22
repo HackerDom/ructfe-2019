@@ -20,6 +20,9 @@ namespace Household.Utils
         [XmlElement("name")]
         public string Name { get; set; }
 
+        [XmlElement("manufacturer")]
+        public string Manufacturer { get; set; }
+
         [XmlElement("calories")]
         public double Calories { get; set; }
 

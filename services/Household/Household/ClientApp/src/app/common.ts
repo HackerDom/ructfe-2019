@@ -8,13 +8,20 @@ export interface Page<T> {
 
 export class Product {
   name: string;
+  manufacturer: string;
   protein: number;
   fat: number;
   carbohydrate: number;
   calories: number;
 
-  constructor(name: string, calories: number, protein: number, fat: number, carbohydrate: number) {
+  constructor(name: string,
+    manufacturer: string,
+    calories: number,
+    protein: number,
+    fat: number,
+    carbohydrate: number) {
     this.name = name;
+    this.manufacturer = manufacturer
     this.calories = calories;
     this.protein = protein;
     this.fat = fat;

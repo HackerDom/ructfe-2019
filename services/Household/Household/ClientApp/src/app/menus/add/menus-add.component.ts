@@ -29,16 +29,16 @@ export class MenusAddComponent {
     this.product = null;
     this.error = null;
 
-    let newProduct = new Product(name, calories, protein, fat, carbohydrate);
+    //let newProduct = new Product(name, calories, protein, fat, carbohydrate);
 
-    this.http.post<Product>(this.baseUrl + 'api/products', newProduct).subscribe(result => {
-        this.loading = false;
-        this.product = result;
-      },
-      error => {
-        console.error(error);
-        this.loading = false;
-        this.error = error.error;
-      });
+    //this.http.post<Product>(this.baseUrl + 'api/products', newProduct).subscribe(result => {
+    //    this.loading = false;
+    //    this.product = result;
+    //  },
+    //  error => {
+    //    console.error(error);
+    //    this.loading = false;
+    //    this.error = error.error;
+    //  });
   }
 }
