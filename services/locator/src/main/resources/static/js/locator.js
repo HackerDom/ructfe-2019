@@ -161,10 +161,6 @@ function initDraw() {
         sonars[user.id] = new Sonar(context, new Point(user.x, user.y), user.size, user.speed, user.id, user.color);
     });
 
-    $("#square").on("click", function (e) {
-        sonars[1].move(new Point(1, 0));
-    });
-
     const userLabel = $("#user-label");
     userLabel.css("left", (context.getSquareLeft() + context.getPointerLength() - getSize(userLabel, "width")).toString() + "px");
 
