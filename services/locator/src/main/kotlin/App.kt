@@ -1,4 +1,3 @@
-import decoder.decodeMessage
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -24,10 +23,10 @@ import io.ktor.sessions.*
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.hex
 import io.ktor.util.toByteArray
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonParsingException
-import managers.UserManager
 import messages.RegisterData
 import messages.UserPair
 import messages.UserPosData
@@ -50,7 +49,7 @@ suspend fun clearCookieAndGoLoginPage(call: ApplicationCall) {
 fun main() {
     init()
     val userManager = UserManager()
-    val server = embeddedServer(Netty, 8080) {
+    val server = embeddedServer(Netty, 8081) {
         install(FreeMarker) {
             templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
         }
@@ -99,22 +98,33 @@ fun main() {
                     }
                     call.respond(HttpStatusCode.BadRequest)
                 } catch (e: JsonParsingException) {
-                    call.respond(HttpStatusCode.BadRequest)
+                    call.respond(HttpStatusCode.BadRequest, "Invalid json")
+                } catch (e: SerializationException) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid data")
                 }
             }
             post("/register") {
-                val rawRegData = call.receiveChannel().toByteArray().decodeToString()
-                val regData = Json.parse(RegisterData.serializer(), rawRegData)
-
-                if (userManager.isUserExists(regData.name)) {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        "Username ${regData.name} already exist"
-                    )
-                } else {
-                    val newUserId = userManager.createNewUser(regData)
-                    call.sessions.set(AuthSession(newUserId))
-                    call.respondRedirect("/")
+                try {
+                    val rawRegData = call.receiveChannel().toByteArray().decodeToString()
+                    val regData = Json.parse(RegisterData.serializer(), rawRegData)
+                    if (!regData.isValid()) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid registration data")
+                        return@post
+                    }
+                    if (userManager.isUserExists(regData.name)) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            "Username ${regData.name} already exist"
+                        )
+                    } else {
+                        val newUserId = userManager.createNewUser(regData)
+                        call.sessions.set(AuthSession(newUserId))
+                        call.respondRedirect("/")
+                    }
+                } catch (e: JsonParsingException) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid json")
+                } catch (e: SerializationException) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid data")
                 }
             }
             get("/login_page") {

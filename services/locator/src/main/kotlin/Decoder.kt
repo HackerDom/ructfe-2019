@@ -1,5 +1,3 @@
-package decoder
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import models.RuntimeClassLoader
 import java.io.ByteArrayOutputStream

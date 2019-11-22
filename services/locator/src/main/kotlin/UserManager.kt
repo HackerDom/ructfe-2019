@@ -1,5 +1,3 @@
-package managers
-
 import messages.RegisterData
 import messages.UserPair
 import models.Info
