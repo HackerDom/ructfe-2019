@@ -5,8 +5,8 @@ class Register {
     password = '';
     username = '';
 
-    register = async () => {
-        await fetch('/register', {
+    register = () => {
+        return fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

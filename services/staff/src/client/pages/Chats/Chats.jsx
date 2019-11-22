@@ -93,7 +93,7 @@ export class Chats extends React.Component {
             .catch((e) => this.setState({
                 selectedChatAccess: 'no'
             }));
-    }
+    };
 
     selectChat = (id) => {
         this.readMessages(id);
