@@ -35,7 +35,9 @@ namespace HouseholdTests.FunctionalTests
                 Fat = 1,
                 Protein = 1
             };
+
             var createdProduct = await cooker.Client.Post("/api/products", product);
+            createdProduct.EnsureStatusCode(HttpStatusCode.Created);
             product = createdProduct.Value;
 
             var dish = new DishViewCook
@@ -52,6 +54,7 @@ namespace HouseholdTests.FunctionalTests
                 PortionWeight = 200
             };
             var createdDish = await cooker.Client.Post("/api/dishes", dish);
+            createdDish.EnsureStatusCode(HttpStatusCode.Created);
             dish = createdDish.Value;
 
             var menu = new MenuView
@@ -63,18 +66,21 @@ namespace HouseholdTests.FunctionalTests
                 }
             };
             var createdMenu = await cooker.Client.Post("/api/menus", menu);
+            createdMenu.EnsureStatusCode(HttpStatusCode.Created);
             menu = createdMenu.Value;
 
             var user = await env.RegisterNewUser(Role.Customer);
             var getUserMenu = await user.Client.Get<MenuView>($"/api/menus/{menu.Id}");
+            getUserMenu.EnsureStatusCode(HttpStatusCode.OK);
             var userMenu = getUserMenu.Value;
             userMenu.Should().BeEquivalentTo(menu);
 
             var getUserDish = await user.Client.Get<DishViewCustomer>($"/api/dishes/{menu.DishIds[0]}");
+            getUserDish.EnsureStatusCode(HttpStatusCode.OK);
             var userDish = getUserDish.Value;
 
             var getUserProduct = await user.Client.Get<ProductView>($"/api/products/{dish.Ingredients[0].ProductId}");
-            var userProduct = getUserProduct.Value;
+            getUserProduct.EnsureStatusCode(HttpStatusCode.NotFound);
 
             var order = new OrderView
             {
@@ -86,6 +92,7 @@ namespace HouseholdTests.FunctionalTests
             };
 
             var createdOrder = await cooker.Client.Post("/api/orders", order);
+            createdOrder.EnsureStatusCode(HttpStatusCode.Created);
             order = createdOrder.Value;
         }
 

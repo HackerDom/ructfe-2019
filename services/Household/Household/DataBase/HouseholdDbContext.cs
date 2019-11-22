@@ -108,6 +108,9 @@ namespace Household.DataBase
                 .Property(product => product.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+            builder.Entity<Product>()
+                .Property(product => product.Name)
+                .HasMaxLength(100);
 
             builder.Entity<Dish>()
                 .Property(dish => dish.Name)

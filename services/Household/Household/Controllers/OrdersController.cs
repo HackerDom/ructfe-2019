@@ -83,7 +83,21 @@ namespace Household.Controllers
         {
             var order = GetDataModel(orderView);
             Clear(order);
-            /// todo: check dishes are from menu
+
+            var menu = dataBase.Menus
+                .Include(m => m.DishesInMenu)
+                .FirstOrDefault(m => m.Id == order.MenuId);
+
+            if (menu == null)
+                return BadRequest($"Menu {order.MenuId} not found");
+
+            var dishesInMenu = menu.DishesInMenu.Select(d => d.DishId).ToArray();
+            var dishesInOrder = order.DishesInOrder.Select(d => d.DishId).ToArray();
+
+            var unknownDishes = dishesInOrder.Where(dishId => !dishesInMenu.Contains(dishId)).ToArray();
+
+            if (unknownDishes.Length != 0)
+                return BadRequest($"Selected menu does not contain dishes: {string.Join(", ", unknownDishes)}");
 
             dataBase.Orders.Add(order);
 
