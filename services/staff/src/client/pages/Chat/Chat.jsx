@@ -28,7 +28,7 @@ export class Chat extends React.Component {
                         value={this.state.invite}
                         onChange={this.onChangeInvite}
                     />
-                    <Button text="join" onClick={this.props.onJoinChat} />
+                    <Button text="join" onClick={this.onJoinChat} />
                 </div>
             );
         }
