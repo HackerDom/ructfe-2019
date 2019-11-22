@@ -39,15 +39,12 @@ def flag_meat(meat_size=16*1024, fakes_count=128):
 async def check_service(request: CheckRequest) -> Verdict:
     async with API(request.hostname) as api:
         try:
-            frontend_status, backend_status = await api.health_check()
+            status = await api.health_check()
         except Exception as ex:
-            return Verdict.DOWN('Health checking error', traceback.format_exc())
+            return Verdict.DOWN('Connection error', traceback.format_exc())
 
-        if frontend_status != 200:
-            return Verdict.MUMBLE('Frontend is not healthy', f'Frontend status: {frontend_status}')
-        
-        if backend_status != 200:
-            return Verdict.MUMBLE('Backend is not healthy', f'Backend status: {backend_status}')
+        if status != 200:
+            return Verdict.MUMBLE('Ping failed', f'Status: {status}')
     
     return Verdict.OK()
 
@@ -64,10 +61,10 @@ async def put_flag(request: PutRequest) -> Verdict:
         try:
             status, fuel_id = await api.upload_fuel(fuel)
         except Exception as ex:
-            return Verdict.MUMBLE('Fuel uploading error', traceback.format_exc())
+            return Verdict.DOWN('Connection error', traceback.format_exc())
     
         if status != 200:
-            return Verdict.MUMBLE('Can not upload fuel', f'Backend status: {status}')
+            return Verdict.MUMBLE('Can\'t upload fuel', f'Status: {status}')
         
         if len(fuel_id) == 0:
             return Verdict.MUMBLE('Fuel name is empty', '')
@@ -89,18 +86,18 @@ async def get_flag(request: GetRequest) -> Verdict:
         try:
             status, fuel_ids = await api.list_fuel()
         except Exception as ex:
-            return Verdict.MUMBLE('Fuel listing error', traceback.format_exc())
+            return Verdict.DOWN('Connection error', traceback.format_exc())
 
         if status != 200 or fuel_id not in fuel_ids:
-            return Verdict.CORRUPT('Can not find fuel type', f'Backend status: {status}')
+            return Verdict.CORRUPT('Can\'t find fuel', f'Status: {status}')
         
         try:
             status, response = await api.check_fuel_property(fuel_id, payload)
         except Exception as ex:
-            return Verdict.MUMBLE('Fuel property checking error', traceback.format_exc())
+            return Verdict.DOWN('Connection error', traceback.format_exc())
 
         if status != 200 or response != result:
-            return Verdict.CORRUPT('Can not check fuel property', f'Backend status: {status}')
+            return Verdict.CORRUPT('Can\'t check property', f'Status: {status}')
 
     return Verdict.OK()
 
