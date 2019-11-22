@@ -122,15 +122,15 @@ namespace HouseholdTests.Infrastructure
             return (codeVerifier, codeChallenge);
         }
 
-        private static void ParseAndValidateTokenWithPublicKey(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            handler.ValidateToken(token, new TokenValidationParameters
-            {
-                IssuerSigningKey = new ECDsaSecurityKey(CertificateLoader.GetECDsaPublicKey()),
-                ValidAudience = "HouseholdAPI",
-                ValidIssuer = "http://localhost"
-            }, out _);
-        }
+        //private static void ParseAndValidateTokenWithPublicKey(string token)
+        //{
+        //    var handler = new JwtSecurityTokenHandler();
+        //    handler.ValidateToken(token, new TokenValidationParameters
+        //    {
+        //        IssuerSigningKey = new ECDsaSecurityKey(CertificateLoader.GetECDsaPublicKey()),
+        //        ValidAudience = "HouseholdAPI",
+        //        ValidIssuer = "http://localhost"
+        //    }, out _);
+        //}
     }
 }

@@ -84,10 +84,12 @@ namespace Household.Controllers
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
+            var createdOrder = (await GetOrder(order.Id)).Value;
+
             return CreatedAtAction("GetOrder", new
             {
                 id = order.Id
-            }, mapper.Map<OrderView>(order));
+            }, createdOrder);
         }
     }
 }

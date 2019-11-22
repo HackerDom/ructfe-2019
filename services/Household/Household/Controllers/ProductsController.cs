@@ -86,10 +86,12 @@ namespace Household.Controllers
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
+            var createdProduct = (await GetProduct(product.Id)).Value;
+
             return CreatedAtAction("GetProduct", new
             {
                 id = product.Id
-            }, GetViewModel(product));
+            }, createdProduct);
         }
 
         [HttpPost]

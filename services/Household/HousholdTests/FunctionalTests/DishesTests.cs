@@ -35,13 +35,12 @@ namespace HouseholdTests.FunctionalTests
                 Fat = 1,
                 Protein = 1
             };
-
             var createdProduct = await cooker.Client.Post("/api/products", product);
             product = createdProduct.Value;
 
             var dish = new DishViewCook
             {
-                Name = "Яблочное пюре",
+                Name = "Варенье",
                 Ingredients = new[]
                 {
                     new IngredientView
@@ -49,7 +48,8 @@ namespace HouseholdTests.FunctionalTests
                         ProductId = product.Id,
                         Weight = 150
                     }
-                }
+                },
+                PortionWeight = 200
             };
             var createdDish = await cooker.Client.Post("/api/dishes", dish);
             dish = createdDish.Value;
@@ -62,7 +62,6 @@ namespace HouseholdTests.FunctionalTests
                     dish.Id
                 }
             };
-
             var createdMenu = await cooker.Client.Post("/api/menus", menu);
             menu = createdMenu.Value;
 
@@ -174,7 +173,8 @@ namespace HouseholdTests.FunctionalTests
             var getResult = await user.Client.Get<DishViewCook>($"/api/Dishes/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
-            getResult.Value.Ingredients.Select(i => i.Product).Should().BeEquivalentTo(products, o => o.WithStrictOrdering());
+            getResult.Value.Ingredients.Select(i => i.Product).Should()
+                .BeEquivalentTo(products, o => o.WithStrictOrdering());
             foreach (var ingredient in getResult.Value.Ingredients) ingredient.Product = null;
 
             // assert

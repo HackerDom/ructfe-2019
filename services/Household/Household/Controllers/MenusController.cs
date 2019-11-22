@@ -76,10 +76,12 @@ namespace Household.Controllers
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
+            var createdMenu = (await GetMenu(menu.Id)).Value;
+
             return CreatedAtAction("GetMenu", new
             {
                 id = menu.Id
-            }, mapper.Map<MenuView>(menu));
+            }, createdMenu);
         }
     }
 }

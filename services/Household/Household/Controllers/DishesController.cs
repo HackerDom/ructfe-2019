@@ -89,10 +89,12 @@ namespace Household.Controllers
             if (saveResult.IsFail)
                 return ResponseFromApiResult(saveResult);
 
+            var createdDish = GetDish(dish.Id).Value;
+
             return CreatedAtAction("GetDish", new
             {
                 id = dish.Id
-            }, GetViewCook(dish));
+            }, createdDish);
         }
 
         private DishViewCook GetViewCook(Dish dishDataModel)
