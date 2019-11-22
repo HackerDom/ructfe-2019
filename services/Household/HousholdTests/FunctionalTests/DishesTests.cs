@@ -106,14 +106,20 @@ namespace HouseholdTests.FunctionalTests
             var getResult = await user.Client.Get<DishViewCook>($"/api/Dishes/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
+            getResult.Value.Ingredients.Select(i => i.Product).Should().BeEquivalentTo(products, o => o.WithStrictOrdering());
+            foreach (var ingredient in getResult.Value.Ingredients) ingredient.Product = null;
+
             // assert
             getResult.Value.Should()
                 .BeEquivalentTo(newDish, options => options
+                    .WithStrictOrdering()
                     .Excluding(dish => dish.Id)
                     .Excluding(dish => dish.PortionCalories)
                     .Excluding(dish => dish.PortionProtein)
                     .Excluding(dish => dish.PortionFat)
-                    .Excluding(dish => dish.PortionCarbohydrate));
+                    .Excluding(dish => dish.PortionCarbohydrate)
+                    .Excluding(dish => dish.CreatedBy)
+                    .Excluding(dish => dish.CreatedDate));
         }
 
         [Test]
@@ -126,6 +132,7 @@ namespace HouseholdTests.FunctionalTests
             {
                 new ProductView
                 {
+                    Name = Generator.GetRandomString(),
                     Protein = 20,
                     Fat = 2,
                     Carbohydrate = 8,
@@ -133,6 +140,7 @@ namespace HouseholdTests.FunctionalTests
                 },
                 new ProductView
                 {
+                    Name = Generator.GetRandomString(),
                     Protein = 10,
                     Fat = 5,
                     Carbohydrate = 15,
@@ -157,6 +165,7 @@ namespace HouseholdTests.FunctionalTests
 
             var newDish = new DishViewCook
             {
+                Name = Generator.GetRandomString(),
                 PortionWeight = 300,
                 Ingredients = ingredients
             };
@@ -167,7 +176,10 @@ namespace HouseholdTests.FunctionalTests
 
             var getResult = await user.Client.Get<DishViewCook>($"/api/Dishes/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
+
             var dish = getResult.Value;
+            dish.Ingredients.Select(i => i.Product).Should()
+                .BeEquivalentTo(products, o => o.WithStrictOrdering());
 
             // assert
             dish.PortionWeight.Should().Be(newDish.PortionWeight);
@@ -197,19 +209,28 @@ namespace HouseholdTests.FunctionalTests
             // act
             var getDishes = await user.Client.Get<Page<DishViewCook>>("api/Dishes");
             getDishes.EnsureStatusCode(HttpStatusCode.OK);
-            var productsList = getDishes.Value;
+            var dishesList = getDishes.Value;
+
+            foreach (var dish in dishesList.Items)
+            foreach (var ingredient in dish.Ingredients)
+                ingredient.Product = null;
 
             // assert
-            productsList.Skip.Should().Be(0);
-            productsList.Take.Should().Be(100);
-            productsList.TotalCount.Should().Be(dishes.Length);
-            productsList.Items.Should().BeEquivalentTo(dishes,
+            dishesList.Skip.Should().Be(0);
+            dishesList.Take.Should().Be(100);
+            dishesList.TotalCount.Should().Be(dishes.Length);
+
+            dishesList.Items.Should().BeEquivalentTo(dishes,
                 options => options
+                    .WithStrictOrdering()
                     .Excluding(dish => dish.Id)
                     .Excluding(dish => dish.PortionCalories)
                     .Excluding(dish => dish.PortionProtein)
                     .Excluding(dish => dish.PortionFat)
-                    .Excluding(dish => dish.PortionCarbohydrate));
+                    .Excluding(dish => dish.PortionCarbohydrate)
+                    .Excluding(d => d.Ingredients) /// ???
+                    .Excluding(dish => dish.CreatedBy)
+                    .Excluding(dish => dish.CreatedDate));
         }
 
         private static async Task RegisterProducts(TestApiClient client, IEnumerable<ProductView> products)
@@ -219,6 +240,8 @@ namespace HouseholdTests.FunctionalTests
                 var createResult = await client.Post("/api/Products", product);
                 createResult.EnsureStatusCode(HttpStatusCode.Created);
                 product.Id = createResult.Value.Id;
+                product.CreatedBy = createResult.Value.CreatedBy;
+                product.CreatedDate = createResult.Value.CreatedDate;
             }
         }
     }

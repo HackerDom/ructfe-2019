@@ -15,6 +15,7 @@ namespace Household.ViewModels
         public double PortionFat { get; set; }
         public double PortionCarbohydrate { get; set; }
         public double PortionCalories { get; set; }
-        public DateTime Created { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

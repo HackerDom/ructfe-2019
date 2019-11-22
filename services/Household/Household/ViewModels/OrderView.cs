@@ -8,6 +8,7 @@ namespace Household.ViewModels
         public int Id { get; set; }
         public int MenuId { get; set; }
         public List<int> DishIds { get; set; }
-        public DateTime Created { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

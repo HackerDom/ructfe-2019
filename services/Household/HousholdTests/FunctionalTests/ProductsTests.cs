@@ -39,7 +39,12 @@ namespace HouseholdTests.FunctionalTests
             var getResult = await user.Client.Get<ProductView>($"/api/Products/{createResult.Value.Id}");
             getResult.EnsureStatusCode(HttpStatusCode.OK);
 
-            getResult.Value.Should().BeEquivalentTo(product, options => options.Excluding(p => p.Id));
+            getResult.Value.Should().BeEquivalentTo(product,
+                options => options
+                    .WithStrictOrdering()
+                    .Excluding(p => p.Id)
+                    .Excluding(p => p.CreatedBy)
+                    .Excluding(p => p.CreatedDate));
         }
 
         [Test]
@@ -71,7 +76,12 @@ namespace HouseholdTests.FunctionalTests
             productsList.Skip.Should().Be(0);
             productsList.Take.Should().Be(100);
             productsList.TotalCount.Should().Be(testProducts.Length);
-            productsList.Items.Should().BeEquivalentTo(testProducts, options => options.Excluding(p => p.Id));
+            productsList.Items.Should().BeEquivalentTo(testProducts,
+                options => options
+                    .WithStrictOrdering()
+                    .Excluding(p => p.Id)
+                    .Excluding(p => p.CreatedBy)
+                    .Excluding(p => p.CreatedDate));
         }
 
         [Test]
@@ -89,10 +99,15 @@ namespace HouseholdTests.FunctionalTests
             productsList.Skip.Should().Be(testProducts.Length - 2);
             productsList.Take.Should().Be(1);
             productsList.TotalCount.Should().Be(testProducts.Length);
-            productsList.Items.Should().ContainSingle().Which.Should().BeEquivalentTo(testProducts[^2], options => options.Excluding(p => p.Id));
+            productsList.Items.Should().ContainSingle().Which.Should().BeEquivalentTo(testProducts[^2],
+                options => options
+                    .WithStrictOrdering()
+                    .Excluding(p => p.Id)
+                    .Excluding(p => p.CreatedBy)
+                    .Excluding(p => p.CreatedDate));
         }
 
-        private readonly ProductView[] testProducts = new[]
+        private readonly ProductView[] testProducts =
         {
             new ProductView
             {

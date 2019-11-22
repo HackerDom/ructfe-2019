@@ -32,6 +32,7 @@ namespace Household.DataBase
         internal DbSet<Product> Products { get; set; }
         internal DbSet<Dish> Dishes { get; set; }
         internal DbSet<Menu> Menus { get; set; }
+        internal DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
