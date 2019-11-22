@@ -11,11 +11,11 @@ else
     exit 1
 fi
 
-./$APP_PATH/radio -migrate
+$APP_DIR/radio -migrate
 if [ $? -ne 0 ]
 then
     echo "Can't migrate secret" >&2
     exit 1
 fi
 
-./$APP_PATH/radio
+$APP_DIR/radio

@@ -6,8 +6,25 @@ from decorators import check_exception
 
 checker = Checker()
 
+RETRY_CREATE_USER_COUNT = 10
 
-async def _check_api(api: BaseApi, user):
+# sometimes generator, generate to weak password and we must retry
+async def _try_create_user(api: BaseApi):
+    current_retry_count = RETRY_CREATE_USER_COUNT
+    username = utils.generate_random_text()
+    password = utils.generate_random_text(64, min_length=6)
+    status, user = await api.create_user(username, password)
+    while current_retry_count > 0:
+        if status == 200:
+            return username, password, status, user
+        username = utils.generate_random_text()
+        password = utils.generate_random_text(64, min_length=6)
+        status, user = await api.create_user(username, password)
+        current_retry_count -= 1
+    return username, password, status, user
+
+
+async def _check_api(api: BaseApi):
     playlist_name = utils.generate_random_text()
     playlist_description = utils.generate_random_text(256)
     status, playlist_private = await api.create_playlist(playlist_name, playlist_description, False)
@@ -61,13 +78,11 @@ async def _check_api(api: BaseApi, user):
 
 async def _check_frontend_api(request: CheckRequest) -> Verdict:
     async with FrontendApi(request.hostname) as api:
-        username = utils.generate_random_text()
-        password = utils.generate_random_text(64, min_length=6)
-        status, user = await api.create_user(username, password)
+        username, password, status, user = await _try_create_user(api)
         if status != 200:
             return Verdict.MUMBLE("Can't create user", f"Wrong status code [user.create],"
-                                                       f"expect = 200, real = {status}")
-
+               f" expect = 200, real = {status}, username={username}, status={status}, after {RETRY_CREATE_USER_COUNT}"
+               f" attempt")
         status, user = await api.login_user(username, password)
         if status != 200:
             return Verdict.MUMBLE(f"Can't login user", f"Wrong status code [user.login],"
@@ -80,7 +95,7 @@ async def _check_frontend_api(request: CheckRequest) -> Verdict:
         if user['username'] not in usernames:
             return Verdict.MUMBLE(f"Can't find username in usernames", f"usernames: {usernames.join(', ')}")
 
-        api_verdict = await _check_api(api, user)
+        api_verdict = await _check_api(api)
         if api_verdict != Verdict.OK():
             return api_verdict
         playlist_name = utils.generate_random_text()
@@ -97,13 +112,12 @@ async def _check_frontend_api(request: CheckRequest) -> Verdict:
 
 
 async def _check_jwt_api(request: CheckRequest) -> Verdict:
-    async with FrontendApi(request.hostname, '') as api:
-        username = utils.generate_random_text()
-        password = utils.generate_random_text(64, min_length=6)
-        status, user = await api.create_user(username, password)
+    async with FrontendApi(request.hostname) as api:
+        username, password, status, user = await _try_create_user(api)
         if status != 200:
             return Verdict.MUMBLE("Can't create user", f"Wrong status code [user.create],"
-                                                       f"expect = 200, real = {status}")
+                f" expect = 200, real = {status}, username={username}, status={status}, after {RETRY_CREATE_USER_COUNT}"
+                f" attempt")
     async with Api(request.hostname) as api:
         status, user = await api.login_user(username, password)
         if status != 200:
@@ -114,7 +128,7 @@ async def _check_jwt_api(request: CheckRequest) -> Verdict:
             return Verdict.MUMBLE(f"Can't get token", f"Wrong status code [api.token],"
                                                       f"expect = 200, real = {status}")
     async with Api(request.hostname, custom_headers={'Authorization': f'Bearer {token_data["token"]}'}) as api:
-        api_verdict = await _check_api(api, user)
+        api_verdict = await _check_api(api)
         if api_verdict != Verdict.OK():
             return api_verdict
     return Verdict.OK()
