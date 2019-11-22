@@ -13,6 +13,14 @@
     padding: 0;
     margin: 0;
     border: none;
+    overflow: hidden;
+}
+
+.buttonText {
+    text-overflow: ellipsis;
+    width: 250px;
+    text-align: left;
+    overflow: hidden;
 }
 
 .item:focus,
@@ -36,6 +44,7 @@
     border: 2px solid var(--white);
     margin: 0 20px;
     position: relative;
+    flex: 0 0 21px;
 }
 
 .itemCircle:after {
