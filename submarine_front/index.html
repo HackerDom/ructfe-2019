@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<head>
+    <link href='./style.css' type='text/css' rel='stylesheet'>
+    <title>РуЦТФЕ 2019</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <h1>Добро пожаловать на подводную лодку!</h1>
+
+    <div class="grid-container">
+        
+  <a href="" class="service" id="locator"><div class="locator"><img src="./img/locator.png"><br>ЛОКАТОР</div></a>
+  <a href="" class="service" id="patrol"><div class="patrol"><img src="./img/patrol.png"><br>ПАТРУЛЬ</div></a>
+  <a href="" class="service" id="staff"><div class="staff"><img src="./img/staff.png"><br>ЭКИПАЖ</div></a>
+  <a href="" class="service" id="radio"><div class="radio"><img src="./img/radio.png"><br>РАДИО</div></a>
+  <a href="" class="service" id="household"><div class="household"><img src="./img/household.png"><br>КАМБУЗ</div></a>
+  <a href="" class="service" id="profile"><div class="docs"><img src="./img/docs.png"><br>КАРТОТЕКА</div></a>
+  <a href="" class="service" id="engine"><div class="engine"><img src="./img/engine.png"><br>ДВИГАТЕЛЬ</div></a>
+
+</div>
+
+<div class="welcome">
+	<p>We need to go deeper!</p>
+	<p><a href="http://monitor.ructfe.org">Monitor</a> × <a href="https://cloud.ructfe.org">Cloud Console</a> × <a href="https://ructfe.org/slack">Slack</a> × <a href="https://ructfe.org/news">News</a></p>
+</div>
+
+   <script>
+	document.getElementById("locator").href = `http://${window.location.host}:8080`;
+	document.getElementById("patrol").href = `http://${window.location.host}:21379`;
+	document.getElementById("staff").href = `http://${window.location.host}:3000`;
+	document.getElementById("radio").href = `http://${window.location.host}:4553`;
+	document.getElementById("household").href = `http://${window.location.host}:5000`;
+	document.getElementById("profile").href = `http://${window.location.host}:20561`;
+	document.getElementById("engine").href = `http://${window.location.host}:17171`;
+    </script>
+</body>

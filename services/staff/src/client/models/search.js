@@ -17,10 +17,14 @@ class Search {
                 }
             })
         }).then(response => {
-            return response.json().then(json => ({
-                username: json.data.username,
-                id: json.data.id
-            }));
+            return response.json().then(json => {
+                if (json.success && json.data.id !== undefined) {
+                    return {
+                        username: json.data.username,
+                        id: json.data.id
+                    };
+                }
+            });
         }).catch(error => console.error(error));
     }
 }

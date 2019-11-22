@@ -32,6 +32,7 @@ async def check_service(request: CheckRequest) -> Verdict:
 
     if 'type' not in downloaded_json:
         os.remove(f'temp/{id}.json')
+        print("during check", file=sys.stderr)
         return Verdict.MUMBLE("Bad json", "'type' not in answer")
 
     os.remove(f'temp/{id}.json')
@@ -43,7 +44,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
     rid = uuid.uuid4()
     id = uuid.uuid4()
 
-    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=create -r={rid}.json --id={id} --rid={rid} -f={request.flag}'
+    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=create -r={rid}.json --id={id} --rid={rid} -f={request.flag} -n=10'
     last = await get_out(cmd)
 
     async with Api(request.hostname) as api:
@@ -55,6 +56,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
 
     if 'flag' not in downloaded_json or downloaded_json['flag'] != request.flag:
         os.remove(f'temp/{rid}.json')
+        print(f"after put, json={downloaded_json}, reason={downloaded_json['flag']}", file=sys.stderr)
         return Verdict.MUMBLE("Bad json", "'flag' not in answer or it's incorrect")
 
     os.remove(f'temp/{rid}.json')
@@ -87,7 +89,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
     for _ in range(50):
-        cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=iso --id={id} -r={rid}.json --rid={rid} -s={seed}'
+        cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=iso -r={rid}.json -s={seed} -n=10 --id={id} --rid={rid}'
         perm_seed = await get_out(cmd)
         async with Api(request.hostname) as api:
             try:
@@ -99,14 +101,17 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'REQ_VC' and downloaded_json['type'] != 'REQ_PERM'):
             os.remove(f'temp/{rid}.json')
+            print(f"after sending iso, reason={downloaded_json['flag']}", file=sys.stderr)
             return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
 
         type = downloaded_json['type']
 
         if type == 'REQ_VC':
-            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=vc -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}'
+            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=vc' \
+                f' -r={rid}.json -s={seed} -n=10 --ps={perm_seed} --rid={rid}'
         else:
-            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=perm -r={rid}.json --rid={rid} -s={seed} --ps={perm_seed}'
+            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=perm' \
+                f' -r={rid}.json -s={seed} -n=10 --rid={rid} --ps={perm_seed}'
 
         await get_out(cmd)
 
@@ -120,6 +125,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'CONTINUE' and downloaded_json['type'] != 'OK'):
             os.remove(f'temp/{rid}.json')
+            print(f"after sending {type}, reason={downloaded_json['flag']}", file=sys.stderr)
             return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
 
         if downloaded_json['type'] == 'OK':
@@ -147,9 +153,11 @@ async def get_out(cmd):
     stdout, stderr = await p.communicate()
 
     if p.returncode:
-        print(stderr, file=sys.stderr)
+        print(cmd, file=sys.stderr)
+        print(stderr.decode('utf-8'), file=sys.stderr)
+        return -1
 
-    return stdout.decode('utf-8')
+    return stdout.decode('utf-8').strip()
 
 
 if __name__ == '__main__':

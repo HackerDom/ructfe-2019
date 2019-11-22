@@ -100,9 +100,9 @@ public class GraphGenerator {
 
         long ans = decomposition.maxIS();
 
-        graph.setLimit(ans);
+        graph.setLimit(Arrays.stream(weight).sum() - ans);
 
-        Set<Integer> is = decomposition.getMaxIS();
+        //Set<Integer> is = decomposition.getMaxIS();
 
         /*System.err.println(String.format("Weights: %s.", Arrays.stream(weight).boxed()
             .map(Object::toString).collect(Collectors.joining(" "))));*/

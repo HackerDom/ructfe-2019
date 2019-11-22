@@ -1,24 +1,21 @@
 import * as React from 'react';
-import s from './Chat.css';
+import s, { message } from './Chat.css';
 import { Input } from '../../components/Input/Input';
 import { Button } from '../../components/Button/Button';
 import { Row } from '../../components/Row/Row';
 import * as uuid from 'uuid';
+import { chats } from '../../models/chats';
 
 export class Chat extends React.Component {
-    state = {
-        name: 'Chat name',
-        messageDraft: '',
-        messages: []
-    };
+    state = { messageDraft: '' };
 
     render () {
         return (
             <section className={s.chat}>
-                <h2 className={s.chatName}>{this.state.name}</h2>
+                <h2 className={s.chatName}>{this.props.name}</h2>
                 <div className={s.messagesContainer}>
                     <section className={s.messages}>
-                        {this.state.messages.map(this.renderMessage)}
+                        {this.props.messages.map(this.renderMessage)}
                     </section>
                 </div>
                 <Row className={s.chatSender} gap={85}>
@@ -45,6 +42,9 @@ export class Chat extends React.Component {
     };
 
     onMessageSend = () => {
-
+        this.props.onMessageSend(this.state.messageDraft);
+        this.setState({
+            messageDraft: ''
+        });
     };
 }

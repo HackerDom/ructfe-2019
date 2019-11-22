@@ -1,11 +1,11 @@
 from aiohttp import web
 
 from service.handler import StopHandler
-from service.stop import Lampfie
+from service.stop import Nitzerwint
 from service.db import DB
 
 db = DB()
-handler = StopHandler(Lampfie(), db)
+handler = StopHandler(Nitzerwint(), db)
 
 app = web.Application()
 app.add_routes([

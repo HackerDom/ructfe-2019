@@ -4,10 +4,10 @@
   "description": "staff service",
   "main": "./src/server/index.js",
   "scripts": {
-    "build": "webpack --mode development",
+    "build": "webpack --mode production",
     "start": "nodemon --exec babel-node ./scripts/start.js",
     "watch": "webpack --watch --mode development",
-    "prod": "webpack-cli -p | babel-node ./scripts/start.js",
+    "prod": "npm run build | babel-node ./scripts/start.js",
     "test": "test"
   },
   "author": "",
@@ -28,6 +28,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "prop-types": "latest",
+    "query-string": "^6.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router": "^5.1.2",

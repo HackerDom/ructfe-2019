@@ -36,7 +36,7 @@ export class Auth extends React.Component {
                             <Login onLogin={this.onLogin} />
                         </Case>
                         <Case value={tabs.redirect}>
-                            <Redirect to="/chats" />
+                            <Redirect to="/chatsPage" />
                         </Case>
                     </Switch>
                 </section>
