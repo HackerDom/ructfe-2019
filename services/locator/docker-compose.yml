@@ -5,9 +5,8 @@ services:
     ports:
       - "8080:8080"
     restart: on-failure
-    image: ubuntu
   db:
-    image: "postgres"
+    image: "postgres:alpine"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=locator
