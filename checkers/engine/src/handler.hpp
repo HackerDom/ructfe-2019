@@ -14,8 +14,6 @@
 class handler {
 public:
     static void generate_fuel(std::string const flag) {
-        srand(time(NULL));
-
         FILE* random = fopen("/dev/urandom", "rb");
     
         if (random == NULL) {
@@ -27,37 +25,15 @@ public:
         
         fuel f;
 
-        size_t i, k;
-
-        for (i = 0; i < flag.length() - 1; i++) {
-            buffer[0] = flag.at(i);
-
-            fread(buffer + 1, sizeof(char), WORD_LENGTH - 1, random);
-
-            for (k = 0; k < WORD_LENGTH; k++) {
-                switch (buffer[k]) {
-                case '\x00':
-                    buffer[k] = 1;
-                    break;
-
-                case '=':
-                    buffer[k] = 255;
-                    break;
-                }
-            }
-            
-            f.add(std::string(buffer));
-        }
-
-        for (i = 0; i < WORDS_COUNT; i++) {
+        for (size_t i = 0; i < WORDS_COUNT; i++) {
             fread(buffer, sizeof(char), WORD_LENGTH, random);
 
-            for (k = 0; k < WORD_LENGTH; k++) {
-                if (rand() % 64) {
-                    buffer[i] = 'A' + ((unsigned char)buffer[i]) % 26;
+            for (size_t k = 0; k < WORD_LENGTH; k++) {
+                if (fgetc(random) % 3 > 0) {
+                    buffer[k] = 'A' + ((unsigned char)buffer[k]) % 26;
                 }
                 else {
-                    buffer[i] = '0' + ((unsigned char)buffer[i]) % 10;
+                    buffer[k] = '0' + ((unsigned char)buffer[k]) % 10;
                 }
             }
 
