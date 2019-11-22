@@ -97,7 +97,7 @@ async def get_flag(request: GetRequest) -> Verdict:
             return Verdict.DOWN('Connection error', traceback.format_exc())
 
         if status != 200 or response != result:
-            return Verdict.CORRUPT('Can\'t check property', f'Status: {status}\nExpected: {result}\nActual: {response}')
+            return Verdict.CORRUPT('Can\'t check property', f'Status: {status}')
 
     return Verdict.OK()
 
