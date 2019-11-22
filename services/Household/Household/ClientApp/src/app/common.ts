@@ -23,6 +23,16 @@ export class Product {
 }
 
 
+export class Order {
+  menuId: number;
+  dishesIds: Array<number>;
+
+  constructor(menuId: number, dishesIds: Array<number>) {
+    this.menuId = menuId;
+    this.dishesIds = dishesIds;
+  }
+}
+
 export interface Dish {
   name: string;
   description: string,

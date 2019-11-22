@@ -62,6 +62,40 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/menus']">
+              Menus
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/menus/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/menus/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/orders/list']">
+              Orders
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/orders/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/orders/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
