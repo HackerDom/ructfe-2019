@@ -82,6 +82,8 @@ namespace Household.Controllers
                 return NotAllowed();
 
             var menu = GetDataModel(menuViewModel);
+            Clear(menu);
+
             dataBase.Menus.Add(menu);
 
             var saveResult = await dataBase.SaveChanges();
@@ -108,6 +110,11 @@ namespace Household.Controllers
             menu.CreatedBy = CurrentUser.Id;
 
             return menu;
+        }
+
+        private void Clear(Menu menu)
+        {
+            menu.Id = 0;
         }
     }
 }

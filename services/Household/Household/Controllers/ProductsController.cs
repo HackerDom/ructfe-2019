@@ -80,6 +80,8 @@ namespace Household.Controllers
                 return NotAllowed();
 
             var product = GetDataModel(productViewModel);
+            Clear(product);
+
             dataBase.Products.Add(product);
 
             var saveResult = await dataBase.SaveChanges();
@@ -116,7 +118,11 @@ namespace Household.Controllers
             if (processImportResult.IsFail)
                 return ResponseFromApiResult(processImportResult);
 
-            var products = processImportResult.Value.Select(GetDataModel).ToList();
+            var products = processImportResult.Value
+                .Select(GetDataModel)
+                .Select(Clear)
+                .ToList();
+
             dataBase.Products.AddRange(products);
 
             var saveResult = await dataBase.SaveChanges();
@@ -157,6 +163,12 @@ namespace Household.Controllers
             var product = mapper.Map<Product>(productImportModel);
             product.CreatedBy = CurrentUser.Id;
 
+            return product;
+        }
+
+        private Product Clear(Product product)
+        {
+            product.Id = 0;
             return product;
         }
     }

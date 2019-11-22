@@ -82,7 +82,7 @@ namespace Household.Controllers
         public async Task<ActionResult<OrderView>> PostOrder(OrderView orderView)
         {
             var order = GetDataModel(orderView);
-
+            Clear(order);
             /// todo: check dishes are from menu
 
             dataBase.Orders.Add(order);
@@ -111,6 +111,11 @@ namespace Household.Controllers
             order.CreatedBy = CurrentUser.Id;
 
             return order;
+        }
+
+        private void Clear(Order order)
+        {
+            order.Id = 0;
         }
     }
 }

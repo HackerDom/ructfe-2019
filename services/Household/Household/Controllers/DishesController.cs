@@ -83,6 +83,8 @@ namespace Household.Controllers
                 return NotAllowed();
 
             var dish = GetDataModel(dishView);
+            Clear(dish);
+
             dataBase.Dishes.Add(dish);
 
             var saveResult = await dataBase.SaveChanges();
@@ -115,6 +117,11 @@ namespace Household.Controllers
             dishDataModel.CreatedBy = CurrentUser.Id;
 
             return dishDataModel;
+        }
+
+        private void Clear(Dish dish)
+        {
+            dish.Id = 0;
         }
     }
 }
