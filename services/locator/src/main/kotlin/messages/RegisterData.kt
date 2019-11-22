@@ -1,6 +1,8 @@
 package messages
 
+import isValidKey
 import kotlinx.serialization.Serializable
+import java.util.*
 
 
 private val nameRegex = "^[a-zA-Z0-9]{3,50}$".toRegex()
@@ -23,6 +25,8 @@ class RegisterData(
     val content: Content
 ) {
     fun isValid(): Boolean {
-        return name.matches(nameRegex) && color.matches(colorRegex)
+        return name.matches(nameRegex) &&
+                color.matches(colorRegex) &&
+                isValidKey(Base64.getDecoder().decode(content.key))
     }
 }
