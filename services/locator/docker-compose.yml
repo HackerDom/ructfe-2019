@@ -1,14 +1,26 @@
-version: '3'
+version: '2.2'
 services:
   locator:
     build: .
+    restart: "always"
+    stop_grace_period: 3s
+    mem_limit: 2G
+    memswap_limit: 2G
+    pids_limit: 64
+
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
     ports:
       - "8080:8080"
-    restart: on-failure
   db:
-    image: "postgres:alpine"
+    image: "postgres:11-alpine"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=locator
+    mem_limit: 2G
+    memswap_limit: 2G
+    pids_limit: 128
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
