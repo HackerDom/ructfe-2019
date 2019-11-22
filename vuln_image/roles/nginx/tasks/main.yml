@@ -18,7 +18,7 @@
 
 - name: Copy front
   copy:
-    src: ../pipboy_front/
+    src: ../submarine_front/
     dest: /var/www/html/
     mode: u=rwX,g=rX,o=rX
     owner: www-data
