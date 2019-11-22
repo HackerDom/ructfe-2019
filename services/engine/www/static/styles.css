@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'ProximaNovaExCn-Bold';
+    src: url('/static/font.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background: black;
+}
+
+.container {
+    text-align: center;
+}
+
+.logo {
+    background: url('/static/engine.png') no-repeat center;
+    background-size: contain;
+    display: inline-flex;
+    width: 666px;
+    height: 99px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.link {
+    color: #007c9e;
+    font-family: 'ProximaNovaExCn-Bold', Arial, sans-serif;
+    text-decoration: underline;
+}
+
+.link:visited {
+    color: #007c9e;
+}
+
+.large {
+    color: white;
+    font-family: 'ProximaNovaExCn-Bold', Arial, sans-serif;
+    font-size: 34px;
+    margin-bottom: 17px;
+}
+
+.block {
+    font-family: sans-serif;
+}
+
+.main {
+    width: 777px;
+    margin: 0 auto;
+}
+
+.header {
+    background: #d1d95f;
+    font-size: 27px;
+    padding: 20px 40px 19px;
+}
+
+.title {
+    padding: 20px 5px 19px;
+}
+
+.title:hover {
+    background: #007c9e;
+    color: white;
+}
+
+.content {
+    font-size: 22px;
+    color: white;
+    padding-top: 24px;
+    padding-left: 79px;
+    padding-right: 79px;
+}
+
+.item {
+    width: 100%;
+    height: 44px;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.button {
+    width: 100%;
+    height: 46px;
+    font-size: 22px;
+    cursor: pointer;
+    color: white;
+    border: #007c9e solid;
+    background: black;
+}
