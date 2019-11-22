@@ -5,10 +5,10 @@ RUN set -eux
 RUN apt update && \
     apt install -y fcgiwrap \
                    binutils \
-                   libboost-system1.65.0 \
-                   libboost-iostreams1.65.0 \
-                   libboost-filesystem1.65.0 \
-                   libboost-serialization1.65.0
+                   libboost-system1.65.1 \
+                   libboost-iostreams1.65.1 \
+                   libboost-filesystem1.65.1 \
+                   libboost-serialization1.65.1
 
 RUN groupadd -r -g 999 engine && \
     useradd -r -g 999 -u 999 -d /var/engine -s /bin/false engine
