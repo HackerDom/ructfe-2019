@@ -5,6 +5,7 @@ import { Button } from '../../components/Button/Button';
 import { Row } from '../../components/Row/Row';
 import * as uuid from 'uuid';
 import { Link } from 'react-router-dom';
+import { Text } from '../../components/Text/Text';
 
 export class Chat extends React.Component {
     state = { messageDraft: '' };
@@ -20,6 +21,10 @@ export class Chat extends React.Component {
                         </Link>
                     </section>
                 </header>
+                <Row className={s.inviteLink}>
+                    <Text text="Invite: " />
+                    <Text text={this.props.invite} />
+                </Row>
                 <div className={s.messagesContainer}>
                     <section className={s.messages}>
                         {this.props.messages.map(this.renderMessage)}

@@ -353,9 +353,11 @@ teams: |
   {name => 'w01verines', network => '10.61.133.0/24', host => '10.61.133.2', token => '389_ba9c47d91b50e759b540f6340197bf15', country => 'United States', logo => 'https://ructfe.org/ctf-static/dummy.69777ab438ae.png'},
 
 services: |
-  {name => 'patrol',  path => 'checkers/patrol/checker.py',  timeout => 30},
-  {name => 'radio',   path => 'checkers/radio/checker.py',   timeout => 30},
-  {name => 'staff',   path => 'checkers/staff/checker.py',   timeout => 30},
-  {name => 'locator', path => 'checkers/locator/checker.py', timeout => 30},
-  {name => 'profile', path => 'checkers/profile/checker.py', timeout => 30},
-  {name => 'engine',  path => 'checkers/engine/checker.py',  timeout => 30},
+  {name => 'patrol',  path => 'checkers/patrol/checker.py',  timeout => 30, tcp_port => 23179},
+  {name => 'radio',   path => 'checkers/radio/checker.py',   timeout => 30, tcp_port => 4553},
+  {name => 'staff',   path => 'checkers/staff/checker.py',   timeout => 30, tcp_port => 3000},
+  {name => 'locator', path => 'checkers/locator/checker.py', timeout => 30, tcp_port => 8080},
+  {name => 'profile', path => 'checkers/profile/checker.py', timeout => 30, tcp_port => 20561},
+  {name => 'engine',  path => 'checkers/engine/checker.py',  timeout => 30, tcp_port => 17171},
+
+# household 5000
