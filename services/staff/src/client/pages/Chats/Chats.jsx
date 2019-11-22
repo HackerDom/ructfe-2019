@@ -64,7 +64,13 @@ export class Chats extends React.Component {
     };
 
     createChat = () => {
-        chats.createChat();
+        const chatName = this.state.addingChatName;
+        chats.createChat()
+            .then(r => {
+                this.setState({
+                    chats: [...this.state.chats, { id: r.chatId, item: chatName }]
+                });
+            });
         this.setState({ addingChatName: '' });
     };
 

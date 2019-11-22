@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 RUN set -eux
 
 RUN apt update && \
-    apt install -y g++ make libboost1.62-all-dev
+    apt install -y g++ make libboost1.65-all-dev
 
 ADD src /tmp/src
 ADD Makefile /tmp/Makefile
