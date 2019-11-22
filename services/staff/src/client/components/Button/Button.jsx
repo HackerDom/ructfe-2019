@@ -2,7 +2,7 @@ import s from './Button.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export function Button ({ text, onClick }) {
+export function Button ({ text, onClick, styles }) {
     const clickHandler = () => {
         if (onClick) {
             onClick();
@@ -13,6 +13,7 @@ export function Button ({ text, onClick }) {
         <button
             className={s.button}
             onClick={clickHandler}
+            style={styles}
         >
             {text}
         </button>
