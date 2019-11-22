@@ -60,7 +60,7 @@ public class GraphGenerator {
             //System.err.println(String.format("Edges of %d:", i));
             for (int u: g.get(i)) {
                 e++;
-                System.err.println(String.format("%d ", u));
+                //System.err.println(String.format("%d ", u));
             }
             //System.err.println();
         }
@@ -167,14 +167,12 @@ public class GraphGenerator {
 
         Option seed = new Option("s", true, "seed");
         Option permSeed = new Option("ps", "ps", true, "perm seed");
-        Option req = new Option("r", true, "request output file");
 
         Option id = new Option("id", "id", true,"id");
         Option rid = new Option("rid", "rid", true, "request id");
         Option flag = new Option("f", true, "flag");
 
         mode.setRequired(true);
-        req.setRequired(true);
 
         options.addOption(n);
         options.addOption(w);
@@ -182,7 +180,6 @@ public class GraphGenerator {
         options.addOption(p);
         options.addOption(mode);
         options.addOption(seed);
-        options.addOption(req);
         options.addOption(id);
         options.addOption(flag);
         options.addOption(rid);
@@ -193,7 +190,7 @@ public class GraphGenerator {
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "300").trim());
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "5000").trim());
         int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
         int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
         double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
@@ -201,9 +198,6 @@ public class GraphGenerator {
         Random random = new Random(_seed);
         TreeDecomposition decomposition = generate(random, _n, _w, _bound, _p);
         Graph g = decomposition.getG();
-
-        File out = new File("temp/" + cmd.getOptionValue("r"));
-        FileWriter writer = new FileWriter(out);
 
         PatrolRequest patrolRequest;
 
@@ -217,7 +211,7 @@ public class GraphGenerator {
                 g.setId(cmd.getOptionValue("id"));
                 g.setDescription(cmd.getOptionValue("f"));
                 patrolRequest = PatrolRequest.put(_rid, g);
-                System.out.println(g.getId() + " " + _seed);
+                System.err.println(g.getId() + " " + _seed);
                 break;
             case "perm":
                 //System.err.println("perm built");
@@ -237,15 +231,14 @@ public class GraphGenerator {
                 perm = createPerm(g.getN(), new Random(_permSeed));
                 iso = modifyGraph(g, perm);
                 patrolRequest = PatrolRequest.iso(_rid, iso, cmd.getOptionValue("id"));
-                System.out.println(_permSeed);
+                System.err.println(_permSeed);
                 break;
             default:
                 throw new IllegalArgumentException();
         }
 
-        new Gson().toJson(patrolRequest, writer);
-        writer.flush();
-
+        new Gson().toJson(patrolRequest, System.out);
+        System.out.flush();
     }
 
     private static Graph modifyGraph(Graph g, int[] perm) {

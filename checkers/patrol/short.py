@@ -5,6 +5,7 @@ import os
 import platform
 import sys
 
+
 async def get_out(cmd):
     d = dict(os.environ)
     if platform.system() == 'Darwin':
@@ -21,6 +22,7 @@ async def get_out(cmd):
 
     return stdout.decode('utf-8').strip()
 
+
 async def put_ant_get():
     id = uuid.uuid4()
     cmd = f'./checker.py PUT localhost id {id} 1'
@@ -32,6 +34,7 @@ async def put_ant_get():
     cmd = f'./checker.py GET localhost "{ret}" {id} 1'
 
     assert(await get_out(cmd) != -1)
+
 
 async def checks(n):
     l = []

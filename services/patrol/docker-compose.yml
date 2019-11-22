@@ -8,3 +8,6 @@ services:
       - ./storage:/app/storage
       - ./patrol.properties:/app/patrol.properties
     restart: on-failure
+    # memory limit
+    mem_limit: 1G
+    memswap_limit: 1G # we don't use swap, but why not

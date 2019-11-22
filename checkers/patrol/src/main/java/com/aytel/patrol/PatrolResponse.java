@@ -6,6 +6,7 @@ public class PatrolResponse {
     public Graph graph;
     public String flag;
     public String graphId, reqId;
+    public String reason;
 
     private PatrolResponse() {}
 
@@ -14,10 +15,11 @@ public class PatrolResponse {
         this.type = Type.LIST;
     }
 
-    public static PatrolResponse failed(String reqId) {
+    public static PatrolResponse failed(String reqId, String reason) {
         PatrolResponse patrolResponse = new PatrolResponse();
         patrolResponse.reqId = reqId;
         patrolResponse.type = Type.FAILED;
+        patrolResponse.reason = reason;
         return patrolResponse;
     }
 
