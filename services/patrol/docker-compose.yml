@@ -1,4 +1,4 @@
-version: '3'
+version: '2.2'
 services:
   patrol:
     build: .
@@ -7,4 +7,8 @@ services:
     volumes:
       - ./storage:/app/storage
       - ./patrol.properties:/app/patrol.properties
-    restart: on-failure
+    restart: always
+    # memory limit
+    mem_limit: 1G
+    memswap_limit: 1G
+    pids_limit: 256

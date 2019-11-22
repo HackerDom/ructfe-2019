@@ -51,7 +51,7 @@ async def check_service(request: CheckRequest) -> Verdict:
 
 @checker.define_put(vuln_num=1, vuln_rate=1)
 async def put_flag(request: PutRequest) -> Verdict:
-    process = Popen(['./generator', request.flag], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    process = Popen(['./generator', request.flag, '0', '0', '0'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     fuel, err = process.communicate(timeout=2)
 
     if len(err) > 0:

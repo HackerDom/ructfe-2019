@@ -13,10 +13,8 @@ class Api:
         self.hostname = hostname
         self.session = aiohttp.ClientSession(timeout=ClientTimeout(total=100), headers={"User-Agent": get_agent()})
 
-    async def send_and_get(self, path: str) -> dict:
-        with open(path, mode="rb") as archive_descriptor:
-            archive_bytes = archive_descriptor.read()
-        async with self.session.post(f"http://{self.hostname}:{PORT}/", data=archive_bytes) as resp:
+    async def send_and_get(self, _json: str) -> dict:
+        async with self.session.post(f"http://{self.hostname}:{PORT}/", data=_json) as resp:
             data = await resp.read()
             return json.loads(data)
 

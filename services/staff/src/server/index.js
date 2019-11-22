@@ -117,7 +117,7 @@ app.post('/register', async function (request, response) {
 
     const newUser = new User({
         username: request.body.username ? request.body.username.toString() : null,
-        password: passwordHash,
+        password: passwordHash ? passwordHash.toString() : null,
         firstName: request.body.firstName ? request.body.firstName.toString() : null,
         lastName: request.body.lastName ? request.body.lastName.toString() : null,
         biography: request.body.biography ? request.body.biography.toString() : null
@@ -281,6 +281,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
 
     if (isSuccess && String(chat.inviteLink) !== String(inviteLink)) {
         await sendResponse(response, {}, false, 'Invalid invite link', 403);
+        return;
     }
 
     if (isSuccess) {
@@ -541,7 +542,7 @@ function hasAccessToWriteMessages (userId, usersIds) {
 }
 
 function hasAccessToDeleteMessage (userId, message) {
-    return parseInt(message.ownerId) === parseInt(userId);
+    return String(message.ownerId) === String(userId);
 }
 
 function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {

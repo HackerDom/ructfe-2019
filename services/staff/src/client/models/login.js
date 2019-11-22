@@ -3,8 +3,8 @@ export class Login {
     password = '';
     userId = null;
 
-    login = () => {
-        return fetch('/login', {
+    login = async () => {
+        const response = await fetch('/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -13,10 +13,9 @@ export class Login {
                 username: this.username,
                 password: this.password
             })
-        })
-            .then(r => r.json())
-            .then(this.onSuccess)
-            .catch(x => console.log(x));
+        });
+
+        this.onSuccess(await response.json());
     };
 
     onSuccess = (response) => {

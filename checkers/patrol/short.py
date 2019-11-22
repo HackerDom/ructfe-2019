@@ -5,6 +5,7 @@ import os
 import platform
 import sys
 
+
 async def get_out(cmd):
     d = dict(os.environ)
     if platform.system() == 'Darwin':
@@ -21,6 +22,7 @@ async def get_out(cmd):
 
     return stdout.decode('utf-8').strip()
 
+
 async def put_ant_get():
     id = uuid.uuid4()
     cmd = f'./checker.py PUT localhost id {id} 1'
@@ -33,6 +35,7 @@ async def put_ant_get():
 
     assert(await get_out(cmd) != -1)
 
+
 async def checks(n):
     l = []
     for _ in range(n):
@@ -42,4 +45,4 @@ async def checks(n):
 
 
 if __name__ == "__main__":
-    asyncio.run(checks(50))
+    asyncio.run(checks(10))

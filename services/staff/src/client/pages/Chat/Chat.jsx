@@ -6,6 +6,7 @@ import { Row } from '../../components/Row/Row';
 import * as uuid from 'uuid';
 import { Link } from 'react-router-dom';
 import { Text } from '../../components/Text/Text';
+import { BorderBox } from '../../components/BorderBox/BorderBox';
 
 export class Chat extends React.Component {
     state = { messageDraft: '', invite: '' };
@@ -63,12 +64,35 @@ export class Chat extends React.Component {
         );
     }
 
-    renderMessage ({ text }) {
+    renderMessage = ({ text, ownerId, id, isDeleted }) => {
         return (
             <section className={s.message} key={uuid()}>
-                <div className={s.messageText}>{text}</div>
+                <BorderBox style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                    <Link to={`/usersPage?id=${ownerId}`}>
+                        <Button text='Owner' styles={{ fontSize: '12px', textAlign: 'center', margin: 'auto 0' }}/>
+                    </Link>
+                    <div className={s.messageText}>{text}</div>
+                    {isDeleted
+                        ? <Text text='DELETED' style={{ marginLeft: 'auto', fontSize: '12px' }}/>
+                        : <Button text='Delete' onClick={() => this.onDeletion(id)} styles={{ marginLeft: 'auto', fontSize: '12px' }}/>}
+                </BorderBox>
             </section>
         );
+    }
+
+    onDeletion = (id) => {
+        fetch('/deleteMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messageId: id
+            })
+        }).catch(x => console.log(x))
+            .then(x => {
+                this.props.readMessages();
+            });
     }
 
     onChangeMessageDraft = (message) => {

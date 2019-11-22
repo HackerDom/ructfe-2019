@@ -16,6 +16,7 @@ services:
       - "8080:8080"
   db:
     image: "postgres:11-alpine"
+    restart: "always"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=locator

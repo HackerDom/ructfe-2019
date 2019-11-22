@@ -6,6 +6,7 @@ public class PatrolResponse {
     public Graph graph;
     public String flag;
     public String graphId, reqId;
+    public String reason;
 
     private PatrolResponse() {}
 
@@ -18,7 +19,7 @@ public class PatrolResponse {
         PatrolResponse patrolResponse = new PatrolResponse();
         patrolResponse.reqId = reqId;
         patrolResponse.type = Type.FAILED;
-        patrolResponse.flag = reason;
+        patrolResponse.reason = reason;
         return patrolResponse;
     }
 

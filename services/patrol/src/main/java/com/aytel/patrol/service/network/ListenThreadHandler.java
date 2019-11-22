@@ -96,7 +96,7 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                     int[] vc = patrolRequest.vc;
                     info = config.getRequestInfo(patrolRequest.reqId);
                     graph = config.getGraph(info.getGraphId());
-                    if (checkVC(info.getLastIso(), vc)) {
+                    if (checkVertexCover(info.getLastIso(), vc)) {
                         return getPatrolResponseIfSuccess(patrolRequest, graph, info);
                     } else {
                         config.removeRequestInfo(patrolRequest.reqId);
@@ -145,12 +145,12 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private boolean checkVC(Graph lastIso, int[] vc) {
+    private boolean checkVertexCover(Graph lastIso, int[] vc) {
         long limit = lastIso.getLimit();
         if (Arrays.stream(vc).mapToLong(i -> lastIso.getWeight()[i]).sum() > limit)
             return false;
         Set<Integer> vcSet = Arrays.stream(vc).boxed().collect(Collectors.toSet());
-        Set<Integer> isSet = IntStream.range(0, lastIso.getN()).boxed().collect(Collectors.toSet());
+        Set<Integer> independentSet = IntStream.range(0, lastIso.getN()).boxed().collect(Collectors.toSet());
         Map<Integer, Set<Integer>> adjList = new HashMap<>();
         IntStream.range(0, lastIso.getN()).forEach(i -> adjList.put(i, new HashSet<>()));
         for (Graph.Edge edge: lastIso.getEdges()) {
@@ -159,18 +159,18 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
             adjList.get(v).add(u);
             adjList.get(u).add(v);
         }
-        isSet.removeAll(vcSet);
-        return dfsToCheckIS(0, isSet, adjList, new HashSet<>());
+        independentSet.removeAll(vcSet);
+        return dfsToCheckIndependentSet(0, independentSet, adjList, new HashSet<>());
     }
 
-    private boolean dfsToCheckIS(int v, Set<Integer> isSet, Map<Integer, Set<Integer>> adjList, Set<Integer> used) {
+    private boolean dfsToCheckIndependentSet(int v, Set<Integer> isSet, Map<Integer, Set<Integer>> adjList, Set<Integer> used) {
         if (used.contains(v))
             return true;
         used.add(v);
         for (int u: adjList.get(v)) {
             if (isSet.contains(v) && isSet.contains(u))
                 return false;
-            if (!dfsToCheckIS(u, isSet, adjList, used))
+            if (!dfsToCheckIndependentSet(u, isSet, adjList, used))
                 return false;
         }
         return true;
@@ -192,16 +192,19 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                 return null;
             case SEND_ISO:
                 return !(patrolRequest.reqId != null && patrolRequest.graphId != null && patrolRequest.graph != null)
-                    ? "" : null;
+                    ? "json with iso must contain reqId, graphId and iso" : null;
             case SEND_PERM:
-                return !(patrolRequest.reqId != null && patrolRequest.perm != null) ? "" : null;
+                return !(patrolRequest.reqId != null && patrolRequest.perm != null)
+                    ? "json with perm must contain reqId and perm" : null;
             case SEND_VC:
-                return !(patrolRequest.reqId != null && patrolRequest.vc != null) ? "" : null;
+                return !(patrolRequest.reqId != null && patrolRequest.vc != null)
+                    ? "json with vc must contain reqId and vc" : null;
             case GET_GRAPH:
-                return !(patrolRequest.reqId != null && patrolRequest.graphId != null) ? "" : null;
+                return !(patrolRequest.reqId != null && patrolRequest.graphId != null)
+                    ? "json with graph request must contain reqId and graphId" : null;
             case PUT_GRAPH:
                 return !(patrolRequest.reqId != null && patrolRequest.graphId != null && patrolRequest.graph != null)
-                    ? "" : null;
+                    ? "json with put graph request must contain reqId, graphId and graph" : null;
             default:
                 throw new RuntimeException();
         }
