@@ -1,7 +1,5 @@
 FROM ubuntu:18.04
 
-RUN set -eux
-
 RUN apt update && \
     apt install -y fcgiwrap \
                    binutils \
@@ -11,7 +9,8 @@ RUN apt update && \
                    libboost-serialization1.65.1 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -r -g 999 engine && \
+RUN set -eux && \
+    groupadd -r -g 999 engine && \
     useradd -r -g 999 -u 999 -d /var/engine -s /bin/false engine
 
 WORKDIR /var/engine/
