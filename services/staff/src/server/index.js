@@ -117,7 +117,7 @@ app.post('/register', async function (request, response) {
 
     const newUser = new User({
         username: request.body.username ? request.body.username.toString() : null,
-        password: passwordHash,
+        password: passwordHash ? passwordHash.toString() : null,
         firstName: request.body.firstName ? request.body.firstName.toString() : null,
         lastName: request.body.lastName ? request.body.lastName.toString() : null,
         biography: request.body.biography ? request.body.biography.toString() : null
