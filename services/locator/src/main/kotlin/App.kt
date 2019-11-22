@@ -33,7 +33,7 @@ import messages.UserPosData
 import java.io.File
 
 
-const val USERS_LIMIT = 20;
+const val USERS_LIMIT = 30;
 
 
 data class AuthSession(
