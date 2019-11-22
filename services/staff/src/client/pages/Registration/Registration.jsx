@@ -93,17 +93,21 @@ export class Registration extends React.Component {
     };
 
     onRegister = () => {
-        register
-            .register()
-            .then(this.props.onRegister);
+        this.register();
     };
 
     async register () {
         try {
-            await register.register();
+            const response = await register.register();
+
+            if (response.status !== 200) {
+                throw new Error();
+            }
+
             this.props.onRegister();
         } catch (e) {
             this.setState({ error: 'Registration failed' });
+            setTimeout(() => this.setState({ error: null }), 1000);
         }
     }
 }
