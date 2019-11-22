@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Household.DataBaseModels;
 using Household.ViewModels;
 using HouseholdTests.Infrastructure;
 using HouseholdTests.Utils;
@@ -18,6 +20,72 @@ namespace HouseholdTests.FunctionalTests
         public void OneTimeSetUp()
         {
             env = new TestEnvironment();
+        }
+
+        [Test]
+        public async Task Should_do_everything()
+        {
+            var cooker = await env.RegisterNewUser();
+
+            var product = new ProductView
+            {
+                Name = "Яблоко",
+                Calories = 42,
+                Carbohydrate = 10,
+                Fat = 1,
+                Protein = 1
+            };
+
+            var createdProduct = await cooker.Client.Post("/api/products", product);
+            product = createdProduct.Value;
+
+            var dish = new DishViewCook
+            {
+                Name = "Яблочное пюре",
+                Ingredients = new[]
+                {
+                    new IngredientView
+                    {
+                        ProductId = product.Id,
+                        Weight = 150
+                    }
+                }
+            };
+            var createdDish = await cooker.Client.Post("/api/dishes", dish);
+            dish = createdDish.Value;
+
+            var menu = new MenuView
+            {
+                Date = new DateTime(2019, 11, 22),
+                DishIds = new List<int>
+                {
+                    dish.Id
+                }
+            };
+
+            var createdMenu = await cooker.Client.Post("/api/menus", menu);
+            menu = createdMenu.Value;
+
+            var user = await env.RegisterNewUser(Role.Customer);
+            var userMenu = user.Client.Get<MenuView>($"/api/menus/{menu.Id}");
+
+            userMenu.Should().BeEquivalentTo(menu);
+
+            var userDish = user.Client.Get<DishViewCustomer>($"/api/dishes/{menu.DishIds[0]}");
+
+            var getProduct = user.Client.Get<ProductView>($"/api/products/{dish.Ingredients[0].ProductId}");
+
+            var order = new OrderView
+            {
+                MenuId = userMenu.Id,
+                DishIds = new[]
+                {
+                    userDish.Id
+                }
+            };
+
+            var createdOrder = await cooker.Client.Post("/api/orders", order);
+            order = createdOrder.Value;
         }
 
         [Test]

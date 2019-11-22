@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using FluentAssertions;
+using Household.DataBaseModels;
 using Household.Utils;
 using HouseholdTests.Utils;
 using IdentityModel;
@@ -28,7 +29,7 @@ namespace HouseholdTests.Infrastructure
             this.factory = factory;
         }
 
-        public async Task Register(TestUser user)
+        public async Task Register(TestUser user, Role role = Role.Cook)
         {
             var client = new TestApiClient(factory.CreateClient(
                 new WebApplicationFactoryClientOptions
@@ -41,7 +42,7 @@ namespace HouseholdTests.Infrastructure
             {
                 new KeyValuePair<string, string>("Input.Email", user.Login),
                 new KeyValuePair<string, string>("Input.Password", user.Password),
-                new KeyValuePair<string, string>("Input.Role", "Cook")
+                new KeyValuePair<string, string>("Input.Role", role.ToString())
             };
 
             // Регистрация - ставятся куки "idsrv.session" и ".AspNetCore.Identity.Application"

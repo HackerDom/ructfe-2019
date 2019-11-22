@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Household.DataBaseModels;
 
 namespace HouseholdTests.Infrastructure
 {
@@ -14,7 +15,7 @@ namespace HouseholdTests.Infrastructure
             authorization = new TestAuthorization(factory);
         }
 
-        public async Task<TestUser> RegisterNewUser()
+        public async Task<TestUser> RegisterNewUser(Role role = Role.Cook)
         {
             var user = new TestUser
             {
@@ -22,7 +23,7 @@ namespace HouseholdTests.Infrastructure
                 Password = "testPass"
             };
 
-            await authorization.Register(user);
+            await authorization.Register(user, role);
 
             await authorization.Login(user);
 
