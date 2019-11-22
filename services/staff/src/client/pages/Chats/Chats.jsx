@@ -17,7 +17,9 @@ export class Chats extends React.Component {
         selectedChatId: 'none',
         selectedChatName: '',
         selectedChatMessages: [],
-        invite: ''
+        selectedChatInvite: '',
+        joinInvite: '',
+        selectedChatAccess: 'loading'
     };
 
     componentDidMount () {
@@ -57,7 +59,8 @@ export class Chats extends React.Component {
                             name={this.state.selectedChatName}
                             messages={this.state.selectedChatMessages}
                             onMessageSend={this.onMessageSend}
-                            invite={this.state.invite}
+                            invite={this.state.selectedChatInvite}
+                            access={this.state.selectedChatAccess}
                         />
                     </Case>
                 </Switch>
@@ -65,22 +68,28 @@ export class Chats extends React.Component {
         );
     }
 
+    onChangeJoinInvite = (invite) => {
+        this.setState({
+            joinInvite: invite
+        });
+    };
+
     selectChat = (id) => {
         chats.getChatMessages(id)
             .then(messages => this.setState({
                 selectedChatMessages: messages,
+                selectedChatAccess: 'yes',
                 selectedChatName: this.state
                     .chats
                     .find(c => c.id === id)
                     .item
+            }))
+            .catch((e) => this.setState({
+                selectedChatAccess: 'no'
             }));
         chats.getInvite(id)
-            .then((a) => {
-                console.log(a);
-                return a;
-            })
             .then(invite => this.setState({
-                invite: invite.toString()
+                selectedChatInvite: invite.toString()
             }));
         this.setState({ selectedChatId: id });
     };

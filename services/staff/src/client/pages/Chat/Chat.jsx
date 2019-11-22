@@ -11,6 +11,28 @@ export class Chat extends React.Component {
     state = { messageDraft: '' };
 
     render () {
+        if (this.props.access === 'loading') {
+            return (
+                <div className={s.centerBox}>
+                    <Text text="loading..." />
+                </div>
+            );
+        }
+
+        if (this.props.access !== 'yes') {
+            return (
+                <div className={s.centerBox}>
+                    <Text text="You have not access to this chat" />
+                    <Text text="Join chat via invite" />
+                    <Input
+                        value={this.state.joinInvite}
+                        onChange={this.onChangeJoinInvite}
+                    />
+                    <Button text="join" />
+                </div>
+            );
+        }
+
         return (
             <section className={s.chat}>
                 <header className={s.header}>
