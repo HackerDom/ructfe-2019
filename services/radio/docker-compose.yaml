@@ -20,7 +20,7 @@ services:
     volumes:
       - ./data/redis:/data
   db:
-    image: postgres:11
+    image: postgres:11-alpine
     environment:
       POSTGRES_USER: radio
       POSTGRES_PASSWORD: radio
