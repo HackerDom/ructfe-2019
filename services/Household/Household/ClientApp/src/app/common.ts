@@ -40,12 +40,25 @@ export class Order {
   }
 }
 
-export interface Dish {
+export class Dish {
+  constructor(name: string,
+    description: string,
+    recipe: string,
+    weight: number) {
+    this.name = name;
+    this.description = description;
+    this.recipe = recipe;
+    this.portionWeight = weight;
+    this.portionCalories = 0;
+    this.portionProtein = 0;
+    this.portionFat = 0;
+    this.portionCarbohydrate = 0;
+  }
+
   name: string;
-  description: string,
-  image: string;
-  portionWeight: number,
-  //public IngredientViewModel[] Ingredients { get; set; }
+  description: string;
+  recipe: string;
+  portionWeight: number;
   portionProtein: number;
   portionFat: number;
   portionCarbohydrate: number;

@@ -26,7 +26,10 @@ namespace Household.DataBaseModels
         {
             var totalIngredientsWeight = Ingredients.Sum(i => i.Weight);
             var relativeValue = totalValue * 100 / totalIngredientsWeight;
-            return relativeValue * PortionWeight / 100;
+            var value = relativeValue * PortionWeight / 100;
+            if (double.IsFinite(value))
+                return value;
+            return 0;
         }
     }
 }

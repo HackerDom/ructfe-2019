@@ -11,6 +11,7 @@
   <tr>
     <th>Name</th>
     <th>Description</th>
+    <th>Recipe</th>
     <th>Weight</th>
     <th>Calories</th>
     <th>Protein</th>
@@ -22,6 +23,7 @@
   <tr *ngFor="let dish of dishes">
     <td>{{ dish.name }}</td>
     <td>{{ dish.description }}</td>
+    <td>{{ dish.recipe }}</td>
     <td>{{ dish.portionWeight }}</td>
     <td>{{ dish.portionCalories }}</td>
     <td>{{ dish.portionProtein }}</td>

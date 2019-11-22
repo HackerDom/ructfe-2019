@@ -8,7 +8,6 @@ import { Page, Product } from '../../common';
 })
 export class ProductsAddComponent {
   public product: Product;
-  public uploadedCount: number;
   public error: string;
   public loading: boolean;
   http: HttpClient;

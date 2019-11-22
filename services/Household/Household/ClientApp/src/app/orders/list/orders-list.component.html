@@ -1,28 +1,3 @@
 <h1 id="tableLabel">Orders</h1>
 
-<p *ngIf="totalCount">Available orders: {{totalCount}}</p>
-
-<p *ngIf="!orders">
-  <em>Loading...</em>
-</p>
-
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="orders">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Calories</th>
-    <th>Protein</th>
-    <th>Fat</th>
-    <th>Carbohydrate</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let order of orders">
-    <td>{{ order.name }}</td>
-    <td>{{ order.calories }}</td>
-    <td>{{ order.protein }}</td>
-    <td>{{ order.fat }}</td>
-    <td>{{ order.carbohydrate }}</td>
-  </tr>
-  </tbody>
-</table>
+<p>Section is under construction. Please use the API to overview current orders.</p>
