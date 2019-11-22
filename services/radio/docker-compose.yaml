@@ -9,7 +9,7 @@ services:
     stop_grace_period: 3s
     mem_limit: 1G
     memswap_limit: 1G
-    pids_limit: 10
+    pids_limit: 128
     ulimits:
       nofile:
         soft: 12000
