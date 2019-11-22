@@ -53,7 +53,7 @@ suspend fun clearCookieAndGoLoginPage(call: ApplicationCall) {
 fun main() {
     init()
     val userManager = UserManager()
-    val server = embeddedServer(Netty, 8081) {
+    val server = embeddedServer(Netty, 8080) {
         install(FreeMarker) {
             templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
         }
