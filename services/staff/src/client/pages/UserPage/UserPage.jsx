@@ -3,6 +3,7 @@ import s from './UserPage.css';
 import { Text } from '../../components/Text/Text';
 import { MarginBox } from '../../components/MarginBox/MarginBox';
 import { BorderBox } from '../../components/BorderBox/BorderBox';
+import { UserCard } from '../UserCard/UserCard';
 import { Row } from '../../components/Row/Row';
 import queryString from 'query-string';
 import { Switch } from '../../components/Switch/Switch';
@@ -39,36 +40,10 @@ export class UserPage extends React.Component {
     }
 
     render () {
-        const FORM_GAP = 160;
         return (<article className={s.formContainer}>
             <Switch by={this.state.userState}>
                 <Case value={states.found}>
-                    <BorderBox>
-                        <MarginBox>
-                            <Row gap={FORM_GAP}>
-                                <Text text='Username: '/>
-                                <Text text={this.state.user ? this.state.user.username : undefined}/>
-                            </Row>
-                        </MarginBox>
-                        <MarginBox>
-                            <Row gap={FORM_GAP}>
-                                <Text text={'First name: '}/>
-                                <Text text={this.state.user ? this.state.user.firstName : undefined}/>
-                            </Row>
-                        </MarginBox>
-                        <MarginBox>
-                            <Row gap={FORM_GAP}>
-                                <Text text={'Last name:'}/>
-                                <Text text={this.state.user ? this.state.user.lastName : undefined}/>
-                            </Row>
-                        </MarginBox>
-                        <MarginBox>
-                            <Row gap={FORM_GAP}>
-                                <Text text={'User\'s biography:'}/>
-                                <Text text={this.state.user ? this.state.user.biography : undefined}/>
-                            </Row>
-                        </MarginBox>
-                    </BorderBox>
+                    <UserCard user={this.state.user}/>
                 </Case>
                 <Case value={states.notExist}>
                     <BorderBox>
