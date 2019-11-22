@@ -100,7 +100,11 @@ app.get('/auth', function (request, response) {
     response.sendFile('index.html', { root: staticPath });
 });
 
-app.get('/usersPage/*', function (request, response) {
+app.get('/usersPage', function (request, response) {
+    response.sendFile('index.html', { root: staticPath });
+});
+
+app.get('/search', function (request, response) {
     response.sendFile('index.html', { root: staticPath });
 });
 

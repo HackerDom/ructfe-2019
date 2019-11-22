@@ -13,7 +13,7 @@ export function SelectListItem ({ items, selectedId, onChange }) {
                 key={id}
             >
                 <div className={s.itemCircle} />
-                <span>{item}</span>
+                <span className={s.buttonText}>{item}</span>
             </button>
         );
     };

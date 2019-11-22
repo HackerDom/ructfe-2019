@@ -4,7 +4,7 @@ export class Chats {
     chatName = '';
 
     createChat = () => {
-        fetch('/createChat', {
+        return fetch('/createChat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -12,8 +12,9 @@ export class Chats {
             body: JSON.stringify({
                 chatName: this.chatName
             })
-        }).then(x => console.log(x))
-            .catch(x => console.log(x));
+        })
+            .then(r => r.json())
+            .then(r => r.data);
     };
 
     sendMessage = (chatId, message) => {

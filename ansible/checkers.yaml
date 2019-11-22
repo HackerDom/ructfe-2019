@@ -15,6 +15,9 @@
   - name: install sys deps
     apt:
       name:
+        - g++
+        - make
+        - libboost-all-dev
         - python3.7
         - python3-pip
         - python3.7-dev
@@ -36,3 +39,10 @@
         - pillow
         - aiohttp
         - numpy
+
+  - name: build engine checker
+    command: ./build.sh
+    args:
+      chdir: "{{cs_dir}}/checkers/engine"
+    become: yes
+    become_user: "{{cs_user}}"

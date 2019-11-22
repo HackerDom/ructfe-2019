@@ -22,7 +22,7 @@ export class Registration extends React.Component {
             <section>
                 <MarginBox>
                     <Row gap={FORM_GAP}>
-                        <Text text="Name: " />
+                        <Text text="First name: " />
                         <Input
                             onChange={this.onChangeFirstName}
                             value={this.state.firstName}
@@ -51,6 +51,7 @@ export class Registration extends React.Component {
                     <Row gap={FORM_GAP}>
                         <Text text="Password: " />
                         <Input
+                            type='password'
                             onChange={this.onChangePassword}
                             value={this.state.password}
                         />

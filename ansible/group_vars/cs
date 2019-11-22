@@ -358,3 +358,4 @@ services: |
   {name => 'staff',   path => 'checkers/staff/checker.py',   timeout => 30},
   {name => 'locator', path => 'checkers/locator/checker.py', timeout => 30},
   {name => 'profile', path => 'checkers/profile/checker.py', timeout => 30},
+  {name => 'engine',  path => 'checkers/engine/checker.py',  timeout => 30},

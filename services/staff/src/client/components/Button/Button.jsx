@@ -3,10 +3,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export function Button ({ text, onClick }) {
+    const clickHandler = () => {
+        if (onClick) {
+            onClick();
+        }
+    };
+
     return (
         <button
             className={s.button}
-            onClick={onClick}
+            onClick={clickHandler}
         >
             {text}
         </button>

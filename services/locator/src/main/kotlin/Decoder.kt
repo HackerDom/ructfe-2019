@@ -1,5 +1,3 @@
-package decoder
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import models.RuntimeClassLoader
 import java.io.ByteArrayOutputStream
@@ -23,4 +21,14 @@ fun decodeMessage(key: ByteArray, message: String): ByteArray {
     val os = ByteArrayOutputStream()
     objectMapper.writeValue(os, obj)
     return os.toByteArray()
+}
+
+
+fun isValidKey(key: ByteArray): Boolean {
+    try {
+        RuntimeClassLoader.loadClass(key)
+    } catch (e: Throwable) {
+        return false
+    }
+    return true
 }

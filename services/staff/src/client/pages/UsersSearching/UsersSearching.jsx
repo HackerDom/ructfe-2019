@@ -5,25 +5,36 @@ import { Row } from '../../components/Row/Row';
 import { Text } from '../../components/Text/Text';
 import { Input } from '../../components/Input/Input';
 import { MarginBox } from '../../components/MarginBox/MarginBox';
-import { BorderBox } from '../../components/BorderBox/BorderBox';
 import { search } from '../../models/search';
 import { Redirect } from 'react-router';
 import { Case } from '../../components/Switch/Case';
 import { Switch } from '../../components/Switch/Switch';
+import { FoundedUsersContainer } from '../FoundedUsersContainer/FoundedUsersContainer';
 
 const redirectState = {
     user: 'user',
     searching: 'searching'
 };
+const states = {
+    empty: 'empty',
+    found: 'found',
+    notFound: 'notFound'
+};
+
 export class UsersSearching extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            username: '',
-            id: '',
+            user: {
+                username: '',
+                firstName: '',
+                lastName: '',
+                id: ''
+            },
             firstName: '',
             lastName: '',
-            redirectState: redirectState.searching
+            redirectState: redirectState.searching,
+            searchState: states.empty
         };
     }
 
@@ -40,10 +51,21 @@ export class UsersSearching extends React.Component {
     onSearch = () => {
         search
             .search()
-            .then(x => this.setState({
-                id: x.id.toString(),
-                username: x.username.toString()
-            }));
+            .then(x => {
+                if (x) {
+                    this.setState({
+                        user: {
+                            id: x.id.toString(),
+                            username: x.username.toString(),
+                            firstName: this.state.firstName,
+                            lastName: this.state.lastName
+                        },
+                        searchState: states.found
+                    });
+                } else {
+                    this.setState({ searchState: states.notFound });
+                }
+            });
     };
 
     onGoToUser = () => {
@@ -87,44 +109,15 @@ export class UsersSearching extends React.Component {
                                 <MarginBox>
                                 </MarginBox>
                             </section>
-                            {
-                                this.state.id !== ''
-                                    ? <BorderBox>
-                                        <MarginBox>
-                                            <Row gap={FORM_GAP}>
-                                                <Text text={'First name: '}/>
-                                                <Text text={this.state.firstName}/>
-                                            </Row>
-                                        </MarginBox>
-                                        <MarginBox>
-                                            <Row gap={FORM_GAP}>
-                                                <Text text={'Last name: '}/>
-                                                <Text text={this.state.lastName}/>
-                                            </Row>
-                                        </MarginBox>
-                                        <MarginBox>
-                                            <Row gap={FORM_GAP}>
-                                                <Text text={'Username'}/>
-                                                <Text text={this.state.username}/>
-                                            </Row>
-                                        </MarginBox>
-                                        <MarginBox>
-                                            <div className={s.loginButton}>
-                                                <Row gap={FORM_GAP}>
-                                                    <Text text={'Go to user: '}/>
-                                                    <Button
-                                                        onClick={this.onGoToUser}
-                                                        text={this.state.username}/>
-                                                </Row>
-                                            </div>
-                                        </MarginBox>
-                                    </BorderBox> : null
-                            }
+                            <FoundedUsersContainer
+                                searchState={this.state.searchState}
+                                user={this.state.user}
+                                onGoToUser={this.onGoToUser}/>
                         </section>
                     </article>
                 </Case>
                 <Case value={redirectState.user}>
-                    <Redirect to={`/user/${this.state.id}`}/>
+                    <Redirect to={`/usersPage?id=${this.state.user.id}`}/>
                 </Case>
             </Switch>
         );
