@@ -190,7 +190,7 @@ public class GraphGenerator {
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "700").trim());
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "150").trim());
         int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
         int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
         double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
