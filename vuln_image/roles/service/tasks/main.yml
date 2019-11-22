@@ -1,15 +1,15 @@
 ---
-- name: Uploading service
+- name: Uploading service {{ service_name }}
   debug:
     msg: "Uploading {{ service_name }}"
 
-- name: Create service user
+- name: Create service user {{ service_name }}
   user:
     name: "{{ service_name }}"
     groups: docker
     append: yes
 
-- name: Copy service
+- name: Copy service {{ service_name }}
   synchronize:
     src: "{{ playbook_dir }}/../services/{{ service_name }}/"
     dest: "/home/{{ service_name }}/"
@@ -22,10 +22,10 @@
     owner: "{{ service_name }}"
     group: "{{ service_name }}"
 
-- name: Copy unit
+- name: Copy unit for {{ service_name }}
   template: src=unit.j2 dest=/lib/systemd/system/{{ service_name }}.service
 
-- name: Enable service
+- name: Enable service {{ service_name }}
   systemd: name={{ service_name }} daemon_reload=yes enabled=yes
 
 - name: Pull dependencies
@@ -34,7 +34,7 @@
     chdir: "/home/{{ service_name }}/"
     warn: no
 
-- name: Build docker images
+- name: Build docker images for {{ service_name }}
   command: docker-compose build
   args:
     chdir: "/home/{{ service_name }}/"
