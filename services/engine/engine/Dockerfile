@@ -8,7 +8,8 @@ RUN apt update && \
                    libboost-system1.65.1 \
                    libboost-iostreams1.65.1 \
                    libboost-filesystem1.65.1 \
-                   libboost-serialization1.65.1
+                   libboost-serialization1.65.1 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -r -g 999 engine && \
     useradd -r -g 999 -u 999 -d /var/engine -s /bin/false engine
