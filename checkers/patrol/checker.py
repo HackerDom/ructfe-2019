@@ -57,6 +57,18 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
     return Verdict.OK(last)
 
 
+async def get_graph_and_vc(id, seed):
+    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=create --id={id} -s={seed}'
+    _json, _ = await get_out(cmd)
+
+    graph = json.loads(_json)
+
+    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=default_vc -s={seed} --id={id}'
+
+    _, _vc = await get_out(cmd)
+    vc = map(int, _vc.split())
+
+
 @checker.define_get(vuln_num=1)
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     id, seed = request.flag_id.split()

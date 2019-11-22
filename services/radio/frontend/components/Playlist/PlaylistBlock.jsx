@@ -33,8 +33,6 @@ class PlaylistBlock extends React.Component {
         const { match: { params } } = this.props;
         const { playlistId } = params;
 
-        console.log(params);
-
         if (playlistId && this.state.id !== playlistId) {
             const { fetchPlaylist } = this.props;
             fetchPlaylist(playlistId);

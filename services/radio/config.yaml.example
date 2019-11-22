@@ -6,6 +6,7 @@ db:
 paths:
   template_path: "views"
   static_path: "static"
+  music_path: "music"
 redis:
   host: redis
   port: 6379

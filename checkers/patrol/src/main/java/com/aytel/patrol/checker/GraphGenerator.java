@@ -190,7 +190,7 @@ public class GraphGenerator {
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "2500").trim());
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "150").trim());
         int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
         int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
         double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
@@ -213,6 +213,13 @@ public class GraphGenerator {
                 patrolRequest = PatrolRequest.put(_rid, g);
                 System.err.println(g.getId() + " " + _seed);
                 break;
+            case "default_vc":
+                Set<Integer> isInIso = decomposition.getMaxIS();
+                Set<Integer> vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
+                vc.removeAll(isInIso);
+                patrolRequest = PatrolRequest.vc(_rid, vc.stream().mapToInt(Integer::intValue).toArray());
+                System.err.println(vc.stream().map(Objects::toString).collect(Collectors.joining(" ")));
+                break;
             case "perm":
                 //System.err.println("perm built");
                 perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps").trim())));
@@ -221,8 +228,8 @@ public class GraphGenerator {
             case "vc":
                 //System.err.println("vc built");
                 perm = createPerm(g.getN(), new Random(Long.parseLong(cmd.getOptionValue("ps").trim())));
-                Set<Integer> isInIso = modifyVertices(decomposition.getMaxIS(), perm);
-                Set<Integer> vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
+                isInIso = modifyVertices(decomposition.getMaxIS(), perm);
+                vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
                 vc.removeAll(isInIso);
                 patrolRequest = PatrolRequest.vc(_rid, vc.stream().mapToInt(Integer::intValue).toArray());
                 break;

@@ -18,6 +18,7 @@ import {
     deleteTrack
 } from '../../actions/playlist/actions';
 import Spring from '../Spring/Spring';
+import WaveTrack from '../Wave/WaveTrack';
 
 class PlaylistDetail extends React.Component {
     static propTypes = {
@@ -30,9 +31,14 @@ class PlaylistDetail extends React.Component {
             description: PropTypes.string,
             tracks: PropTypes.arrayOf(PropTypes.shape({})),
         }),
+        isShared: PropTypes.bool,
         createTrack: PropTypes.func,
         fetchPlaylist: PropTypes.func,
         deleteTrack: PropTypes.func,
+    }
+
+    static defaultProps = {
+        isShared: false,
     }
 
     constructor(props) {
@@ -64,8 +70,8 @@ class PlaylistDetail extends React.Component {
     }
 
     getTracks() {
-        const { playlist, deleteTrack } = this.props;
-        return playlist.tracks.map((track, i) => <div key={`track-${playlist.ID}-${i}`} className='playlist-track'>
+        const { playlist, isShared, deleteTrack } = this.props;
+        return playlist.tracks.map((track, i) => <div key={`track-${track.ID}-${i}`} className='playlist-track'>
             <div className='playlist-track__buttons'>
                 {this.isTrackPlaying(track.ID) && <FontAwesomeIcon className='playlist-clickable-button'
                     icon={faStop} onClick={() => {
@@ -76,18 +82,22 @@ class PlaylistDetail extends React.Component {
                         this.play(track.ID);
                     }}/>}
             </div>
+            <div className='playlist-track__wave'>
+                <WaveTrack id={`track-${track.ID}-${i}`} name={track.track_path}
+                    isPlaying={this.isTrackPlaying(track.ID)}/>
+            </div>
             <div className='playlist-track__name'>{track.name}</div>
             <Spring />
-            <div className='playlist-track__delete'>
+            {!isShared && <div className='playlist-track__delete'>
                 <FontAwesomeIcon icon={faTimes} onClick={() => {
                     deleteTrack(track.ID);
                 }}/>
-            </div>
+            </div>}
         </div>);
     }
 
     render() {
-        const { playlist, createTrack } = this.props;
+        const { playlist, isShared, createTrack } = this.props;
 
         return <React.Fragment>
             {playlist && <div className='playlist-detail'>
@@ -97,11 +107,11 @@ class PlaylistDetail extends React.Component {
                     {this.getTracks()}
                 </div>
                 <Spring />
-                <div className='playlist-add-track-button'>
+                {!isShared && <div className='playlist-add-track-button'>
                     <Button title='+ Add track' onClick={() => {
                         createTrack(playlist.ID);
                     }} />
-                </div>
+                </div>}
             </div>}
         </React.Fragment>;
     }
