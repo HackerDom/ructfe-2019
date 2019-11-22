@@ -1,8 +1,10 @@
 import { User } from '../../entities/userEntity';
+import uuid from 'uuid/v4';
 
 export class UsersCollection {
     async saveUser (userModel) {
         const user = new User(userModel);
+        user.id = uuid();
         await user.save();
         return user.id;
     }

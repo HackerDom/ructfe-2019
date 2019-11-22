@@ -1,10 +1,8 @@
-import { login } from './login';
-
 export class Chats {
     chatName = '';
 
     createChat = () => {
-        fetch('/createChat', {
+        return fetch('/createChat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -12,8 +10,9 @@ export class Chats {
             body: JSON.stringify({
                 chatName: this.chatName
             })
-        }).then(x => console.log(x))
-            .catch(x => console.log(x));
+        })
+            .then(r => r.json())
+            .then(r => r.data);
     };
 
     sendMessage = (chatId, message) => {
@@ -49,6 +48,30 @@ export class Chats {
         })
             .then(r => r.json())
             .then(r => r.data.messages);
+    };
+
+    getInvite = (chatId) => {
+        return fetch(`/inviteLink?chatId=${chatId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(r => r.json())
+            .then(r => r.data.inviteLink);
+    };
+
+    joinChat = (chatId, inviteLink) => {
+        return fetch('/joinChat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chatId,
+                inviteLink
+            })
+        }).then(r => r.json());
     };
 }
 

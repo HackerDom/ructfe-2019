@@ -10,7 +10,7 @@ services:
     stop_grace_period: 3s
 
     mem_limit: 1G
-    memswap_limit: 1G 
+    memswap_limit: 1G
     pids_limit: 100
 
     ulimits:
@@ -29,3 +29,6 @@ services:
     image: mongo
     volumes:
       - ./data:/data/db
+    mem_limit: 1G
+    memswap_limit: 1G
+    pids_limit: 100

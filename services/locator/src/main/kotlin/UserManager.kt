@@ -1,10 +1,9 @@
-package managers
-
 import messages.RegisterData
 import messages.UserPair
 import models.Info
 import models.User
 import models.Users
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.security.MessageDigest
 import java.util.*
@@ -49,6 +48,10 @@ class UserManager {
         get() = transaction {
             User.all().toList()
         }
+
+    fun users(limit: Int) = transaction {
+        User.all().orderBy(Users.id to SortOrder.DESC).limit(limit).toList()
+    }
 
     fun info(user: User): Info = transaction {
         user.info

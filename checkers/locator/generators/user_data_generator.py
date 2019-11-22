@@ -14,7 +14,7 @@ with open("generators/food") as food_file:
 
 
 def generate_username():
-    return choice(NAMES) + "_" + "".join(choice(digits) for _ in range(randint(18, 25)))
+    return choice(NAMES) + "".join(choice(digits) for _ in range(randint(18, 25)))
 
 
 def generate_password():

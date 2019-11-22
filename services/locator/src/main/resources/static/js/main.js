@@ -47,17 +47,23 @@ function toBase64(buffer) {
     return window.btoa(binary);
 }
 
+const fieldNameRegex = /^[a-zA-Z]{3,50}$/;
+
+
 function getContent() {
     let d = {};
     let keys = [];
     for (let i = 0; i < fieldsCount; i++) {
         let key = $('#cstm-fld-name' + i.toString()).val();
+        if (!fieldNameRegex.test(key)) {
+            alert("Custom field name must match this regex: " + fieldNameRegex.toString());
+            throw "Invalid field";
+        }
         let value = $('#cstm-fld-' + i.toString()).val();
         keys.push(key);
         d[key] = value;
     }
     keys.sort();
-
     let key = toBase64(make_class(keys));
     let message = keys.map(function (key) {
             return d[key].length.toString();
@@ -110,30 +116,41 @@ function setRegisterHandlers() {
 
         const speed = Math.min(Math.max(parseFloat(speedField.val()), 0), 1);
 
+        if (Number.isNaN(speed)) {
+            alert("Speed must be a float value");
+            return;
+        }
+
         const size = parseInt(sizeField.val());
+
+        if (Number.isNaN(size)) {
+            alert("Size must be an integer value");
+            return;
+        }
 
         if (size < 1 || size > 40) {
             alert("Size must be in range: [1, 40]");
             return;
         }
 
-        const data = JSON.stringify({
-            "name": username,
-            "password": password,
-            "color": color.substring(1, color.length),
-            "speed": speed,
-            "size": size,
-            "content": getContent()
-        });
+        try {
+            const data = JSON.stringify({
+                "name": username,
+                "password": password,
+                "color": color.substring(1, color.length),
+                "speed": speed,
+                "size": size,
+                "content": getContent()
+            });
 
-        $.post("/register", data)
-            .fail(function (data) {
-                console.log("fail");
-            })
-            .done(function (data) {
-                document.location.href = "/";
-            })
-        ;
+            $.post("/register", data)
+                .fail(function (data) {
+                    console.log("fail");
+                })
+                .done(function (data) {
+                    document.location.href = "/";
+                });
+        } catch (e) {}
         return false;
     });
     $("#add-btn").on("click", function (e) {

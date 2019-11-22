@@ -93,6 +93,10 @@ export function startMongoDb (mongoUrl) {
         .catch(e => console.log(`Failed to start Mongo db.\n${e}`));
 }
 
+app.get('/', function (request, response) {
+    console.log(staticPath);
+    response.sendFile('index.html', { root: staticPath });
+});
 app.get('/chatsPage', function (request, response) {
     response.sendFile('index.html', { root: staticPath });
 });
@@ -100,7 +104,11 @@ app.get('/auth', function (request, response) {
     response.sendFile('index.html', { root: staticPath });
 });
 
-app.get('/usersPage/*', function (request, response) {
+app.get('/usersPage', function (request, response) {
+    response.sendFile('index.html', { root: staticPath });
+});
+
+app.get('/search', function (request, response) {
     response.sendFile('index.html', { root: staticPath });
 });
 
@@ -254,7 +262,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
     const chatId = request.body.chatId;
     const inviteLink = request.body.inviteLink;
 
-    const isValid = fieldsAreExist(chatId.toString(), inviteLink.toString());
+    const isValid = fieldsAreExist(chatId, inviteLink);
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
@@ -273,6 +281,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
 
     if (isSuccess && String(chat.inviteLink) !== String(inviteLink)) {
         await sendResponse(response, {}, false, 'Invalid invite link', 403);
+        return;
     }
 
     if (isSuccess) {
@@ -533,7 +542,7 @@ function hasAccessToWriteMessages (userId, usersIds) {
 }
 
 function hasAccessToDeleteMessage (userId, message) {
-    return parseInt(message.ownerId) === parseInt(userId);
+    return String(message.ownerId) === String(userId);
 }
 
 function hasAccessToReedMessage (userId, message, isAdminOfCurrentChat) {

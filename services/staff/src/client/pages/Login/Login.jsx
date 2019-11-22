@@ -28,6 +28,7 @@ export class Login extends React.Component {
                     <Row gap={FORM_GAP}>
                         <Text text="Password: " />
                         <Input
+                            type='password'
                             onChange={this.onChangePassword}
                             value={this.state.password}
                         />
