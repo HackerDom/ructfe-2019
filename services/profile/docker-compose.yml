@@ -2,13 +2,23 @@ version: '3.2'
 
 services:
   redis:
-    image: redis
+    image: redis:5-alpine
     restart: always
+    mem_limit: 2G
+    memswap_limit: 2G
+    pids_limit: 100
 
   lwe:
     build: dockers/lwe
     restart: always
     stop_grace_period: 5s
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
+    pids_limit: 20
+    mem_limit: 1G
+    memswap_limit: 1G
     volumes:
       - ./dockers/lwe:/app
     command: gunicorn --chdir /app service.api:app -b :11111 --worker-class aiohttp.GunicornWebWorker --access-logfile -
@@ -19,6 +29,13 @@ services:
     build: dockers/stop
     restart: always
     stop_grace_period: 5s
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
+    pids_limit: 20
+    mem_limit: 1G
+    memswap_limit: 1G
     volumes:
       - ./dockers/stop:/app
     command: gunicorn --chdir /app service.api:app -b :11111 --worker-class aiohttp.GunicornWebWorker --access-logfile -
@@ -29,6 +46,13 @@ services:
     build: dockers/main
     restart: always
     stop_grace_period: 5s
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
+    pids_limit: 20
+    mem_limit: 1G
+    memswap_limit: 1G
     volumes:
       - ./dockers/main:/app
     command: gunicorn --chdir /app service.app:app -b :20561 --access-logfile -
