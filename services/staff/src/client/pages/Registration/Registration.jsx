@@ -6,20 +6,22 @@ import { Input } from '../../components/Input/Input';
 import { Button } from '../../components/Button/Button';
 import { register } from '../../models/register';
 import s from './Registration.css';
+import { Snackbar } from '../../components/Snackbar/Snackbar';
 
 export class Registration extends React.Component {
     state = {
         firstName: '',
         lastName: '',
         login: '',
-        password: ''
+        password: '',
+        error: null
     };
 
     render () {
         const FORM_GAP = 110;
 
         return (
-            <section>
+            <React.Fragment>
                 <MarginBox>
                     <Row gap={FORM_GAP}>
                         <Text text="First name: " />
@@ -65,7 +67,8 @@ export class Registration extends React.Component {
                         />
                     </div>
                 </MarginBox>
-            </section>
+                <Snackbar message={this.state.error} />
+            </React.Fragment>
         );
     }
 
@@ -94,4 +97,13 @@ export class Registration extends React.Component {
             .register()
             .then(this.props.onRegister);
     };
+
+    async register () {
+        try {
+            await register.register();
+            this.props.onRegister();
+        } catch (e) {
+            this.setState({ error: 'Registration failed' });
+        }
+    }
 }
