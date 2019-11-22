@@ -17,12 +17,16 @@ const cardState = {
 export class UserCard extends React.Component {
     FORM_GAP = 160;
     constructor (props) {
+        edit.firstName = props.user.firstName;
+        edit.lastName = props.user.lastName;
+        edit.biography = props.user.biography;
         super(props);
         this.state = { ...props.user, cardState: cardState.static };
     }
 
     onEditClick = () => {
         if (this.state.cardState === cardState.editing) {
+            console.log(this.state);
             edit.edit().then(() => { this.setState({ cardState: cardState.static }); });
         }
         if (this.state.cardState === cardState.static) {

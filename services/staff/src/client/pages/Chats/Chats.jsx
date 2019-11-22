@@ -18,7 +18,8 @@ export class Chats extends React.Component {
         selectedChatName: '',
         selectedChatMessages: [],
         selectedChatInvite: '',
-        selectedChatAccess: 'loading'
+        selectedChatAccess: 'loading',
+        intervalId: ''
     };
 
     componentDidMount () {
@@ -27,11 +28,16 @@ export class Chats extends React.Component {
                 chats = chats.map(c => ({ id: c.id, item: c.name }));
                 this.setState({ chats });
             });
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             if (this.state.selectedChatId) {
                 this.readMessages();
             }
         }, 5000);
+        this.setState({ intervalId: intervalId });
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.state.intervalId);
     }
 
     render () {
@@ -75,7 +81,6 @@ export class Chats extends React.Component {
     }
 
     readMessages = (id = this.state.selectedChatId) => {
-        console.log(id);
         chats.getChatMessages(id)
             .then(messages => this.setState({
                 selectedChatMessages: messages,
