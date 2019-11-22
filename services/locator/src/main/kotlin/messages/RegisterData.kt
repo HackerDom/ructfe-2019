@@ -26,7 +26,7 @@ class RegisterData(
 ) {
     fun isValid(): Boolean {
         return name.matches(nameRegex) &&
-                color.matches(colorRegex) &&
+                color.toLowerCase().matches(colorRegex) &&
                 isValidKey(Base64.getDecoder().decode(content.key))
     }
 }

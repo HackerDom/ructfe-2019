@@ -32,6 +32,10 @@ import messages.UserPair
 import messages.UserPosData
 import java.io.File
 
+
+const val USERS_LIMIT = 20;
+
+
 data class AuthSession(
     val uid: Int
 )
@@ -152,7 +156,7 @@ fun main() {
                 session?.uid?.let { uid ->
                     val user = userManager.userById(uid)
                     user?.let {
-                        val rawUsers = userManager.users.map { usr ->
+                        val rawUsers = userManager.users(USERS_LIMIT).map { usr ->
                             Json.stringify(UserPosData.serializer(), usr.toPosData())
                         }
                             .toString()
