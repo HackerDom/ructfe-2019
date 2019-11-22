@@ -5,3 +5,5 @@ export const messagesContainer: string;
 export const messages: string;
 export const message: string;
 export const messageText: string;
+export const header: string;
+export const headerButtons: string;

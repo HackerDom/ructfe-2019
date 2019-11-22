@@ -4,7 +4,6 @@ import s from './Input.css';
 
 export function Input ({ onChange, value, type }) {
     const changeHandler = (e) => onChange(e.target.value);
-    console.log(type);
 
     return (
         <div>

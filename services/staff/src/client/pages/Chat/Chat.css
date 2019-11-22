@@ -8,9 +8,7 @@
 }
 
 .chatName {
-    flex: 0 0 auto;
     color: var(--white);
-    box-sizing: border-box;
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -50,4 +48,17 @@
     border: 1px solid var(--white);
     color: var(--white);
     display: inline-block;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+}
+
+.headerButtons {
+    margin: 20px 0;
 }
