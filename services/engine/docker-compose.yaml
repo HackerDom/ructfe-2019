@@ -25,6 +25,11 @@ services:
     memswap_limit: 1G
     pids_limit: 1024
 
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
+
     ports:
       - 17171:80
     volumes:
