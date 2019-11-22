@@ -11,4 +11,4 @@ WORKDIR /app/Household/ClientApp
 RUN npm install
 
 
-CMD ["bash", "-c", "cd /app/Household && dotnet restore && dotnet publish -c Release -o publish"]
+CMD ["bash", "-c", "cd /app/Household && dotnet restore && dotnet publish -c Release -o publish && openssl genrsa -out private.pem 2048 && openssl rsa -in private.pem -pubout -out pub.pem"]
