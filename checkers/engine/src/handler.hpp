@@ -13,7 +13,7 @@
 
 class handler {
 public:
-    static void generate_fuel(std::string const flag) {
+    static void generate_fuel(std::string const flag, bool d_case, bool d_overlap, bool d_partial) {
         FILE* random = fopen("/dev/urandom", "rb");
     
         if (random == NULL) {
@@ -24,6 +24,15 @@ public:
         char buffer[WORD_LENGTH];
         
         fuel f;
+
+        if (d_case)
+            f.ignore_case();
+
+        if (d_overlap)
+            f.without_overlaps();
+
+        if (d_partial)
+            f.match_entire();
 
         for (size_t i = 0; i < WORDS_COUNT; i++) {
             fread(buffer, sizeof(char), WORD_LENGTH, random);

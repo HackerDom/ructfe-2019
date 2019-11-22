@@ -5,8 +5,8 @@ class Register {
     password = '';
     username = '';
 
-    register = () => {
-        return fetch('/register', {
+    register = async () => {
+        await fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -18,8 +18,7 @@ class Register {
                 password: this.password,
                 biography: this.bio
             })
-        }).then(x => console.log(x))
-            .catch(x => console.log(x));
+        });
     };
 }
 

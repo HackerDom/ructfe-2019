@@ -6,15 +6,16 @@ import { Button } from '../../components/Button/Button';
 import { MarginBox } from '../../components/MarginBox/MarginBox';
 import { Row } from '../../components/Row/Row';
 import { Text } from '../../components/Text/Text';
+import { Snackbar } from '../../components/Snackbar/Snackbar';
 
 export class Login extends React.Component {
-    state = { login: '', password: '' };
+    state = { login: '', password: '', error: null };
 
     render () {
         const FORM_GAP = 110;
 
         return (
-            <section>
+            <React.Fragment>
                 <MarginBox>
                     <Row gap={FORM_GAP}>
                         <Text text="Login: " />
@@ -41,7 +42,8 @@ export class Login extends React.Component {
                         <Button text="login" onClick={this.onLogin} />
                     </div>
                 </MarginBox>
-            </section>
+                <Snackbar message={this.state.error} />
+            </React.Fragment>
         );
     }
 
@@ -56,8 +58,16 @@ export class Login extends React.Component {
     };
 
     onLogin = () => {
-        login
-            .login()
-            .then(this.props.onLogin);
+        this.login();
+    };
+
+    async login () {
+        try {
+            await login.login();
+            this.props.onLogin();
+        } catch (e) {
+            this.setState({ error: 'Login failed' });
+            setTimeout(() => this.setState({ error: null }), 1000);
+        }
     };
 }
