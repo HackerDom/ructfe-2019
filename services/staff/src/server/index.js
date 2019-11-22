@@ -281,6 +281,7 @@ app.post('/joinChat', checkAuthentication, async function (request, response) {
 
     if (isSuccess && String(chat.inviteLink) !== String(inviteLink)) {
         await sendResponse(response, {}, false, 'Invalid invite link', 403);
+        return;
     }
 
     if (isSuccess) {
