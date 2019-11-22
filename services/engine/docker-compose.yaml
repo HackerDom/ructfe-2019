@@ -1,0 +1,33 @@
+version: '2.2'
+
+services:
+  engine:
+    build: engine
+    restart: always
+    stop_grace_period: 3s
+
+    mem_limit: 1G
+    memswap_limit: 1G
+    pids_limit: 1024
+
+    ulimits:
+      nofile:
+        soft: 12000
+        hard: 12000
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    depends_on:
+      - engine
+
+    mem_limit: 1G
+    memswap_limit: 1G
+    pids_limit: 1024
+
+    ports:
+      - 17171:80
+    volumes:
+      - ./www/:/var/www/:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/logs/:/var/log/nginx/

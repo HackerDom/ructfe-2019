@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RuCTFE 2019 | Engine</title>
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    </head>
+    <body onload="load_fuel_id()">
+        <div class="container">
+            <span class="logo"></span>
+        </div>
+        <div class="main block">
+            <div class="header block">
+                <a href="/" class="link"><span class="title">INDEX</span></a>
+                <a href="/upload/" class="link"><span class="title">UPLOAD A FUEL</span></a>
+                <a href="/list/" class="link"><span class="title">LIST ALL FUEL</span></a>
+                <a href="/check/" class="link"><span class="title">CHECK FUEL PROPERTY</span></a>
+            </div>
+            <div class="content block">
+                <form action="#">
+                    <p>If you want to check a fuel property, please, use this form:</p>
+                    <label>Fuel ID<input type="text" class="item" name="fuel_id"></label>
+                    <label>Property<input type="text" class="item" name="property"></label>
+                    <label><input type="button" class="button" value="Check" onclick="check()"></label>
+                </form>
+                <div id="result"></div>
+            </div>
+        </div>
+        <script type="text/javascript" src="/static/scripts.js"></script>
+    </body>
+</html>
