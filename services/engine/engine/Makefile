@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-std=c++17 -Wall
-SECFLAGS=-Wl,-z,noexecstack
+SECFLAGS=-Wl,-z,noexecstack -fno-stack-protector
 
 SRCDIR=src
 OUTDIR=bin
