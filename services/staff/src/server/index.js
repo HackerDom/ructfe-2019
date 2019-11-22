@@ -93,6 +93,10 @@ export function startMongoDb (mongoUrl) {
         .catch(e => console.log(`Failed to start Mongo db.\n${e}`));
 }
 
+app.get('/', function (request, response) {
+    console.log(staticPath);
+    response.sendFile('index.html', { root: staticPath });
+});
 app.get('/chatsPage', function (request, response) {
     response.sendFile('index.html', { root: staticPath });
 });
