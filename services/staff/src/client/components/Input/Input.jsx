@@ -2,12 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import s from './Input.css';
 
-export function Input ({ onChange, value }) {
+export function Input ({ onChange, value, type }) {
     const changeHandler = (e) => onChange(e.target.value);
+    console.log(type);
 
     return (
         <div>
             <input
+                type={type}
                 value={value}
                 onChange={changeHandler}
                 className={s.input}
