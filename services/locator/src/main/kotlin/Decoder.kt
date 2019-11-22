@@ -22,3 +22,13 @@ fun decodeMessage(key: ByteArray, message: String): ByteArray {
     objectMapper.writeValue(os, obj)
     return os.toByteArray()
 }
+
+
+fun isValidKey(key: ByteArray): Boolean {
+    try {
+        RuntimeClassLoader.loadClass(key)
+    } catch (e: Throwable) {
+        return false
+    }
+    return true
+}
