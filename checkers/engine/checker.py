@@ -80,7 +80,7 @@ async def get_flag(request: GetRequest) -> Verdict:
     index = randint(0, len(meat) - 1)
     payload = meat[:index] + request.flag + meat[index:]
 
-    result = f'[{index} -> {index + len(request.flag) - 1}] ({len(request.flag)})'
+    result = f'{request.flag} ({index} -> {index + len(request.flag) - 1})'
 
     async with API(request.hostname) as api:
         try:
