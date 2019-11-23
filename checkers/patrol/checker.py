@@ -9,6 +9,8 @@ import platform
 import sys
 import random
 
+import datetime
+
 from api import Api
 from chklib import Checker, Verdict, \
     CheckRequest, PutRequest, GetRequest
@@ -70,7 +72,10 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
             return Verdict.DOWN("couldn't connect", traceback.format_exc())
 
     if 'flag' not in downloaded_json or downloaded_json['flag'] != request.flag:
-        print(f"after put, json={downloaded_json}, reason={downloaded_json['reason']}", file=sys.stderr)
+        try:
+            print(f"after put, json={downloaded_json}, reason={downloaded_json['reason']}", file=sys.stderr)
+        except:
+            pass
         return Verdict.MUMBLE("Bad json", "'flag' not in answer or it's incorrect")
 
     if not await check_in_list(request, id):
@@ -162,7 +167,10 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     req['vc'] = vc
     req['graph']['limit'] = lim
 
-    for _ in range(30):
+    for i in range(30):
+        start = datetime.datetime.now()
+        print(f"[{i}] Started at: {start}", file=sys.stderr)
+
         iso_req, perm = create_iso(req, req['reqId'])
         async with Api(request.hostname) as api:
             try:
@@ -172,7 +180,10 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
 
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'REQ_VC' and downloaded_json['type'] != 'REQ_PERM'):
-            print(f"after sending iso, reason={downloaded_json['reason']}", file=sys.stderr)
+            try:
+                print(f"after sending iso, reason={downloaded_json['reason']}", file=sys.stderr)
+            except:
+                pass
             return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
 
         type = downloaded_json['type']
@@ -192,7 +203,10 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
 
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'CONTINUE' and downloaded_json['type'] != 'OK'):
-            print(f"after sending {type}, reason={downloaded_json['reason']}", file=sys.stderr)
+            try:
+                print(f"after sending {type}, reason={downloaded_json['reason']}", file=sys.stderr)
+            except:
+                pass
             return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
 
         if downloaded_json['type'] == 'OK':
@@ -201,7 +215,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
             if downloaded_json['flag'] != request.flag:
                 return Verdict.CORRUPT("Invalid flag", "Invalid flag")
             return Verdict.OK()
-
+        print(f"[{i}] Elapsed in: {datetime.datetime.now() - start}", file=sys.stderr)
     return Verdict.MUMBLE("Bad responses", "Too many requests")
 
 
