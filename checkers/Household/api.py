@@ -11,8 +11,8 @@ from networking.masking_connector import get_agent
 PORT = 5000
 
 def generate_state_code():
-	return ''.join(choices(ascii_lowercase + digits, k=32))
-	
+    return ''.join(choices(ascii_lowercase + digits, k=32))
+    
 def generate_PKCE_codes():
     code_verifier = ''.join(choices(ascii_letters, k=100))
     return code_verifier, urlsafe_b64encode(sha256(code_verifier.encode()).digest()).decode().replace('=','')
@@ -40,7 +40,7 @@ class Api:
             if resp.status != 302:
                 return resp.status
         
-		state_code = generate_state_code()
+        state_code = generate_state_code()
         code_verifier, code_challenge = generate_PKCE_codes()
         
         callback_query = []
@@ -55,9 +55,7 @@ class Api:
             callback_query = parse_qs(urlparse(resp.headers['Location']).query)
 
         token = ''
-        payload = f"client_id=Household&code={callback_query['code'][0]}&" + 
-                    "redirect_uri={self.url}/authentication/login-callback&" + 
-					"code_verifier={code_verifier}&grant_type=authorization_code";
+        payload = f"client_id=Household&code={callback_query['code'][0]}&redirect_uri={self.url}/authentication/login-callback&code_verifier={code_verifier}&grant_type=authorization_code";
         async with self.session.post(f"{self.url}/connect/token", data=payload, headers={'Content-Type':'application/x-www-form-urlencoded'}, allow_redirects=False) as resp:
             if resp.status != 200:
                 return resp.status
