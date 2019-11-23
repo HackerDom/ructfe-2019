@@ -1,20 +1,28 @@
-version: '3'
+version: '2.2'
 services:
     postgres:
-        image: postgres:10
+        image: postgres:11-alpine
         restart: always
+        mem_limit: 1G
+        memswap_limit: 1G
+        pids_limit: 128
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: adminhip
             POSTGRES_DB: HouseholdDatabase
-        ports:
-            - 5432:5432
     
     household:
         container_name: household
-        restart: unless-stopped
+        restart: always
+        stop_grace_period: 3s
+        mem_limit: 1G
+        memswap_limit: 1G
+        pids_limit: 128
+        ulimits:
+            nofile:
+                soft: 12000
+                hard: 12000
         build: .
-        network_mode: host
         ports:
             - 5000:5000
         depends_on:

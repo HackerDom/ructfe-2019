@@ -1,6 +1,6 @@
 import aiohttp
 from aiohttp.client import ClientTimeout
-from string import ascii_letters
+from string import ascii_letters, digits, ascii_lowercase
 from random import choices, randint
 from hashlib import sha256
 from base64 import urlsafe_b64encode
@@ -10,10 +10,9 @@ from networking.masking_connector import get_agent
 
 PORT = 5000
 
-'''
-    - Сделать User-Agent рандомные
-'''
-
+def generate_state_code():
+	return ''.join(choices(ascii_lowercase + digits, k=32))
+	
 def generate_PKCE_codes():
     code_verifier = ''.join(choices(ascii_letters, k=100))
     return code_verifier, urlsafe_b64encode(sha256(code_verifier.encode()).digest()).decode().replace('=','')
@@ -41,11 +40,12 @@ class Api:
             if resp.status != 302:
                 return resp.status
         
+		state_code = generate_state_code()
         code_verifier, code_challenge = generate_PKCE_codes()
         
         callback_query = []
         async with self.session.get(f"{self.url}/connect/authorize?client_id=Household&response_type=code&" +
-                                        "scope=HouseholdAPI%20openid%20profile&state=5d4f6d1dd37f4f019258ce969a09a43a&" +
+                                        f"scope=HouseholdAPI%20openid%20profile&state={state_code}&" +
                                         "response_mode=query&prompt=none&" +
                                         f"redirect_uri={self.url}/authentication/login-callback&" +
                                         "code_challenge_method=S256&" +
@@ -55,7 +55,9 @@ class Api:
             callback_query = parse_qs(urlparse(resp.headers['Location']).query)
 
         token = ''
-        payload = f"client_id=Household&code={callback_query['code'][0]}&redirect_uri={self.url}/authentication/login-callback&code_verifier={code_verifier}&grant_type=authorization_code";
+        payload = f"client_id=Household&code={callback_query['code'][0]}&" + 
+                    "redirect_uri={self.url}/authentication/login-callback&" + 
+					"code_verifier={code_verifier}&grant_type=authorization_code";
         async with self.session.post(f"{self.url}/connect/token", data=payload, headers={'Content-Type':'application/x-www-form-urlencoded'}, allow_redirects=False) as resp:
             if resp.status != 200:
                 return resp.status

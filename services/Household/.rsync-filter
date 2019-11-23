@@ -1,4 +1,3 @@
-- /build.sh
 - /HouseholdTest/
 - /Household/
 - /Household.sln
@@ -6,3 +5,4 @@
 - /Dockerfile-build
 - /.vs/
 - /.gitignore
+- /before_image_build.sh

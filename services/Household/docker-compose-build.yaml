@@ -1,4 +1,4 @@
-version: '3'
+version: '2.2'
 services:
     household_build:
         container_name: household-build
