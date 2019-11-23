@@ -20,3 +20,4 @@
     - { role: service, service_name: staff }
     - { role: service, service_name: profile }
     - { role: service, service_name: engine }
+    - { role: service, service_name: Household }
