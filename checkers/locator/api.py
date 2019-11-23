@@ -57,7 +57,7 @@ def register(
         **required_custom_fields
     )
 
-    r = requests.post(url, json=data)
+    r = requests.post(url, json=data, headers=data_gen.generate_headers())
     r.raise_for_status()
 
 
@@ -67,13 +67,13 @@ def login(hostname, username, password):
         "name": username,
         "password": password,
     }
-    r = requests.post(url, json=data)
+    r = requests.post(url, json=data, headers=data_gen.generate_headers())
     r.raise_for_status()
     return r.cookies
 
 
 def info(hostname, cookies):
     url = get_info_url(hostname)
-    r = requests.get(url, cookies=cookies)
+    r = requests.get(url, cookies=cookies, headers=data_gen.generate_headers())
     r.raise_for_status()
     return json.loads(r.content)

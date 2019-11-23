@@ -48,3 +48,7 @@ def generate_additional_fields():
         if random() > 0.6:
             result[''.join(choice(ascii_letters) for _ in range(10))] = choice(FOOD)
     return result
+
+
+def generate_headers():
+    return {'User-Agent': generate_user_agent()}
