@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3.7
 from api import Api
 from chklib import Checker, Verdict, \
     CheckRequest, PutRequest, GetRequest, utils
