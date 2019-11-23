@@ -11,7 +11,7 @@ class API:
 
     def __init__(self, hostname: str):
         self.url = f'http://{hostname}:{API.PORT}'
-        self.session = ClientSession(timeout=ClientTimeout(total=10), headers={"User-Agent": get_agent()})
+        self.session = ClientSession(timeout=ClientTimeout(total=120), headers={"User-Agent": get_agent()})
 
     async def __aenter__(self):
         return self
