@@ -54,7 +54,7 @@ def sign():
         return {'error': 'Wrong algo'}, 400
     
     note = {'data': request.form['data']}
-    note_hash = md5(dumps(note).encode()).hexdigest() * 2
+    note_hash = md5(dumps(note).encode()).hexdigest()
 
     pub_key = get_pub_key_by_login(algo, login)
     signature = get_note_sign(algo, login, note_hash)
