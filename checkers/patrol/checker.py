@@ -34,7 +34,7 @@ async def check_service(request: CheckRequest) -> Verdict:
 
     if 'type' not in downloaded_json:
         print("during check", file=sys.stderr)
-        return Verdict.MUMBLE("Bad json", "'type' not in answer")
+        return Verdict.MUMBLE("Bad json, 'type' not in answer", "")
 
     return Verdict.OK()
 
@@ -76,10 +76,10 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
             print(f"after put, json={downloaded_json}, reason={downloaded_json['reason']}", file=sys.stderr)
         except:
             pass
-        return Verdict.MUMBLE("Bad json", "'flag' not in answer or it's incorrect")
+        return Verdict.MUMBLE("Bad json, 'flag' not in answer or it's incorrect", "")
 
     if not await check_in_list(request, id):
-        return Verdict.MUMBLE("Bad list", "id not in answer.ids")
+        return Verdict.MUMBLE("Bad list, id not in answer.ids", "")
 
     return Verdict.OK(last)
 
@@ -164,7 +164,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     print(f"[{datetime.datetime.now()}] Send and downloaded json from team, elapsed {datetime.datetime.now() - start}", file=sys.stderr)
 
     if 'graph' not in downloaded_json:
-        return Verdict.MUMBLE("Bad json", "'graph' not in answer")
+        return Verdict.MUMBLE("Bad json, 'graph' not in answer", "")
 
     print(f"[{datetime.datetime.now()}] Getting graph & vc locally...", file=sys.stderr)
 
@@ -191,7 +191,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
                 print(f"after sending iso, reason={downloaded_json['reason']}", file=sys.stderr)
             except:
                 pass
-            return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
+            return Verdict.MUMBLE("Bad json, 'type' not in answer or it's incorrect", "")
 
         type = downloaded_json['type']
 
@@ -214,11 +214,11 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
                 print(f"after sending {type}, reason={downloaded_json['reason']}", file=sys.stderr)
             except:
                 pass
-            return Verdict.MUMBLE("Bad json", "'type' not in answer or it's incorrect")
+            return Verdict.MUMBLE("Bad json, 'type' not in answer or it's incorrect", "")
 
         if downloaded_json['type'] == 'OK':
             if 'flag' not in downloaded_json:
-                return Verdict.CORRUPT("Bad json", "'flag' not in answer")
+                return Verdict.CORRUPT("Bad json, 'flag' not in answer", "")
             if downloaded_json['flag'] != request.flag:
                 return Verdict.CORRUPT("Invalid flag", "Invalid flag")
             return Verdict.OK()
