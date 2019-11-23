@@ -40,11 +40,10 @@ public class PatrolRequest {
         return patrolRequest;
     }
 
-    public static PatrolRequest defaultVC(String rid, int[] vc, Graph g, String graphId) {
+    public static PatrolRequest defaultVC(String rid, Graph g, String graphId) {
         PatrolRequest patrolRequest = new PatrolRequest();
         patrolRequest.reqId = rid;
         patrolRequest.graph = g;
-        patrolRequest.vc = vc;
         patrolRequest.graphId = graphId;
         return patrolRequest;
     }
