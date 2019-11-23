@@ -3,6 +3,7 @@ from aiohttp.client import ClientTimeout
 from string import ascii_letters, digits, ascii_lowercase
 from random import choices, randint
 from hashlib import sha256
+from product_import import get_random_product
 from base64 import urlsafe_b64encode
 from urllib.parse import urlparse, parse_qs
 from json import dumps
@@ -64,28 +65,33 @@ class Api:
         self.session._default_headers.update({'Authorization': token})
         return 'success'
         
-    async def add_product(self, prod_name, manufacturer, protein=randint(0,100), fat=randint(0,100), carbohydrate=randint(0,100), calories=randint(0,100)):
+    async def add_product(self, manufacturer):
+        product = get_random_product()
+        
         payload = {
-            "name": prod_name,
-            "protein": protein,
-            "fat": fat,
-            "carbohydrate": carbohydrate,
-            "calories": calories,
+            "name": product.name,
+            "protein": product.protein,
+            "fat": product.fat,
+            "carbohydrate": product.carbohydrate,
+            "calories": product.calories,
             "manufacturer": manufacturer
         }
+        
         async with self.session.post(f"{self.url}/api/Products", json=payload, allow_redirects=False) as resp:
             return resp.status, await self.get_json(resp, 201)
 
     async def add_product_via_xml(self, prods):
         products_xml = '<products>'
         for prod in prods:
+            product = prod['product']
+            manufacturer = prod['manufacturer']
             products_xml += f'''<product>
-                                    <name>{prod['name']}</name>
-                                    <calories>{randint(0,100)}</calories>
-                                    <protein>{randint(0,100)}</protein>
-                                    <fat>{randint(0,100)}</fat>
-                                    <carbohydrate>{randint(0,100)}</carbohydrate>
-                                    <manufacturer>prod['manufacturer']</manufacturer>
+                                    <name>{product.name}</name>
+                                    <calories>{product.calories}</calories>
+                                    <protein>{product.protein}</protein>
+                                    <fat>{product.fat}</fat>
+                                    <carbohydrate>{product.carbohydrate}</carbohydrate>
+                                    <manufacturer>{manufacturer}</manufacturer>
                                </product>'''
         products_xml += '</products>'
         
@@ -108,7 +114,7 @@ class Api:
             "ingredients": ingredients,
             "name": name,
             "description": description,
-            "portionWeight": randint(1,10)
+            "portionWeight": randint(100,200)
         }
         async with self.session.post(f"{self.url}/api/Dishes", json=payload, allow_redirects=False) as resp:
             return resp.status, await self.get_json(resp, 201)
@@ -149,7 +155,6 @@ class Api:
 
     async def create_order(self, menu_id, product_id_list):
         payload = {
-            "id": 0,
             "menuId": menu_id,
             "dishIds": product_id_list
         }

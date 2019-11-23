@@ -32,8 +32,8 @@ cs_ctf_name: RuCTFE 2019
 cs_flags_secret: geis3aiHee9d
 cs_round_length: 60
 cs_flag_life_time: 15
-cs_time: "['2019-11-15 10:00:00', '2019-11-30 17:00:00']"
-# cs_time: "['2019-11-23 11:00:00', '2019-11-23 18:59:50']"
+# cs_time: "['2019-11-15 10:00:00', '2019-11-30 17:00:00']"
+cs_time: "['2019-11-23 11:00:00', '2019-11-23 18:59:50']"
 
 cs_static_path: '/home/cs/ctf-scoreboard-client/scoreboard/build'
 
@@ -416,6 +416,11 @@ teams: |
   {name => 'alex', network => '10.60.250.0/24', host => '10.60.250.2', token => '250_1ae1d2632d088cf1e2dd1a791b385b30', country => 'India', logo => 'https://ructfe.org/ctf-static/sprite_1.7fdcfe5f9e24.png'},
   {name => 'Mindflayers', network => '10.62.21.0/24', host => '10.62.21.2', token => '533_b58eed63f9aea20ad0c859f7826c4eb1', country => 'Philippines', logo => 'https://ructfe.org/ctf-media/uploads/2019/teams_logo/mindflayers'},
   {name => '12321', network => '10.62.50.0/24', host => '10.62.50.2', token => '562_fbda6e7c46f84a90af1364243884e89e', country => 'China', logo => 'https://ructfe.org/ctf-static/sprite_1.7fdcfe5f9e24.png'},
+  {name => 'HATS SG', network => '10.60.221.0/24', host => '10.60.221.2', token => '221_8d9e3470d4ad74ce57976785e09f3154', country => 'Singapore', logo => 'https://ructfe.org/ctf-static/sprite_1.7fdcfe5f9e24.png'},
+  {name => 'UIT-Mak3.1t.Happ3nd', network => '10.62.13.0/24', host => '10.62.13.2', token => '525_4c58bef5d30160128491ae54fe40051a', country => 'Vietnam', logo => 'https://ructfe.org/ctf-static/sprite_1.7fdcfe5f9e24.png'},
+  {name => 'UIT', network => '10.60.148.0/24', host => '10.60.148.2', token => '148_64e5be2bf83a7e21c8eddf4b0a0b4ea8', country => 'Vietnam', logo => 'https://ructfe.org/ctf-static/sprite_1.7fdcfe5f9e24.png'},
+  {name => 'Yerp', network => '10.60.137.0/24', host => '10.60.137.2', token => '137_6468407acad1426d7d94cca21f7b3762', country => 'Afghanistan', logo => 'https://ructfe.org/ctf-static/sprite_1.7fdcfe5f9e24.png'},
+  {name => 'Newbie_aaa', network => '10.62.101.0/24', host => '10.62.101.2', token => '613_0793496c5fb799340babba28b558d62a', country => 'Mongolia', logo => 'https://ructfe.org/ctf-media/uploads/2019/teams_logo/newbie_aaa'},
 
 services: |
   {name => 'patrol',    path => 'checkers/patrol/checker.py',    timeout => 30, tcp_port => 23179},
