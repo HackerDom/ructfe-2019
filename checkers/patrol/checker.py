@@ -28,13 +28,31 @@ async def check_service(request: CheckRequest) -> Verdict:
         try:
             downloaded_json = (await api.send_and_get(_json))
         except Exception as e:
-            return Verdict.DOWN(str(e), traceback.format_exc())
+            return Verdict.DOWN("couldn't connect", traceback.format_exc())
 
     if 'type' not in downloaded_json:
         print("during check", file=sys.stderr)
         return Verdict.MUMBLE("Bad json", "'type' not in answer")
 
     return Verdict.OK()
+
+
+async def check_in_list(request, id):
+    d = dict()
+    d['type'] = 'LIST'
+    _json = json.dumps(d)
+
+    async with Api(request.hostname) as api:
+        try:
+            downloaded_json = (await api.send_and_get(_json))
+        except Exception as e:
+            return False
+    try:
+        if 'ids' not in downloaded_json or str(id) not in downloaded_json['ids']:
+            return False
+    except Exception:
+        return False
+    return True
 
 
 @checker.define_put(vuln_num=1, vuln_rate=1)
@@ -49,11 +67,14 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
         try:
             downloaded_json = (await api.send_and_get(_json))
         except Exception as e:
-            return Verdict.DOWN(str(e), traceback.format_exc())
+            return Verdict.DOWN("couldn't connect", traceback.format_exc())
 
     if 'flag' not in downloaded_json or downloaded_json['flag'] != request.flag:
         print(f"after put, json={downloaded_json}, reason={downloaded_json['reason']}", file=sys.stderr)
         return Verdict.MUMBLE("Bad json", "'flag' not in answer or it's incorrect")
+
+    if not await check_in_list(request, id):
+        return Verdict.MUMBLE("Bad list", "id not in answer.ids")
 
     return Verdict.OK(last)
 
@@ -132,7 +153,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         try:
             downloaded_json = (await api.send_and_get(_json))
         except Exception as e:
-            return Verdict.DOWN(str(e), traceback.format_exc())
+            return Verdict.DOWN("couldn't connect", traceback.format_exc())
 
     if 'graph' not in downloaded_json:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
@@ -147,7 +168,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
             try:
                 downloaded_json = (await api.send_and_get(json.dumps(iso_req)))
             except Exception as e:
-                return Verdict.DOWN(str(e), traceback.format_exc())
+                return Verdict.DOWN("couldn't connect", traceback.format_exc())
 
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'REQ_VC' and downloaded_json['type'] != 'REQ_PERM'):
@@ -167,7 +188,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
             try:
                 downloaded_json = (await api.send_and_get(data))
             except Exception as e:
-                return Verdict.DOWN(str(e), traceback.format_exc())
+                return Verdict.DOWN("couldn't connect", traceback.format_exc())
 
         if 'type' not in downloaded_json \
                 or (downloaded_json['type'] != 'CONTINUE' and downloaded_json['type'] != 'OK'):
