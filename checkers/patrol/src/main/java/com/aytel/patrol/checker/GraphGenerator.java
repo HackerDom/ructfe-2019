@@ -190,7 +190,7 @@ public class GraphGenerator {
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "700").trim());
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "1500").trim());
         int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
         int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
         double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
@@ -217,8 +217,9 @@ public class GraphGenerator {
                 Set<Integer> isInIso = decomposition.getMaxIS();
                 Set<Integer> vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
                 vc.removeAll(isInIso);
-                patrolRequest = PatrolRequest.vc(_rid, vc.stream().mapToInt(Integer::intValue).toArray());
-                System.err.println(vc.stream().map(Objects::toString).collect(Collectors.joining(" ")));
+                patrolRequest = PatrolRequest.defaultVC(_rid,
+                    vc.stream().mapToInt(Integer::intValue).toArray(), g, cmd.getOptionValue("id"));
+                //System.err.println(vc.stream().map(Objects::toString).collect(Collectors.joining(" ")));
                 break;
             case "perm":
                 //System.err.println("perm built");

@@ -14,6 +14,7 @@ var config *Config
 type PathConfig struct {
 	TemplatePath string `yaml:"template_path"`
 	StaticPath   string `yaml:"static_path"`
+	MusicPath    string `yaml:"music_path"`
 }
 
 type DBConfig struct {

@@ -1,0 +1,103 @@
+<header>
+  <nav
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+      <a class="navbar-brand" [routerLink]="['/']">Household</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target=".navbar-collapse"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="isExpanded"
+        (click)="toggle()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div
+        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
+        [ngClass]="{ show: isExpanded }">
+        <app-login-menu></app-login-menu>
+        <ul class="navbar-nav flex-grow">
+          <li class="nav-item"
+              [routerLinkActive]="['link-active']"
+              [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link text-dark" [routerLink]="['/']"></a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/products/list']">
+              Products
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/products/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/products/import']">
+                  Import from nomenclature
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/products/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/dishes/list']">
+              Dishes
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/dishes/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/dishes/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/menus']">
+              Menus
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/menus/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/menus/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-dark" [routerLink]="['/orders/list']">
+              Orders
+            </a>
+            <ul>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/orders/add']">
+                  Add new
+                </a>
+              </li>
+              <li>
+                <a class="nav-link text-dark" [routerLink]="['/orders/list']">
+                  Overview
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

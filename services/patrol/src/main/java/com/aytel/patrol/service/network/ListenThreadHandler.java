@@ -130,6 +130,7 @@ public class ListenThreadHandler extends ChannelInboundHandlerAdapter {
                     throw new RuntimeException();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return PatrolResponse.failed(patrolRequest.reqId, "smth gone wrong");
         }
     }

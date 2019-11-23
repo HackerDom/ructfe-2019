@@ -1,0 +1,69 @@
+<h1 id="tableLabel">Add new dish</h1>
+
+
+<div *ngIf="!dish">
+  <div class="form-group">
+    <label>Dish name</label>
+    <input class="form-control" name="name" [(ngModel)]="name"/>
+  </div>
+  <div class="form-group">
+    <label>Description for customer</label>
+    <input class="form-control" name="description" [(ngModel)]="description"/>
+  </div>
+  <div class="form-group">
+    <label>Recipe</label>
+    <input class="form-control" name="recipe" [(ngModel)]="recipe"/>
+  </div>
+  <div class="form-group">
+    <label>Weight</label>
+    <input type="number" class="form-control" name="weight" [(ngModel)]="weight"/>
+  </div>
+  <div class="form-group">
+    <button class="btn btn-normal" (click)="addDish(name, description, recipe, weight)">Add</button>
+  </div>
+  <p *ngIf="loading">Loading...</p>
+  <p *ngIf="error">There are error during creating: {{error}}</p>
+</div>
+
+<p *ngIf="dish">Successfully created dish: {{dish.name}}</p>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="dish">
+  <tbody>
+  <tr>
+    <td>Name</td>
+    <td>{{ dish.name }}</td>
+  </tr>
+  <tr>
+    <td>Description</td>
+    <td>{{ dish.description }}</td>
+  </tr>
+  <tr>
+    <td>Recipe</td>
+    <td>{{ dish.recipe }}</td>
+  </tr>
+  <tr>
+    <td>Portion weight</td>
+    <td>{{ dish.portionWeight }}</td>
+  </tr>
+  <tr>
+    <td>Portion calories</td>
+    <td>{{ dish.portionCalories }}</td>
+  </tr>
+  <tr>
+    <td>Portion protein</td>
+    <td>{{ dish.portionProtein }}</td>
+  </tr>
+  <tr>
+    <td>Portion fat</td>
+    <td>{{ dish.portionFat }}</td>
+  </tr>
+  <tr>
+    <td>Portion carbohydrate</td>
+    <td>{{ dish.portionCarbohydrate }}</td>
+  </tr>
+  </tbody>
+</table>
+<div class="form-group" *ngIf="dish">
+  <button class="btn btn-normal" (click)="addNew()">Add one more</button>
+</div>
+<br/>
+<br/>

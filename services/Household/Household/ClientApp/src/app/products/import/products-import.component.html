@@ -1,0 +1,38 @@
+<h1 id="tableLabel">Import from nomenclature file</h1>
+
+<p>You should upload data in the form № 17-Ц\33215 approved by the Defense Department.</p>
+
+<input type="file"
+       (change)="onFileSelected($event)"
+       enctype="multipart/form-data">
+<br/>
+<br/>
+<button class="btn btn-normal" type="button" (click)="onUpload()">Upload</button>
+<br/>
+<br/>
+<p *ngIf="loading">Loading...</p>
+<p *ngIf="error">There are error during uploading: {{error}}</p>
+<p *ngIf="totalCount">Uploaded products: {{uploadedCount}}. Total available products: {{totalCount}}.</p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="products">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Calories</th>
+    <th>Protein</th>
+    <th>Fat</th>
+    <th>Carbohydrate</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let product of products">
+    <td>{{ product.name }}</td>
+    <td>{{ product.calories }}</td>
+    <td>{{ product.protein }}</td>
+    <td>{{ product.fat }}</td>
+    <td>{{ product.carbohydrate }}</td>
+  </tr>
+  </tbody>
+</table>
+<br/>
+<br/>
