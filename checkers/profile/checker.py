@@ -30,22 +30,16 @@ async def put_flag_lwe(request: PutRequest) -> Verdict:
 
     async with API(request.hostname) as api:
         try:
-            pub_key = await api.get_pub_key(algo, login)
-            pub_key = list(list(map(int, x.split(','))) for x in b64decode(pub_key['pub_key']).decode().split(';'))
-
-        except Exception as e:
-            return Verdict.MUMBLE("Can't get public key", traceback.format_exc())
-    
-        try:
             signed = await api.sign(algo, login, request.flag)
-            signature, note_hash = signed['s'], signed['h']
- 
+            signature, note_hash, pub_key = signed['s'], signed['h'], signed['pub_key']
+
             _signature = list(list(map(int, x.split(','))) for x in b64decode(signature).decode().split(';'))
             _note_hash = bytes.fromhex(note_hash)
+            pub_key = list(list(map(int, x.split(','))) for x in b64decode(pub_key).decode().split(';'))
         except Exception as e:
             return Verdict.MUMBLE("Can't sign message", traceback.format_exc())
 
-    algo = RLWE(16, 929)
+    algo = RLWE(len(_note_hash), 929)
     if algo.verify(_note_hash, pub_key, _signature):
         return Verdict.OK("{}:{}:{}".format(login, note_hash, signature))
     else:
@@ -73,7 +67,7 @@ async def get_flag_lwe(request: GetRequest) -> Verdict:
             return Verdict.MUMBLE("Can't get notes", traceback.format_exc())
 
         try:
-            pub_key = await api.get_pub_key(algo, login)
+            pub_key = await api.get_pub_key(algo, login, note_hash)
             pub_key = list(list(map(int, x.split(','))) for x in b64decode(pub_key['pub_key']).decode().split(';'))
         except Exception as e:
             return Verdict.MUMBLE("No public key", traceback.format_exc())
@@ -96,17 +90,12 @@ async def put_flag_stop(request: PutRequest) -> Verdict:
 
     async with API(request.hostname) as api:
         try:
-            pub_key = await api.get_pub_key(algo, login)
-            pub_key = list(map(bytes.fromhex, b64decode(pub_key['pub_key']).decode().split(',')))
-        except Exception as e:
-            return Verdict.MUMBLE("Can't get public key", traceback.format_exc())
-    
-        try:
             signed = await api.sign(algo, login, request.flag)
-            signature, note_hash = signed['s'], signed['h']
- 
+            signature, note_hash, pub_key = signed['s'], signed['h'], signed['pub_key']
+
             _signature = bytes.fromhex(signature)
             _note_hash = bytes.fromhex(note_hash)
+            pub_key = list(map(bytes.fromhex, b64decode(pub_key).decode().split(',')))
         except Exception as e:
             return Verdict.MUMBLE("Can't sign message", traceback.format_exc())
 
@@ -139,7 +128,7 @@ async def get_flag_stop(request: GetRequest) -> Verdict:
             return Verdict.MUMBLE("Can't get notes", traceback.format_exc())
 
         try:
-            pub_key = await api.get_pub_key(algo, login)
+            pub_key = await api.get_pub_key(algo, login, note_hash)
             pub_key = list(map(bytes.fromhex, b64decode(pub_key['pub_key']).decode().split(',')))
         except Exception as e:
             return Verdict.MUMBLE("No public key", traceback.format_exc())
