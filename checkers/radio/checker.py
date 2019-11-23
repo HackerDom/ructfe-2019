@@ -182,8 +182,9 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
                                                        f"expect = 200, real = {status}")
         status, playlist = await api.get_playlist(playlist_id)
         if status != 200:
-            return Verdict.MUMBLE("Can't get playlist", f"Wrong status code [playlist.get], expect = 200,"
-                                                        f"real = {status}")
+            return Verdict.CORRUPT("Ooops, i can't find playlist",
+                                   f"Wrong status code [playlist.get], expect = 200,"
+                                   f"real = {status}, playlist={playlist}")
         if playlist["description"] != request.flag:
             return Verdict.CORRUPT("Broken playlist", "Corrupt!")
     return Verdict.OK()
