@@ -142,6 +142,8 @@ def create_perm(perm, reqId):
 
 @checker.define_get(vuln_num=1)
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
+    start = datetime.datetime.now()
+    print(f"Started at {start}.", file=sys.stderr)
     id, seed, _vc, lim = request.flag_id.split()
     vc = json.loads(_vc)
 
@@ -159,11 +161,16 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
             downloaded_json = (await api.send_and_get(_json))
         except Exception as e:
             return Verdict.DOWN("couldn't connect", traceback.format_exc())
+    print(f"[{datetime.datetime.now()}] Send and downloaded json from team, elapsed {datetime.datetime.now() - start}", file=sys.stderr)
 
     if 'graph' not in downloaded_json:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
+    print(f"[{datetime.datetime.now()}] Getting graph & vc locally...", file=sys.stderr)
+
     req = await get_graph_and_vc(id, seed, rid)
+    print(f"[{datetime.datetime.now()}] Got graph & vc.", file=sys.stderr)
+
     req['vc'] = vc
     req['graph']['limit'] = lim
 
