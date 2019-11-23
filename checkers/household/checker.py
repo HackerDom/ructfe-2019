@@ -125,7 +125,8 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     
     async with Api(request.hostname) as api:        
         res = await api.login(login, password)
-        if len(res)!= 2 or res[0] != 'success':
+        
+        if res != 'success':
             return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success' and '<token>', but return {res}")
         
         status, r_product = await api.get_product_by_id(product_id)
@@ -168,7 +169,7 @@ async def get_sflag_from_the_service(request: GetRequest) -> Verdict:
     
     async with Api(request.hostname) as api:        
         res = await api.login(login, password)
-        if len(res)!= 2 or res[0] != 'success':
+        if res != 'success':
             return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success' and '<token>', but return {res}")
         
         status, dish = await api.get_dish_by_id(dish_id)
