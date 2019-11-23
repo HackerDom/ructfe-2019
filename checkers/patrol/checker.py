@@ -7,6 +7,7 @@ import traceback
 import uuid
 import platform
 import sys
+import random
 
 from api import Api
 from chklib import Checker, Verdict, \
@@ -57,9 +58,66 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
     return Verdict.OK(last)
 
 
+async def get_graph_and_vc(id, seed, rid):
+    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=default_vc -v=false --id={id} -s={seed} --rid={rid}'
+    _json, _ = await get_out(cmd)
+
+    request = json.loads(_json)
+
+    return request
+
+
+def modify_graph(graph):
+    n = graph['n']
+    perm = list(range(n))
+    random.shuffle(perm)
+    g = dict()
+    g['n'] = n
+    g['weight'] = [0 for _ in range(n)]
+    for i in range(n):
+        g['weight'][perm[i]] = graph['weight'][i]
+    g['limit'] = graph['limit']
+    g['edges'] = []
+    for e in graph['edges']:
+        v = e['v']
+        u = e['u']
+        g['edges'].append({"v": perm[v], "u": perm[u]})
+    return g, perm
+
+
+def create_iso(req, reqId):
+    d = dict()
+    d['reqId'] = reqId
+    d['type'] = 'SEND_ISO'
+    d['graphId'] = req['graphId']
+    d['graph'], perm = modify_graph(req['graph'])
+    return d, perm
+
+
+def modify_vc(vc, perm):
+    return [perm[v] for v in vc]
+
+
+def create_vc(vc, perm, reqId):
+    d = dict()
+    d['reqId'] = reqId
+    d['type'] = 'SEND_VC'
+    d['vc'] = modify_vc(vc, perm)
+    return d
+
+
+def create_perm(perm, reqId):
+    d = dict()
+    d['reqId'] = reqId
+    d['type'] = 'SEND_PERM'
+    d['perm'] = perm
+    return d
+
+
 @checker.define_get(vuln_num=1)
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
-    id, seed = request.flag_id.split()
+    id, seed, _vc, lim = request.flag_id.split()
+    vc = json.loads(_vc)
 
     rid = str(uuid.uuid4())
 
@@ -79,12 +137,15 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     if 'graph' not in downloaded_json:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
+    req = await get_graph_and_vc(id, seed, rid)
+    req['vc'] = vc
+    req['graph']['limit'] = lim
+
     for _ in range(30):
-        cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=iso -s={seed} --id={id} --rid={rid}'
-        _json, perm_seed = await get_out(cmd)
+        iso_req, perm = create_iso(req, req['reqId'])
         async with Api(request.hostname) as api:
             try:
-                downloaded_json = (await api.send_and_get(_json))
+                downloaded_json = (await api.send_and_get(json.dumps(iso_req)))
             except Exception as e:
                 return Verdict.DOWN(str(e), traceback.format_exc())
 
@@ -96,17 +157,15 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         type = downloaded_json['type']
 
         if type == 'REQ_VC':
-            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=vc' \
-                f' -s={seed} --ps={perm_seed} --rid={rid}'
+            vc_req = create_vc(req['vc'], perm, req['reqId'])
+            data = json.dumps(vc_req)
         else:
-            cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=perm' \
-                f' -s={seed} --rid={rid} --ps={perm_seed}'
-
-        _json, _ = await get_out(cmd)
+            perm_req = create_perm(perm, req['reqId'])
+            data = json.dumps(perm_req)
 
         async with Api(request.hostname) as api:
             try:
-                downloaded_json = (await api.send_and_get(_json))
+                downloaded_json = (await api.send_and_get(data))
             except Exception as e:
                 return Verdict.DOWN(str(e), traceback.format_exc())
 
@@ -137,6 +196,7 @@ async def get_out(cmd):
 
     if p.returncode:
         print(cmd, file=sys.stderr)
+        print(stderr, file=sys.stderr)
         return -1
 
     return stdout.decode('utf-8').strip(), stderr.decode('utf-8').strip()

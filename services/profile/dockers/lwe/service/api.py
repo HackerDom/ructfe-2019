@@ -9,7 +9,7 @@ from service.db import DB
 
 
 db = DB()
-algo = RLWE(16, 929, 5)
+algo = RLWE(16, 929)
 handler = LweHandler(algo, DB())
 
 app = web.Application()

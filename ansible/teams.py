@@ -17,5 +17,9 @@ for team in teams:
     host    = "10.{a}.{b}.2".format(a=a, b=b)
 
     name = team['name'].replace("'", "\\'")
+    if team['logo'].find("ctf-static/dummy") != -1:
+      logo = "/data/sprite_1.png"
+    else:
+      logo = "https://ructfe.org{}".format(team['logo'])
 
-    print("  {{name => '{name}', network => '{network}', host => '{host}', token => '{token}', country => '{country}', logo => 'https://ructfe.org{logo}'}},".format(name=name, network=network, host=host, token=team['checker_token'], country=team['country'], logo=team['logo']))
+    print("  {{name => '{name}', network => '{network}', host => '{host}', token => '{token}', country => '{country}', logo => '{logo}'}},".format(name=name, network=network, host=host, token=team['checker_token'], country=team['country'], logo=logo))

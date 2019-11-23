@@ -45,4 +45,4 @@ async def checks(n):
 
 
 if __name__ == "__main__":
-    asyncio.run(checks(50))
+    asyncio.run(checks(10))

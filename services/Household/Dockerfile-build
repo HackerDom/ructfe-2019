@@ -1,0 +1,12 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0
+
+RUN apt-get update -yq && \
+    apt-get install curl libssl-dev gnupg -yq 
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+
+COPY ./Household /app/Household
+WORKDIR /app/Household/ClientApp
+RUN npm install
+WORKDIR /app/Household
+CMD ["bash", "-c", "dotnet restore && dotnet publish -c Release -o publish && cd ./publish && openssl genrsa -out private.pem 2048 && openssl rsa -in private.pem -pubout -out pub.pem"]

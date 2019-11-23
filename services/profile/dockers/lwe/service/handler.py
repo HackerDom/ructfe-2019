@@ -19,7 +19,7 @@ class LweHandler:
         pub_key = await self._db.get_pub_key(login)
         if pub_key is None:
             pub_key, priv_key = self._algo.generate_keys()
-            pub_key = b64encode(b','.join(str(x).encode() for x in pub_key)).decode()
+            pub_key = b64encode(b';'.join(b','.join(str(y).encode() for y in x) for x in pub_key)).decode()
             priv_key = b64encode(b';'.join(b','.join(str(y).encode() for y in x) for x in priv_key)).decode()
             await self._db.save_keys(login, {'pub_key': pub_key, 'priv_key': priv_key})
         pub_key = await self._db.get_pub_key(login)
@@ -51,7 +51,7 @@ class LweHandler:
         is_note_hash = await self._db.is_note_hash(login, note_hash)
         if is_note_hash:
             pub_key = await self._db.get_pub_key(login)
-            pub_key = list(map(int, b64decode(pub_key).decode().split(',')))
+            pub_key = list(list(map(int, x.split(','))) for x in b64decode(pub_key).decode().split(';'))
             is_valid = self._algo.verify(note_hash, pub_key, sign)
             return web.Response(body=dumps({'res': is_valid}))
         return web.Response(body=dumps({'res': False}))

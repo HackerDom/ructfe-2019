@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/HackerDom/ructfe-2019/services/radio/forms"
+	"github.com/HackerDom/ructfe-2019/services/radio/tracks"
 	"github.com/HackerDom/ructfe-2019/services/radio/utils"
 	"github.com/jinzhu/gorm"
 )
@@ -11,12 +12,14 @@ import (
 type Track struct {
 	gorm.Model
 	Name       string `json:"name" gorm:"size:256"`
+	TrackPath  string `json:"track_path"`
 	PlaylistID uint
 }
 
 func CreateTrack(playlist *Playlist) (track *Track, err error) {
 	track = &Track{
 		Name:       utils.GetRandomName(10),
+		TrackPath:  tracks.GetRandomTrack().Filename,
 		PlaylistID: playlist.ID,
 	}
 	if err = forms.ErrorArray2Error(db.Create(track).GetErrors()); err != nil {

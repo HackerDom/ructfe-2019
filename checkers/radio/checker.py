@@ -127,6 +127,8 @@ async def _check_jwt_api(request: CheckRequest) -> Verdict:
         if status != 200:
             return Verdict.MUMBLE(f"Can't get token", f"Wrong status code [api.token],"
                                                       f"expect = 200, real = {status}")
+        if 'token' not in token_data:
+            return Verdict.MUMBLE(f"Can't get token", f"[api.token] not contain token")
     async with Api(request.hostname, custom_headers={'Authorization': f'Bearer {token_data["token"]}'}) as api:
         api_verdict = await _check_api(api)
         if api_verdict != Verdict.OK():
@@ -149,10 +151,8 @@ async def check_service(request: CheckRequest) -> Verdict:
 @checker.define_put(vuln_num=1, vuln_rate=1)
 @check_exception
 async def put_flag_into_the_service(request: PutRequest) -> Verdict:
-    username = utils.generate_random_text()
-    password = utils.generate_random_text(64, min_length=6)
     async with FrontendApi(request.hostname) as api:
-        status, user = await api.create_user(username, password)
+        username, password, status, user = await _try_create_user(api)
         if status != 200:
             return Verdict.MUMBLE("Can't create user", f"Wrong status code [user.create],"
                                                        f"expect = 200, real = {status}")
@@ -174,7 +174,6 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
 @check_exception
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     playlist_id, username, password = request.flag_id.split(":")
-
     async with FrontendApi(request.hostname) as api:
         status, user = await api.login_user(username, password)
         if status != 200:

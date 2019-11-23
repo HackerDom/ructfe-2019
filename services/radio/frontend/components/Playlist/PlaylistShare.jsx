@@ -32,7 +32,7 @@ class PlaylistShare extends React.Component {
         const { currentPlaylist } = this.props;
 
         return <React.Fragment>
-            {currentPlaylist && <PlaylistDetail playlist={currentPlaylist}/>}
+            {currentPlaylist && <PlaylistDetail playlist={currentPlaylist} isShared={true} />}
         </React.Fragment>;
     }
 }

@@ -31,10 +31,11 @@ public class TreeDecomposition {
 
     private static Node dfs(List<Integer> order, Iterator<Integer> iter,
                             Set<Integer> cur, Random random, int splitted, int w) {
-        int mode = random.nextInt(4);
+        int b = 14;
+        int mode = random.nextInt(b);
         int cnt = 0;
         while (!isValid(iter, cur, mode, splitted, w)) {
-            mode = random.nextInt(4);
+            mode = random.nextInt(b);
             if (cnt++ > 500) {
                 System.err.println("Excuse me wtf");
             }
@@ -43,8 +44,14 @@ public class TreeDecomposition {
         Set<Integer> old;
         switch (mode) {
             case 0:
+            case 11:
+            case 12:
                 return new Leaf(new HashSet<>(cur));
             case 1:
+            case 2:
+            case 3:
+            case 7:
+            case 8:
                 old = new HashSet<>(cur);
                 int del = random.nextInt(cur.size()) + 1;
                 var curIter = cur.iterator();
@@ -52,7 +59,11 @@ public class TreeDecomposition {
                     v = curIter.next();
                 curIter.remove();
                 return new Introduce(old, v, dfs(order, iter, cur, random, splitted, w));
-            case 2:
+            case 4:
+            case 5:
+            case 6:
+            case 9:
+            case 10:
                 old = new HashSet<>(cur);
                 v = iter.next();
                 cur.add(v);
@@ -70,10 +81,20 @@ public class TreeDecomposition {
     private static boolean isValid(Iterator<Integer> iter, Set<Integer> cur, int mode, int splitted, int w) {
         switch (mode) {
             case 0:
+            case 11:
+            case 12:
                 return cur.size() == 1 && (splitted > 0 || !iter.hasNext());
             case 1:
-                return cur.size() > 1;
             case 2:
+            case 3:
+            case 7:
+            case 8:
+                return cur.size() > 1;
+            case 4:
+            case 5:
+            case 6:
+            case 9:
+            case 10:
                 return iter.hasNext() && cur.size() < w;
             default:
                 return iter.hasNext();

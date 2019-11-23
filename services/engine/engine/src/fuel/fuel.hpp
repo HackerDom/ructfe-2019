@@ -92,12 +92,16 @@ public:
 
 private:
     void delete_partial_matches(std::string& search_text, std::vector<piece>& collected_pieces) const {
+        char text[strlen(search_text.data())];
+        
         size_t size = search_text.size();
+        search_text.copy(text, size, 0);
+        
         std::vector<piece> remove_pieces;
         
         for (const auto& p : collected_pieces) {
-            if ((p.start() == 0 || !std::isalpha(search_text.at(p.start() - 1))) &&
-                (p.end() + 1 == size || !std::isalpha(search_text.at(p.end() + 1)))) {
+            if ((p.start() == 0 || !std::isalpha(text[p.start() - 1])) &&
+                (p.end() + 1 == size || !std::isalpha(text[p.end() + 1]))) {
                 continue;
             }
 

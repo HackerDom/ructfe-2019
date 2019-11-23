@@ -40,6 +40,14 @@ public class PatrolRequest {
         return patrolRequest;
     }
 
+    public static PatrolRequest defaultVC(String rid, Graph g, String graphId) {
+        PatrolRequest patrolRequest = new PatrolRequest();
+        patrolRequest.reqId = rid;
+        patrolRequest.graph = g;
+        patrolRequest.graphId = graphId;
+        return patrolRequest;
+    }
+
     public enum Type {
         LIST, SEND_ISO, SEND_PERM, SEND_VC, GET_GRAPH, PUT_GRAPH
     }
