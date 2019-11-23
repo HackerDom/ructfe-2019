@@ -1,0 +1,8 @@
+- /HousholdTests/
+- /Household/
+- /Household.sln
+- /docker-compose-build.yaml
+- /Dockerfile-build
+- /.vs/
+- /.gitignore
+- /before_image_build.sh

@@ -51,7 +51,8 @@ passport.deserializeUser(async (id, done) => {
     done(null, {
         username: user.username,
         id: user.id,
-        biography: user.biography
+        biography: user.biography,
+        chatId: user.chatId
     });
 });
 
@@ -94,7 +95,6 @@ export function startMongoDb (mongoUrl) {
 }
 
 app.get('/', function (request, response) {
-    console.log(staticPath);
     response.sendFile('index.html', { root: staticPath });
 });
 app.get('/chatsPage', function (request, response) {
@@ -122,12 +122,13 @@ app.post('/register', async function (request, response) {
         lastName: request.body.lastName ? request.body.lastName.toString() : null,
         biography: request.body.biography ? request.body.biography.toString() : null
     });
+
     const isValid = fieldsAreExist(
         newUser.username,
         newUser.password,
         newUser.firstName,
         newUser.lastName,
-        newUser.biography);
+        newUser.biography) && newUser.username !== '' && newUser.password !== '';
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
@@ -303,6 +304,7 @@ app.get('/inviteLink', checkAuthentication, async function (request, response) {
     const chatId = request.query.chatId;
     const isValid = fieldsAreExist(chatId);
     const userId = request.user.id;
+    const adminChatId = request.user.chatId || '';
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
@@ -318,8 +320,7 @@ app.get('/inviteLink', checkAuthentication, async function (request, response) {
             isSuccess = false;
             errorMessage = 'Can not find chat.';
         });
-
-    if (isSuccess && !chat.usersIds.some(id => id === userId)) {
+    if (isSuccess && !chat.usersIds.some(id => id === userId) && String(adminChatId) !== String(chat.id)) {
         await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
@@ -452,7 +453,7 @@ app.get('/messages', checkAuthentication, async function (request, response) {
 
     const chatId = request.query.chatId;
     const userId = await request.user.id;
-
+    const adminChatId = request.user.chatId || '';
     const isValid = fieldsAreExist(chatId);
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
@@ -470,7 +471,7 @@ app.get('/messages', checkAuthentication, async function (request, response) {
             errorMessage = `Can find chat with id: ${chatId}.`;
         });
 
-    if (isSuccess && !chat.usersIds.some(x => x === userId)) {
+    if (isSuccess && !chat.usersIds.some(x => x === userId) && String(adminChatId) !== String(chat.id)) {
         await sendResponse(response, {}, false, 'You have not access to this chat', 403);
         return;
     }
@@ -535,6 +536,11 @@ app.post('/searchUser', async function (request, response) {
         id: foundedUser.id
     } : {};
     await sendResponse(response, userInfo);
+});
+
+app.get('/selfId', checkAuthentication, async function (request, response) {
+    const userId = await request.user.id;
+    await sendResponse(response, { id: userId });
 });
 
 function hasAccessToWriteMessages (userId, usersIds) {

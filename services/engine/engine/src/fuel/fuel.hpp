@@ -92,7 +92,7 @@ public:
 
 private:
     void delete_partial_matches(std::string& search_text, std::vector<piece>& collected_pieces) const {
-        char text[strlen(search_text.data()];
+        char text[strlen(search_text.data())];
         
         size_t size = search_text.size();
         search_text.copy(text, size, 0);

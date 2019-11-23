@@ -30,7 +30,7 @@ export class UserPage extends React.Component {
         })
             .then(response => {
                 response.json().then(json => {
-                    this.setState({ user: { ...json.data } });
+                    this.setState({ user: { ...json.data, id: this.state.id } });
                     if (json.success) {
                         this.setState({ userState: states.found });
                     }

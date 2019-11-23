@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import static java.lang.Long.min;
 
 public class GraphGenerator {
-    public static TreeDecomposition generate(Random random, int n, int w, long bound, double makeEdge) throws FileNotFoundException {
+    public static TreeDecomposition generate(Random random, int n, int w, long bound, double makeEdge, boolean _generateVC) throws FileNotFoundException {
         TreeDecomposition decomposition = TreeDecomposition.generate(random, n, w);
         //System.err.println("Built.");
         List<Set<Integer>> g = new ArrayList<>();
@@ -29,8 +29,8 @@ public class GraphGenerator {
         Consumer<TreeDecomposition.Node> addEdges = (TreeDecomposition.Node node) -> {
             Set<Integer> cur = node.getVertices();
             sz[0] += 1;
-            for (int v: cur) {
-                for (int u: cur) {
+            for (int v : cur) {
+                for (int u : cur) {
                     if (v != u) {
                         if (random.nextDouble() < makeEdge) {
                             g.get(v).add(u);
@@ -58,7 +58,7 @@ public class GraphGenerator {
 
         for (int i = 0; i < g.size(); i++) {
             //System.err.println(String.format("Edges of %d:", i));
-            for (int u: g.get(i)) {
+            for (int u : g.get(i)) {
                 e++;
                 //System.err.println(String.format("%d ", u));
             }
@@ -76,7 +76,7 @@ public class GraphGenerator {
 
         writer.println("graph G {");
 
-        for (Graph.Edge edge: edges) {
+        for (Graph.Edge edge : edges) {
             writer.println(String.format("%d -- %d;", edge.getV(), edge.getU()));
         }
 
@@ -98,32 +98,39 @@ public class GraphGenerator {
 
         //System.err.flush();
 
-        long ans = decomposition.maxIS();
+        if (_generateVC) {
+            long ans = decomposition.maxIS();
 
-        graph.setLimit(Arrays.stream(weight).sum() - ans);
+            Set<Integer> isInIso = decomposition.getMaxIS();
+            Set<Integer> vc = IntStream.range(0, graph.getN()).boxed().collect(Collectors.toSet());
+            vc.removeAll(isInIso);
+            //System.err.println(vc.stream().map(Objects::toString).collect(Collectors.joining(" ")).length());
 
-        //Set<Integer> is = decomposition.getMaxIS();
+            graph.setLimit(Arrays.stream(weight).sum() - ans);
 
-        /*System.err.println(String.format("Weights: %s.", Arrays.stream(weight).boxed()
-            .map(Object::toString).collect(Collectors.joining(" "))));*/
-        //System.err.println(String.format("Ans: %d.", ans));
-        /*System.err.println(String.format("IS: %s.", is.stream()
-            .map(Object::toString).collect(Collectors.joining(" "))));*/
+            //Set<Integer> is = decomposition.getMaxIS();
 
-        if (n <= 20) {
-            long best = (long)1e9;
-            for (int mask = 0; mask < (1 << n); mask++) {
-                if (isIS(mask, edges)) {
-                    long cur = 0;
-                    for (int i = 0; i < n; i++) {
-                        if ((mask & (1 << i)) != 0)
-                            cur += weight[i];
+            /*System.err.println(String.format("Weights: %s.", Arrays.stream(weight).boxed()
+                .map(Object::toString).collect(Collectors.joining(" "))));*/
+            //System.err.println(String.format("Ans: %d.", ans));
+            /*System.err.println(String.format("IS: %s.", is.stream()
+                .map(Object::toString).collect(Collectors.joining(" "))));*/
+
+            if (n <= 20) {
+                long best = (long) 1e9;
+                for (int mask = 0; mask < (1 << n); mask++) {
+                    if (isIS(mask, edges)) {
+                        long cur = 0;
+                        for (int i = 0; i < n; i++) {
+                            if ((mask & (1 << i)) != 0)
+                                cur += weight[i];
+                        }
+                        best = min(best, cur);
                     }
-                    best = min(best, cur);
                 }
-            }
 
-            assert(best == ans);
+                assert (best == ans);
+            }
         }
 
         //System.err.flush();
@@ -171,6 +178,7 @@ public class GraphGenerator {
         Option id = new Option("id", "id", true,"id");
         Option rid = new Option("rid", "rid", true, "request id");
         Option flag = new Option("f", true, "flag");
+        Option generateVC = new Option("v", true, "gen");
 
         mode.setRequired(true);
 
@@ -184,19 +192,21 @@ public class GraphGenerator {
         options.addOption(flag);
         options.addOption(rid);
         options.addOption(permSeed);
+        options.addOption(generateVC);
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
 
         String type = cmd.getOptionValue("m");
 
-        int _n = Integer.parseInt(cmd.getOptionValue("n", "150").trim());
+        int _n = Integer.parseInt(cmd.getOptionValue("n", "1200").trim());
         int _w = Integer.parseInt(cmd.getOptionValue("w", "5").trim());
         int _bound = Integer.parseInt(cmd.getOptionValue("b", "300").trim());
         double _p = Double.parseDouble(cmd.getOptionValue("p", "0.5").trim());
         long _seed = Long.parseLong(cmd.getOptionValue("s", String.valueOf(System.nanoTime())).trim());
+        boolean _generateVC = Boolean.parseBoolean(cmd.getOptionValue("v", "true"));
         Random random = new Random(_seed);
-        TreeDecomposition decomposition = generate(random, _n, _w, _bound, _p);
+        TreeDecomposition decomposition = generate(random, _n, _w, _bound, _p, _generateVC);
         Graph g = decomposition.getG();
 
         PatrolRequest patrolRequest;
@@ -211,14 +221,17 @@ public class GraphGenerator {
                 g.setId(cmd.getOptionValue("id"));
                 g.setDescription(cmd.getOptionValue("f"));
                 patrolRequest = PatrolRequest.put(_rid, g);
-                System.err.println(g.getId() + " " + _seed);
-                break;
-            case "default_vc":
                 Set<Integer> isInIso = decomposition.getMaxIS();
                 Set<Integer> vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
                 vc.removeAll(isInIso);
-                patrolRequest = PatrolRequest.vc(_rid, vc.stream().mapToInt(Integer::intValue).toArray());
-                System.err.println(vc.stream().map(Objects::toString).collect(Collectors.joining(" ")));
+                System.err.println(g.getId() + " " + _seed +
+                    " [" + vc.stream().map(Objects::toString).collect(Collectors.joining(",")) + "]" + " " + g.getLimit());
+                break;
+            case "default_vc":
+                //isInIso = decomposition.getMaxIS();
+                //vc = IntStream.range(0, g.getN()).boxed().collect(Collectors.toSet());
+                //vc.removeAll(isInIso);
+                patrolRequest = PatrolRequest.defaultVC(_rid, g, cmd.getOptionValue("id"));
                 break;
             case "perm":
                 //System.err.println("perm built");

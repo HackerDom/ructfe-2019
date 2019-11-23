@@ -9,6 +9,5 @@ services:
       - ./patrol.properties:/app/patrol.properties
     restart: always
     # memory limit
-    mem_limit: 1G
+    mem_limit: 2G
     memswap_limit: 1G
-    pids_limit: 256
