@@ -21,7 +21,7 @@ class Api:
     def __init__(self, hostname: str):
         self.url = f'http://{hostname}:{PORT}'
         self.session = aiohttp.ClientSession(
-                                timeout=ClientTimeout(total=10), 
+                                timeout=ClientTimeout(total=120), 
                                 headers={"User-Agent": get_agent()}, 
                                 cookie_jar=aiohttp.CookieJar(unsafe=True))
         
