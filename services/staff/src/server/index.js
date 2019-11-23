@@ -538,6 +538,11 @@ app.post('/searchUser', async function (request, response) {
     await sendResponse(response, userInfo);
 });
 
+app.get('/selfId', checkAuthentication, async function (request, response) {
+    const userId = await request.user.id;
+    await sendResponse(response, { id: userId });
+});
+
 function hasAccessToWriteMessages (userId, usersIds) {
     return usersIds.some(x => String(x) === String(userId));
 }

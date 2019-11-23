@@ -21,12 +21,22 @@ export class UserCard extends React.Component {
         edit.lastName = props.user.lastName;
         edit.biography = props.user.biography;
         super(props);
-        this.state = { ...props.user, cardState: cardState.static };
+        this.state = { ...props.user, cardState: cardState.static, id_2: '' };
+    }
+
+    componentDidMount () {
+        fetch('/selfId', {
+            method: 'Get',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(r => r.json().then(x => {
+            this.setState({ id_2: x.data ? x.data.id : null });
+        }));
     }
 
     onEditClick = () => {
         if (this.state.cardState === cardState.editing) {
-            console.log(this.state);
             edit.edit().then(() => { this.setState({ cardState: cardState.static }); });
         }
         if (this.state.cardState === cardState.static) {
@@ -97,18 +107,21 @@ export class UserCard extends React.Component {
                         </Switch>
                     </Row>
                 </MarginBox>
-                <MarginBox style={{ width: '400px', height: '30px' }}>
-                    <div style={{ display: 'flex', width: '100%', flexDirection: 'row-reverse' }}>
-                        <Switch by={this.state.cardState}>
-                            <Case value={cardState.static}>
-                                <Button text='Edit' onClick={this.onEditClick}/>
-                            </Case>
-                            <Case value={cardState.editing}>
-                                <Button text='Save' onClick={this.onEditClick}/>
-                            </Case>
-                        </Switch>
-                    </div>
-                </MarginBox>
+                {this.state.id_2 === this.state.id
+                    ? <MarginBox style={{ width: '400px', height: '30px' }}>
+                        <div style={{ display: 'flex', width: '100%', flexDirection: 'row-reverse' }}>
+                            <Switch by={this.state.cardState}>
+                                <Case value={cardState.static}>
+
+                                    <Button text='Edit' onClick={this.onEditClick}/>
+                                </Case>
+                                <Case value={cardState.editing}>
+                                    <Button text='Save' onClick={this.onEditClick}/>
+                                </Case>
+                            </Switch>
+                        </div>
+                    </MarginBox>
+                    : null}
             </BorderBox>);
     }
 }
