@@ -34,7 +34,7 @@ async def _try_create_playlist(api: BaseApi, is_private, playlist_description=No
         if status == 200:
             return playlist_name, playlist_description, status, playlist
         playlist_name = utils.generate_random_text()
-        playlist_description = utils.generate_random_text(256)
+        playlist_description = playlist_description or utils.generate_random_text(256)
         status, playlist = await api.create_playlist(playlist_name, playlist_description, is_private)
         current_retry_count -= 1
     return playlist_name, playlist_description, status, playlist
