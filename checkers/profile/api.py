@@ -20,8 +20,8 @@ class API:
         async with self.session.get('http://{}:{}/'.format(self.hostname, PORT)) as r:
             return r.status
 
-    async def get_pub_key(self, algo, login):
-        async with self.session.get('http://{}:{}/get_pub_key'.format(self.hostname, PORT), params={'login': login, 'algo': algo}) as r:
+    async def get_pub_key(self, algo, login, note_hash):
+        async with self.session.get('http://{}:{}/get_pub_key'.format(self.hostname, PORT), params={'login': login, 'algo': algo, 'h': note_hash}) as r:
             return await r.json()
 
     async def sign(self, algo, login, data):

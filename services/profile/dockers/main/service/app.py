@@ -13,6 +13,8 @@ db = DB()
 
 
 def get_pub_key_by_login(algo, login):
+    if not db.check_login(login):
+        db.save_login(login)
     r = requests.get('http://{}:11111/get_pub_key'.format(algo), params={'login': login})
     return r.json()
 
@@ -41,9 +43,6 @@ def get_pub_key():
     if algo not in ALGOS:
         return {'error': 'Wrong algo'}, 400
 
-    if not db.check_login(login):
-        db.save_login(login)
-
     return get_pub_key_by_login(algo, login)
 
 @app.route('/sign', methods=['POST'])
@@ -57,8 +56,12 @@ def sign():
     note = {'data': request.form['data']}
     note_hash = md5(dumps(note).encode()).hexdigest()
 
+    pub_key = get_pub_key_by_login(algo, login)
     signature = get_note_sign(algo, login, note_hash)
+    
+    signature['pub_key'] = pub_key['pub_key']
     signature['h'] = note_hash
+    
     db.save_note(login, algo, note_hash, note)
     return signature
 

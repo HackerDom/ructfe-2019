@@ -64,14 +64,11 @@ $(document).ready(function(){
     var login = $("#login").val();
     var algo = $("#algo option:selected").text();
     var context = $("#data").val();
-    $.get("/get_pub_key", {"login": login, "algo": algo})
-    .done(function(data) {
-      $("#pub_key").text(data.pub_key);
-    });
     $.post("/sign", {"login":login, "algo": algo, "data": context})
     .done(function(data) {
       $("#hash").text(data.h);
       $("#signature").text(data.s);
+      $("#pub_key").text(data.pub_key);
     });
   });
 });
