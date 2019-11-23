@@ -9,6 +9,6 @@ def check_exception(func):
         try:
             result = await func(request, *args, **kwargs)
         except Exception as e:
-            return Verdict.DOWN(str(e), traceback.format_exc())
+            return Verdict.DOWN("Can't connect to service", traceback.format_exc())
         return result
     return inner
