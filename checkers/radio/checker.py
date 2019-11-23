@@ -7,7 +7,6 @@ from decorators import check_exception
 checker = Checker()
 
 RETRY_CREATE_USER_COUNT = 10
-RETRY_PLAYLIST_CREATE_COUNT = 10
 
 # sometimes generator, generate to weak password and we must retry
 async def _try_create_user(api: BaseApi):
@@ -25,35 +24,23 @@ async def _try_create_user(api: BaseApi):
     return username, password, status, user
 
 
-async def _try_create_playlist(api: BaseApi, is_private, playlist_description=None):
-    current_retry_count = RETRY_PLAYLIST_CREATE_COUNT
-    playlist_name = utils.generate_random_text()
-    playlist_description = playlist_description or utils.generate_random_text(256)
-    status, playlist = await api.create_playlist(playlist_name, playlist_description, is_private)
-    while current_retry_count > 0:
-        if status == 200:
-            return playlist_name, playlist_description, status, playlist
-        playlist_name = utils.generate_random_text()
-        playlist_description = playlist_description or utils.generate_random_text(256)
-        status, playlist = await api.create_playlist(playlist_name, playlist_description, is_private)
-        current_retry_count -= 1
-    return playlist_name, playlist_description, status, playlist
-
-
 async def _check_api(api: BaseApi):
-    playlist_name, playlist_description, status, playlist_private = await _try_create_playlist(api, False)
+    playlist_name = utils.generate_random_text()
+    playlist_description = utils.generate_random_text(256)
+    status, playlist_private = await api.create_playlist(playlist_name, playlist_description, False)
     if status != 200:
         return Verdict.MUMBLE(f"Can't create playlist", f"Wrong status code [create.playlist], "
-            f"expect = 200, real = {status}, response={playlist_private}, playlist_name={playlist_name}, "
-            f"playlist_description={playlist_description}")
+            f"expect = 200, real = {status}."
+            f"Params: playlist_name={playlist_name}, playlist_description={playlist_description}, private=false")
     if playlist_private["private"]:
         return Verdict.MUMBLE("Private playlist is corrupt", "Wrong field in playlist")
 
-    playlist_name, playlist_description, status, playlist_public = await _try_create_playlist(api, True)
+    playlist_name = utils.generate_random_text()
+    playlist_description = utils.generate_random_text(256)
+    status, playlist_public = await api.create_playlist(playlist_name, playlist_description, True)
     if status != 200:
-        return Verdict.MUMBLE(f"Can't create playlist", f"Wrong status code [create.playlist], "
-            f"expect = 200, real = {status}, response={playlist_public}, playlist_name={playlist_name}, "
-            f"playlist_description={playlist_description}")
+        return Verdict.MUMBLE("Can't create playlist", f"Wrong status code [playlist.create], "
+                                                       f"expect = 200, real = {status}")
     if not playlist_public["private"]:
         return Verdict.MUMBLE("Public playlist is corrupt", "Wrong field in playlist")
 
@@ -112,11 +99,12 @@ async def _check_frontend_api(request: CheckRequest) -> Verdict:
         api_verdict = await _check_api(api)
         if api_verdict != Verdict.OK():
             return api_verdict
-        playlist_name, playlist_description, status, playlist_public = await _try_create_playlist(api, True)
+        playlist_name = utils.generate_random_text()
+        playlist_description = utils.generate_random_text(256)
+        status, playlist_public = await api.create_playlist(playlist_name, playlist_description, True)
         if status != 200:
-            return Verdict.MUMBLE(f"Can't create playlist", f"Wrong status code [create.playlist], "
-                f"expect = 200, real = {status}, response={playlist_public}, playlist_name={playlist_name}, "
-                f"playlist_description={playlist_description}")
+            return Verdict.MUMBLE("Can't create playlist", f"Wrong status code [playlist.create], "
+                                                           f"expect = 200, real = {status}")
         status, _ = await api.get_shared_playlist(playlist_public, user)
         if status != 200:
             return Verdict.MUMBLE("Can't get public playlist by hash", f"Wrong status code [playlist.get_by_hash], "
@@ -173,14 +161,12 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
         if status != 200:
             return Verdict.MUMBLE(f"Can't login user", f"Wrong status code [user.login],"
                                                        f"expect = 200, real = {status}")
+        playlist_name = utils.generate_random_text(length=256)
         playlist_description = request.flag
-        playlist_name, playlist_description, status, playlist = await _try_create_playlist(
-            api, True, playlist_description
-        )
+        status, playlist = await api.create_playlist(playlist_name, playlist_description, True)
         if status != 200:
-            return Verdict.MUMBLE(f"Can't create playlist", f"Wrong status code [create.playlist], "
-                f"expect = 200, real = {status}, response={playlist}, playlist_name={playlist_name}, "
-                f"playlist_description={playlist_description}")
+            return Verdict.MUMBLE("Can't create playlist", f"Wrong status code [playlist.create], "
+                                                           f"expect = 200, real = {status}")
     playlist_id = playlist["ID"]
     return Verdict.OK(f'{playlist_id}:{username}:{password}')
 
