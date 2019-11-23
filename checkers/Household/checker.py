@@ -31,7 +31,7 @@ async def check_service(request: CheckRequest) -> Verdict:
         
         res = await api.login(creds[0], creds[1])
         if res != 'success':
-            Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
+            return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
         
         status, product = await api.add_product(get_product_name(), grs(12))
         if status != 201:
@@ -86,16 +86,16 @@ async def check_service(request: CheckRequest) -> Verdict:
         
         res = await api.login(creds[0], creds[1])
         if res != 'success':
-            Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
+            return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
         
         status, order = await api.create_order(menu_for_customer['id'], sample(menu_for_customer['dishIds'], k=1))
         
         if status != 201:
-            Verdict.MUMBLE("Can't create order", f"Expected status 201, but return {status} with content {order}")
+            return Verdict.MUMBLE("Can't create order", f"Expected status 201, but return {status} with content {order}")
 
         status, r_order = await api.get_order_by_id(order['id'])
         if status != 200 or r_order != order:
-            Verdict.MUMBLE("Can't get order", f"Expected status 200 with {order}, but return {status} with content {r_order}")
+            return Verdict.MUMBLE("Can't get order", f"Expected status 200 with {order}, but return {status} with content {r_order}")
             
     return Verdict.OK()
 
@@ -110,7 +110,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
         
         res = await api.login(creds[0], creds[1])
         if res != 'success':
-            Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
+            return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
         
         status, product = await api.add_product(get_product_name(), request.flag)
         if status != 201:
@@ -126,7 +126,7 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
     async with Api(request.hostname) as api:        
         res = await api.login(login, password)
         if len(res)!= 2 or res[0] != 'success':
-            Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success' and '<token>', but return {res}")
+            return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success' and '<token>', but return {res}")
         
         status, r_product = await api.get_product_by_id(product_id)
         if status != 200:
@@ -147,7 +147,7 @@ async def put_sflag_into_the_service(request: PutRequest) -> Verdict:
         
         res = await api.login(creds[0], creds[1])
         if res != 'success':
-            Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
+            return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success', but return {res}")
         
         
         status, products_list = await api.add_product_via_xml([{'name':get_product_name(), 'manufacturer':grs(15)} for _ in range(randint(2,5))])
@@ -169,7 +169,7 @@ async def get_sflag_from_the_service(request: GetRequest) -> Verdict:
     async with Api(request.hostname) as api:        
         res = await api.login(login, password)
         if len(res)!= 2 or res[0] != 'success':
-            Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success' and '<token>', but return {res}")
+            return Verdict.MUMBLE("Can't log in", f"Log in is incorrect.\n Expected 'success' and '<token>', but return {res}")
         
         status, dish = await api.get_dish_by_id(dish_id)
         if status != 200:

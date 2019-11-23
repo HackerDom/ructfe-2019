@@ -14,10 +14,10 @@
   roles:
     - base_image
     - bay_cloud_config
-    - { role: service, service_name: locator }
-    - { role: service, service_name: patrol }
-    - { role: service, service_name: radio }
-    - { role: service, service_name: staff }
-    - { role: service, service_name: profile }
     - { role: service, service_name: engine }
     - { role: service, service_name: Household }
+    - { role: service, service_name: profile }
+    - { role: service, service_name: patrol }
+    - { role: service, service_name: radio }
+    - { role: service, service_name: locator }
+    - { role: service, service_name: staff }
