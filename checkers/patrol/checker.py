@@ -59,7 +59,7 @@ async def put_flag_into_the_service(request: PutRequest) -> Verdict:
 
 
 async def get_graph_and_vc(id, seed, rid):
-    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=default_vc --id={id} -s={seed} --rid={rid}'
+    cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=default_vc -v=false --id={id} -s={seed} --rid={rid}'
     _json, _ = await get_out(cmd)
 
     request = json.loads(_json)
@@ -116,7 +116,8 @@ def create_perm(perm, reqId):
 
 @checker.define_get(vuln_num=1)
 async def get_flag_from_the_service(request: GetRequest) -> Verdict:
-    id, seed = request.flag_id.split()
+    id, seed, _vc, lim = request.flag_id.split()
+    vc = json.loads(_vc)
 
     rid = str(uuid.uuid4())
 
@@ -137,6 +138,8 @@ async def get_flag_from_the_service(request: GetRequest) -> Verdict:
         return Verdict.MUMBLE("Bad json", "'graph' not in answer")
 
     req = await get_graph_and_vc(id, seed, rid)
+    req['vc'] = vc
+    req['graph']['limit'] = lim
 
     for _ in range(30):
         iso_req, perm = create_iso(req, req['reqId'])
@@ -193,6 +196,7 @@ async def get_out(cmd):
 
     if p.returncode:
         print(cmd, file=sys.stderr)
+        print(stderr, file=sys.stderr)
         return -1
 
     return stdout.decode('utf-8').strip(), stderr.decode('utf-8').strip()
