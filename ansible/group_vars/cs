@@ -32,8 +32,8 @@ cs_ctf_name: RuCTFE 2019
 cs_flags_secret: geis3aiHee9d
 cs_round_length: 60
 cs_flag_life_time: 15
-cs_time: "['2019-11-15 10:00:00', '2019-11-30 17:00:00']"
-# cs_time: "['2019-11-23 11:00:00', '2019-11-23 18:59:50']"
+# cs_time: "['2019-11-15 10:00:00', '2019-11-30 17:00:00']"
+cs_time: "['2019-11-23 11:00:00', '2019-11-23 18:59:50']"
 
 cs_static_path: '/home/cs/ctf-scoreboard-client/scoreboard/build'
 
