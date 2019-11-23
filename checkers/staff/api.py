@@ -10,7 +10,6 @@ class Api:
         self.service_url = service_url
         jar = aiohttp.CookieJar(unsafe=True)
         self.session = aiohttp.ClientSession(
-            timeout=ClientTimeout(total=10),
             headers={"User-Agent": get_agent()},
             cookie_jar=jar
         )

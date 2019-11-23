@@ -87,6 +87,9 @@ def get(request: GetRequest) -> Verdict:
     except json.decoder.JSONDecodeError as e:
         traceback.print_exc()
         return Verdict.MUMBLE("Invalid JSON", str(e))
+    except UnicodeDecodeError as e:
+        traceback.print_exc()
+        return Verdict.MUMBLE("Unicode error", str(e))
 
 
 if __name__ == '__main__':
