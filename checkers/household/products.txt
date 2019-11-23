@@ -1,0 +1,663 @@
+717.0_0.85_81.11_0.06_Butter
+876.0_0.28_99.48_0.0_Butter oil
+353.0_21.4_28.74_2.34_Cheese
+290.0_16.41_21.23_8.73_Cheese spread
+123.0_3.13_10.39_4.73_Cream
+88.0_4.55_4.19_8.05_Eggnog
+178.0_3.25_16.57_4.68_Sour dressing
+63.0_3.33_3.46_4.74_Milk
+136.0_1.0_9.97_11.38_Cream substitute
+577.0_4.9_39.92_52.54_Dessert topping
+208.0_2.4_19.52_6.63_Sour cream
+61.0_1.75_3.41_6.16_Milk substitutes
+119.0_3.05_2.7_21.15_Milk shakes
+24.0_0.76_0.09_5.12_Whey
+61.0_3.47_3.25_4.66_Yogurt
+143.0_12.56_9.51_0.72_Egg
+444.0_55.5_13.0_21.8_Egg substitute
+248.0_11.47_12.22_23.67_Cheese substitute
+197.0_10.33_14.92_5.48_Cheese sauce
+370.0_40.0_5.0_40.0_Parmesan cheese topping
+555.0_35.6_34.5_23.97_Egg Mix
+240.0_17.6_14.1_10.6_Cheese product
+411.0_45.71_17.14_18.5_Protein supplement
+315.0_6.84_7.35_55.35_Dulce de Leche
+222.0_4.1_13.0_22.2_Ice cream
+237.0_4.29_8.57_37.14_Ice cream sandwich
+240.0_3.7_7.4_39.6_Ice cream cookie sandwich
+354.0_5.21_21.88_34.38_Ice cream cone
+129.0_4.41_0.0_27.94_Fat free ice cream
+147.0_4.41_1.47_33.09_Milk dessert bar
+88.0_4.4_3.08_11.88_Nutritional supplement for people with diabetes
+358.0_2.11_25.26_37.12_Ice cream bar
+41.0_3.79_0.93_4.48_Kefir
+254.0_3.0_14.0_28.89_Ice cream sundae cone
+165.0_1.54_3.08_32.75_Light ice cream
+263.0_6.09_8.69_72.12_Spices
+23.0_3.15_0.64_2.65_Basil
+43.0_3.46_1.12_7.02_Dill weed
+60.0_3.74_3.34_5.83_Mustard
+0.0_0.0_0.0_0.0_Salt
+21.0_0.0_0.0_0.93_Vinegar
+101.0_5.56_1.68_24.45_Thyme
+288.0_0.06_0.06_12.65_Vanilla extract
+23.0_2.36_0.86_4.89_Capers
+48.0_1.18_0.69_11.29_Horseradish
+131.0_3.31_5.86_20.7_Rosemary
+70.0_3.75_0.94_14.89_Peppermint
+44.0_3.29_0.73_8.41_Spearmint
+0.0_0.0_0.0_0.0_Seasoning mix
+902.0_0.0_100.0_0.0_Fat
+902.0_0.0_100.0_0.0_Lard
+355.0_0.69_26.18_31.9_Salad dressing
+389.0_0.9_34.0_22.4_Sandwich spread
+884.0_0.0_100.0_0.0_Shortening
+884.0_0.0_100.0_0.0_Oil
+862.0_0.0_100.0_0.0_Vegetable oil
+884.0_0.0_100.0_0.0_Shortening bread
+727.0_0.31_80.32_0.77_Margarine-like
+902.0_0.0_100.0_0.0_Fish oil
+889.0_0.0_98.59_0.0_Meat drippings (lard
+897.0_0.0_99.5_0.0_Animal fat
+714.0_1.9_80.2_0.0_Margarine
+357.0_0.0_38.71_5.71_Margarine-like spread
+333.0_1.53_34.18_9.39_Salad Dressing
+169.0_1.07_1.47_38.43_Dressing
+361.0_0.37_40.0_0.0_Mayonnaise
+144.0_28.04_3.57_0.0_Chicken
+133.0_24.31_4.02_0.0_Canada Goose
+404.0_11.49_39.34_0.0_Duck
+371.0_15.86_33.62_0.0_Goose
+124.0_18.18_5.09_0.07_Turkey
+125.0_16.51_6.04_0.0_Turkey from whole
+462.0_11.4_43.84_4.67_Pate de foie gras
+67.0_5.88_2.63_4.61_Turkey and gravy
+126.0_22.16_3.46_0.0_Turkey breast
+157.0_18.8_8.54_0.0_Turkey thigh
+120.0_17.6_2.2_6.4_Turkey roast
+279.0_14.2_16.9_17.0_Turkey sticks
+272.0_11.39_24.73_0.0_Poultry
+148.0_19.66_7.66_0.0_Ground turkey
+292.0_14.33_20.04_13.61_Chicken patty
+112.0_25.94_0.88_0.0_Ruffed Grouse
+230.0_15.27_17.2_2.59_Sausage
+379.0_14.6_34.5_1.29_Blood sausage
+301.0_14.03_25.87_2.95_Bockwurst
+299.0_10.91_26.13_4.29_Bologna
+333.0_13.72_29.18_2.85_Bratwurst
+323.0_14.3_27.8_2.98_Brotwurst
+328.0_14.1_29.0_1.51_Cheesefurter
+158.0_18.01_17.56_4.05_Chicken spread
+455.0_24.1_38.27_1.86_Chorizo
+153.0_22.9_6.1_0.0_Corned beef loaf
+273.0_12.0_22.91_3.93_Dutch brand loaf
+316.0_11.16_28.3_3.36_Frankfurter
+239.0_16.06_18.83_0.26_Ham
+157.0_13.83_10.9_0.0_Headcheese
+307.0_11.1_27.7_3.2_Knackwurst
+172.0_19.03_10.44_0.44_Lebanon bologna
+304.0_15.2_25.6_2.1_Liver cheese
+326.0_14.1_28.5_2.2_Liver sausage
+115.0_18.62_3.69_0.64_Roast beef
+334.0_12.5_30.3_2.1_Luncheon meat
+311.0_16.37_25.39_3.05_Mortadella
+235.0_11.8_16.5_9.2_Olive loaf
+139.0_16.3_6.21_3.34_Pastrami
+201.0_13.45_13.1_6.55_Pate
+149.0_17.3_6.37_4.53_Peppered loaf
+504.0_19.25_46.28_1.18_Pepperoni
+225.0_11.23_15.95_8.46_Pickle and pimiento loaf
+326.0_14.1_28.72_1.63_Polish sausage
+141.0_18.4_4.8_4.9_Luxury loaf
+288.0_15.39_24.8_0.93_Pork sausage
+396.0_13.8_36.25_2.7_Pork and beef sausage
+204.0_17.0_10.3_10.92_Turkey sausage
+200.0_11.64_13.52_7.41_Poultry salad sandwich spread
+261.0_12.6_22.2_1.9_Salami
+309.0_11.98_28.23_0.94_Smoked link sausage
+362.0_17.45_30.43_3.33_Thuringer
+182.0_18.58_10.5_2.18_Honey roll sausage
+260.0_15.38_20.9_1.58_Luncheon sausage
+161.0_17.27_7.58_4.83_New england brand sausage
+226.0_15.94_16.93_1.89_Turkey bacon
+305.0_12.38_25.45_5.89_Liverwurst spread
+223.0_15.27_16.28_3.73_Roast beef spread
+307.0_12.69_27.37_1.6_Swisswurst
+517.0_29.1_44.2_0.8_Bacon and beef sticks
+268.0_14.8_22.6_1.4_Yachtwurst
+276.0_14.0_22.53_4.27_Beerwurst
+80.0_16.8_0.39_2.25_Chicken breast
+226.0_13.1_17.6_3.9_Kielbasa
+134.0_14.59_7.65_1.79_Oven-roasted chicken breast roll
+228.0_11.76_14.96_11.63_Macaroni and cheese loaf
+213.0_8.06_13.87_14.06_Scrapple
+405.0_15.5_37.57_0.03_Beef sausage
+342.0_12.05_30.64_3.63_Pork and turkey sausage
+286.0_14.4_22.21_8.06_Meatballs
+253.0_13.33_20.0_4.8_Bacon
+32.0_0.4_0.3_7.69_Acerola
+23.0_0.4_0.3_4.8_Acerola juice
+52.0_0.26_0.17_13.81_Apples
+46.0_0.1_0.13_11.3_Apple juice
+42.0_0.17_0.1_11.27_Applesauce
+48.0_1.4_0.39_11.12_Apricots
+56.0_0.37_0.09_14.39_Apricot nectar
+160.0_2.0_14.66_8.53_Avocados
+89.0_1.09_0.33_22.84_Bananas
+43.0_1.39_0.49_9.61_Blackberries
+38.0_0.3_0.6_7.8_Blackberry juice
+333.0_1.25_0.73_80.45_Cherries
+57.0_0.74_0.33_14.49_Blueberries
+88.0_0.99_0.12_22.31_Boysenberries
+103.0_1.07_0.23_27.12_Breadfruit
+31.0_1.04_0.33_6.73_Carambola
+62.0_0.5_1.3_13.63_Carissa
+75.0_1.57_0.68_17.71_Cherimoya
+76.0_0.4_0.3_19.95_Crabapples
+46.0_0.46_0.13_11.97_Cranberries
+159.0_0.9_0.15_40.4_Cranberry sauce
+178.0_0.3_0.1_46.2_Cranberry-orange relish
+63.0_1.4_0.41_15.38_Currants
+101.0_1.7_0.6_25.2_Custard-apple
+282.0_2.45_0.39_75.03_Dates
+73.0_0.66_0.5_18.4_Elderberries
+74.0_0.75_0.3_19.18_Figs
+32.0_0.42_0.05_8.51_Fruit cocktail
+30.0_0.35_0.07_7.87_Fruit salad
+44.0_0.88_0.58_10.18_Gooseberries
+349.0_14.26_0.39_77.06_Goji berries
+32.0_0.63_0.1_8.08_Grapefruit
+34.0_0.58_0.1_7.93_Grapefruit juice
+57.0_0.81_0.47_13.93_Grapes
+60.0_0.37_0.13_14.77_Grape juice
+53.0_1.9_0.7_11.2_Groundcherries
+68.0_2.55_0.95_14.32_Guavas
+36.0_0.32_0.14_9.48_Guava sauce
+95.0_1.72_0.64_23.25_Jackfruit
+60.0_0.72_0.23_15.56_Java-plum
+79.0_1.2_0.2_20.23_Jujube
+61.0_1.14_0.52_14.66_Kiwifruit
+71.0_1.88_0.86_15.9_Kumquats
+29.0_1.1_0.3_9.32_Lemons
+22.0_0.35_0.24_6.9_Lemon juice
+17.0_0.45_0.07_5.62_Lemon juice from concentrate
+47.0_1.5_0.3_16.0_Lemon peel
+30.0_0.7_0.2_10.54_Limes
+25.0_0.42_0.07_8.42_Lime juice
+66.0_0.83_0.44_16.53_Litchis
+55.0_1.52_0.31_13.02_Loganberries
+60.0_1.31_0.1_15.14_Longans
+47.0_0.43_0.2_12.14_Loquats
+51.0_0.5_0.5_12.5_Mammy-apple
+60.0_0.82_0.38_14.98_Mangos
+73.0_0.41_0.58_17.91_Mangosteen
+319.0_2.45_1.18_78.58_Mango
+34.0_0.84_0.19_8.16_Melons
+33.0_0.84_0.25_7.94_Melon balls
+43.0_1.44_0.39_9.8_Mulberries
+44.0_1.06_0.32_10.55_Nectarines
+28.0_0.38_0.22_6.84_Oheloberries
+115.0_0.84_10.68_6.26_Olives
+47.0_0.94_0.12_11.75_Oranges
+45.0_0.7_0.2_10.4_Orange juice
+97.0_1.5_0.2_25.0_Orange peel
+43.0_0.6_0.1_10.28_Orange-grapefruit juice
+53.0_0.81_0.31_13.34_Tangerines
+43.0_0.5_0.2_10.1_Tangerine juice
+43.0_0.47_0.26_10.82_Papayas
+206.0_0.14_0.55_55.83_Papaya
+57.0_0.17_0.15_14.51_Papaya nectar
+97.0_2.2_0.7_23.38_Passion-fruit
+51.0_0.39_0.05_13.6_Passion-fruit juice
+39.0_0.91_0.25_9.54_Peaches
+54.0_0.27_0.02_13.92_Peach nectar
+57.0_0.36_0.14_15.23_Pears
+60.0_0.11_0.01_15.76_Pear nectar
+70.0_0.58_0.19_18.59_Persimmons
+50.0_0.54_0.12_13.12_Pineapple
+53.0_0.36_0.12_12.87_Pineapple juice
+33.0_0.8_0.4_7.49_Pitanga
+122.0_1.3_0.37_31.89_Plantains
+46.0_0.7_0.28_11.42_Plums
+83.0_1.67_1.17_18.7_Pomegranates
+41.0_0.73_0.51_9.57_Prickly pears
+105.0_0.87_0.2_27.8_Prunes
+71.0_0.61_0.03_17.45_Prune juice
+38.0_0.76_0.04_9.62_Pummelo
+57.0_0.4_0.1_15.3_Quinces
+302.0_3.39_0.46_79.52_Raisins
+82.0_0.65_0.21_20.87_Rambutan
+52.0_1.2_0.65_11.94_Raspberries
+21.0_0.9_0.2_4.54_Rhubarb
+49.0_0.96_0.64_11.31_Roselle
+25.0_0.6_0.3_5.7_Rose-apples
+83.0_0.44_1.1_19.96_Sapodilla
+124.0_1.45_0.46_32.1_Sapote
+66.0_1.0_0.3_16.84_Soursop
+32.0_0.67_0.3_7.68_Strawberries
+94.0_2.06_0.29_23.64_Sugar-apples
+239.0_2.8_0.6_62.5_Tamarinds
+30.0_0.61_0.15_7.55_Watermelon
+165.0_0.22_0.21_41.97_Maraschino cherries
+61.0_0.71_0.42_15.21_Feijoa
+147.0_1.47_5.33_27.09_Durian
+257.0_2.1_0.2_65.1_Prune puree
+322.0_0.34_0.07_82.74_Candied fruit
+69.0_1.5_0.1_17.6_Abiyuch
+111.0_2.3_2.0_23.9_Rowal
+47.0_0.85_0.15_12.02_Clementines
+59.0_0.11_0.17_14.93_Guanabana nectar
+63.0_0.09_0.06_16.25_Guava nectar
+51.0_0.11_0.06_13.12_Mango nectar
+57.0_0.09_0.12_14.73_Tamarind nectar
+54.0_0.15_0.29_13.13_Pomegranate juice
+50.0_0.16_0.12_12.46_Juice
+95.0_0.56_1.28_22.79_Nance
+45.0_0.27_0.12_10.91_Cranberry juice blend
+48.0_0.5_0.32_11.05_Fruit juice smoothie
+585.0_10.06_60.42_0.32_Pork
+110.0_20.31_2.62_1.34_Canadian bacon
+172.0_20.85_9.84_0.0_Pork loin
+23.0_3.99_0.69_2.1_Alfalfa seeds
+23.0_2.46_0.33_4.02_Amaranth leaves
+99.0_5.33_0.29_20.23_Arrowhead
+47.0_3.27_0.15_10.51_Artichokes
+20.0_2.2_0.12_3.88_Asparagus
+30.0_5.3_0.69_3.29_Balsam-pear (bitter gourd)
+27.0_2.6_0.3_5.2_Bamboo shoots
+29.0_4.2_0.5_4.1_Beans
+113.0_6.84_0.86_20.17_Lima beans
+30.0_3.04_0.18_5.94_Mung beans
+43.0_1.61_0.17_9.56_Beets
+22.0_2.2_0.13_4.33_Beet greens
+72.0_5.6_0.6_11.7_Broadbeans
+34.0_2.82_0.37_6.64_Broccoli
+22.0_3.17_0.49_2.85_Broccoli raab
+43.0_3.38_0.3_8.95_Brussels sprouts
+72.0_1.53_0.15_17.34_Burdock root
+14.0_0.39_0.04_3.61_Butterbur
+25.0_1.28_0.1_5.8_Cabbage
+17.0_0.7_0.1_4.07_Cardoon
+41.0_0.93_0.24_9.58_Carrots
+160.0_1.36_0.28_38.06_Cassava
+25.0_1.92_0.28_4.97_Cauliflower
+42.0_1.5_0.3_9.2_Celeriac
+16.0_0.69_0.17_2.97_Celery
+18.0_0.85_0.3_3.65_Celtuce
+19.0_1.8_0.2_3.74_Chard
+19.0_0.82_0.13_4.51_Chayote
+17.0_0.9_0.1_4.0_Chicory
+23.0_1.7_0.3_4.7_Chicory greens
+72.0_1.4_0.2_17.51_Chicory roots
+30.0_3.27_0.73_4.35_Chives
+24.0_3.36_0.56_3.02_Chrysanthemum
+32.0_3.02_0.61_5.42_Collards
+23.0_2.13_0.52_3.67_Coriander (cilantro) leaves
+86.0_3.27_1.35_18.7_Corn
+75.0_2.33_0.55_18.17_Corn with red and green peppers
+21.0_2.0_0.4_3.6_Cornsalad
+90.0_2.95_0.35_18.83_Cowpeas (blackeyes)
+44.0_3.3_0.3_9.5_Cowpeas
+47.0_2.8_0.4_8.35_Yardlong bean
+32.0_2.6_0.7_5.5_Cress
+15.0_0.65_0.11_3.63_Cucumber
+45.0_2.7_0.7_9.2_Dandelion greens
+25.0_0.98_0.18_5.88_Eggplant
+109.0_11.22_4.73_7.61_Edamame
+17.0_1.25_0.2_3.35_Endive
+19.0_1.15_0.18_3.07_Escarole
+149.0_6.36_0.5_33.06_Garlic
+80.0_1.82_0.75_17.77_Ginger root
+14.0_0.62_0.02_3.39_Gourd
+64.0_9.4_1.4_8.28_Drumstick leaves
+46.0_2.1_0.2_9.19_Hyacinth-beans
+73.0_2.0_0.01_17.44_Jerusalem-artichokes
+25.0_0.48_0.04_6.75_Jew's ear
+298.0_4.82_0.44_81.03_Pepeao
+34.0_4.65_0.25_5.8_Jute
+49.0_4.28_0.93_8.75_Kale
+258.0_8.58_0.56_65.03_Kanpyo
+34.0_2.24_0.49_6.79_Mushrooms
+27.0_1.7_0.1_6.2_Kohlrabi
+43.0_4.2_0.8_7.3_Lambsquarters
+61.0_1.5_0.3_14.15_Leeks
+106.0_8.96_0.55_22.14_Lentils
+13.0_1.35_0.22_2.23_Lettuce
+74.0_2.6_0.1_17.23_Lotus root
+67.0_1.34_0.1_16.3_Mountain yam
+27.0_2.86_0.42_4.67_Mustard greens
+22.0_2.2_0.3_3.9_Mustard spinach
+14.0_1.5_0.2_2.5_New Zealand spinach
+33.0_1.93_0.19_7.45_Okra
+40.0_1.1_0.1_9.34_Onions
+258.0_3.15_14.1_30.53_Onion rings
+36.0_2.97_0.79_6.33_Parsley
+75.0_1.2_0.3_17.99_Parsnips
+42.0_2.8_0.2_7.55_Peas
+38.0_2.17_0.27_8.48_Peas and carrots
+51.0_3.28_0.38_8.57_Peas and onions
+21.0_0.9_0.1_5.1_Peppers
+136.0_7.2_1.64_23.88_Pigeonpeas
+112.0_0.38_0.14_27.23_Poi
+23.0_2.6_0.4_3.7_Pokeberry shoots
+77.0_2.05_0.09_17.49_Potatoes
+178.0_1.93_8.71_24.8_Potato puffs
+357.0_6.9_0.34_83.1_Potato flour
+143.0_2.68_8.2_11.17_Potato salad
+15.0_1.03_0.07_3.28_Pumpkin flowers
+19.0_3.15_0.4_2.33_Pumpkin leaves
+26.0_1.0_0.1_6.5_Pumpkin
+104.0_1.09_0.13_26.39_Pumpkin pie mix
+20.0_2.03_0.36_3.39_Purslane
+16.0_0.68_0.1_3.4_Radishes
+37.0_1.08_0.16_8.62_Rutabagas
+82.0_3.3_0.2_18.6_Salsify
+19.0_0.91_0.14_4.28_Sauerkraut
+26.0_0.54_0.03_6.75_Seaweed
+27.0_1.28_0.04_6.73_Sesbania flower
+147.0_12.95_6.8_11.05_Soybeans
+23.0_2.86_0.39_3.63_Spinach
+19.0_1.01_0.27_3.88_Squash
+99.0_5.03_1.02_19.59_Succotash
+19.0_2.6_0.2_3.14_Swamp cabbage
+20.0_2.08_0.24_3.7_Swamp cabbage (skunk  cabbage)
+42.0_2.49_0.51_8.82_Sweet potato leaves
+86.0_1.57_0.05_20.12_Sweet potato
+112.0_1.5_0.2_26.46_Taro
+42.0_4.98_0.74_6.7_Taro leaves
+11.0_0.92_0.09_2.32_Taro shoots
+23.0_1.2_0.2_5.1_Tomatoes
+17.0_0.85_0.29_3.53_Tomato juice
+82.0_4.32_0.47_18.91_Tomato products
+302.0_12.91_0.44_74.68_Tomato powder
+40.0_0.29_0.07_10.98_Tree fern
+28.0_0.9_0.1_6.43_Turnips
+32.0_1.5_0.3_7.13_Turnip greens
+21.0_2.46_0.19_3.39_Turnip greens and turnips
+22.0_0.93_0.31_3.87_Vegetable juice cocktail
+36.0_1.42_0.25_7.13_Vegetables
+19.0_1.8_0.3_3.4_Vinespinach
+97.0_1.4_0.1_23.94_Waterchestnuts
+11.0_2.3_0.1_1.29_Watercress
+13.0_0.4_0.2_3.0_Waxgourd
+49.0_6.95_0.87_4.31_Winged beans
+74.0_5.85_1.1_14.1_Winged bean leaves
+148.0_11.6_0.9_28.1_Winged bean tuber
+118.0_1.53_0.17_27.88_Yam
+38.0_0.72_0.09_8.82_Yambean (jicama)
+21.0_1.8_0.7_3.06_Borage
+22.0_2.0_0.7_3.2_Dock
+150.0_4.6_1.8_31.68_Eppaw
+37.0_2.1_0.2_8.53_Drumstick pods
+348.0_12.3_0.5_80.7_Shallots
+40.0_0.95_0.15_9.28_Carrot juice
+131.0_4.42_5.04_16.97_Corn pudding
+172.0_7.89_12.95_5.9_Spinach souffle
+268.0_6.08_14.76_27.81_Potato pancakes
+43.0_3.81_2.53_3.6_Radish seeds
+341.0_8.1_1.49_79.57_Carrot
+65.0_4.24_0.2_13.39_Arrowroot
+24.0_3.36_0.56_3.01_Chrysanthemum leaves
+12.0_1.3_0.17_2.13_New zealand spinach
+20.0_2.08_0.24_3.7_Swamp cabbage (skunk cabbage)
+37.0_5.31_0.66_3.21_Winged bean
+101.0_1.04_0.1_27.4_Catsup
+12.0_0.5_0.3_2.41_Pickles
+22.0_3.09_0.34_3.26_Mushroom
+23.0_1.1_0.3_5.1_Pimento
+91.0_1.5_0.46_23.35_Pickle relish
+23.0_1.43_0.25_4.48_Radicchio
+32.0_0.96_1.02_5.84_Tomatillos
+31.0_1.24_0.2_7.3_Fennel
+25.0_2.58_0.66_3.65_Arugula
+28.0_2.52_0.62_4.62_Hearts of palm
+16.0_1.32_0.09_3.33_Nopales
+99.0_1.82_0.49_25.31_Lemon grass (citronella)
+93.0_5.6_2.12_17.31_Grape leaves
+27.0_1.66_0.45_5.35_Pepper
+32.0_0.33_0.52_7.44_Epazote
+103.0_4.71_2.75_19.22_Fireweed
+23.0_2.98_0.78_2.71_Malabar spinach
+284.0_9.25_0.73_73.01_Fungi
+109.0_4.8_0.63_23.54_Wasabi
+98.0_1.46_0.4_23.63_Yautia (tannier)
+34.0_4.55_0.4_5.54_Fiddlehead ferns
+191.0_7.4_5.59_29.24_Seeds
+387.0_6.15_23.86_40.75_Nuts
+117.0_23.07_2.69_0.0_Beef
+43.0_0.46_0.0_3.55_Alcoholic beverage
+38.0_0.42_1.04_6.59_Beverages
+83.0_0.07_0.0_2.6_Alcoholic Beverage
+51.0_0.0_0.0_13.3_Carbonated beverage
+400.0_3.0_15.0_75.0_Cocoa mix
+54.0_0.0_0.1_13.52_Cranberry juice cocktail
+58.0_0.9_0.0_0.27_Alcoholic beverages
+14.0_0.0_0.04_3.59_Lemonade
+52.0_0.0_0.0_13.79_Limeade
+37.0_0.21_0.12_8.05_Malt beverage
+148.0_3.37_6.52_19.59_Shake
+389.0_0.1_0.2_99.1_Strawberry-flavor beverage mix
+0.0_0.0_0.0_0.0_Water
+84.0_0.1_0.1_21.4_Whiskey sour mix
+131.0_20.35_4.84_0.0_Fish
+84.0_18.29_0.6_0.0_Crustaceans
+105.0_17.1_0.76_6.01_Mollusks
+153.0_20.63_7.17_0.0_Salmon
+260.0_3.29_0.12_60.72_Yokan
+103.0_6.12_3.76_13.24_Chili with beans
+344.0_23.9_1.69_60.74_Hyacinth beans
+371.0_36.17_9.74_40.37_Lupins
+343.0_22.94_1.61_61.52_Mothbeans
+351.0_0.16_0.06_86.09_Noodles
+341.0_25.21_1.64_58.99_Mungo beans
+567.0_25.8_49.24_16.13_Peanuts
+589.0_24.06_49.94_21.57_Peanut butter
+327.0_52.2_0.55_34.7_Peanut flour
+90.0_4.98_2.01_13.55_Refried beans
+311.0_41.71_2.97_34.71_Meat extender
+198.0_12.79_6.01_25.37_Miso
+211.0_19.4_11.0_12.68_Natto
+192.0_20.29_10.8_7.64_Tempeh
+434.0_37.81_20.65_31.92_Soy flour
+337.0_49.2_2.39_35.89_Soy meal
+54.0_3.27_1.75_6.28_Soymilk
+328.0_63.63_0.46_25.41_Soy protein concentrate
+335.0_88.32_3.39_0.0_Soy protein isolate
+78.0_9.04_4.17_2.85_Tofu
+76.0_3.52_1.73_12.23_Okara
+347.0_24.33_1.31_61.91_Yardlong beans
+177.0_4.86_8.59_20.12_Hummus
+333.0_13.31_17.8_31.84_Falafel
+177.0_15.7_6.3_14.27_Veggie burgers or soyburgers
+650.0_24.8_54.89_14.23_Peanut spread
+33.0_2.86_1.61_1.74_Soymilk (all flavors)
+608.0_24.47_54.17_17.0_Peanut butter with omega-3
+90.0_8.19_0.31_14.44_Soy sauce
+134.0_21.7_4.63_1.4_Veal
+267.0_16.88_21.59_0.0_Lamb
+114.0_22.38_2.03_0.0_Game meat
+179.0_25.45_8.62_0.0_Bison
+109.0_20.6_2.31_0.0_Goat
+223.0_18.67_15.93_0.0_Game meat 
+264.0_10.56_1.32_52.38_Bagels
+338.0_6.2_11.03_53.87_Biscuits
+326.0_4.3_10.5_54.6_Bread
+395.0_13.35_5.3_71.98_Bread crumbs
+412.0_12.0_9.5_68.4_Bread sticks
+386.0_11.0_3.4_76.2_Bread stuffing
+258.0_5.9_0.8_57.8_Cake
+405.0_4.8_16.3_63.9_Cookies
+558.0_7.4_38.5_45.7_Puff pastry
+489.0_10.93_22.74_59.42_Crackers
+383.0_9.3_1.7_80.9_Cracker meal
+360.0_9.0_25.9_22.8_Cream puff shell
+406.0_8.2_21.0_45.8_Croissants
+407.0_11.9_6.6_73.5_Croutons
+403.0_7.0_22.4_44.6_Danish pastry
+434.0_5.31_24.93_47.06_Doughnuts
+227.0_8.87_1.69_44.17_English muffins
+213.0_7.4_6.1_32.1_French toast
+337.0_7.7_13.5_46.0_Hush puppies
+417.0_8.1_6.9_79.0_Ice cream cones
+296.0_6.9_11.4_41.4_Muffins
+233.0_5.23_6.83_37.75_Pancakes plain
+368.0_9.77_3.1_73.65_Pancakes
+237.0_1.9_11.0_34.0_Pie
+518.0_6.9_31.4_52.1_Pie crust
+299.0_7.1_6.0_52.6_Phyllo dough
+371.0_10.4_4.3_71.0_Popovers
+310.0_10.86_6.47_52.04_Rolls
+274.0_3.3_11.2_41.1_Strudel
+360.0_7.1_18.3_43.7_Sweet rolls
+476.0_6.41_21.79_63.49_Taco shells
+370.0_4.06_7.98_72.64_Toaster pastries
+218.0_5.7_2.85_44.64_Tortillas
+285.0_6.47_9.7_42.98_Waffles
+53.0_0.0_0.0_27.7_Leavening agents
+309.0_7.42_9.49_48.39_Waffle
+255.0_4.23_4.22_50.05_Muffin
+501.0_5.1_24.83_64.3_Pie Crust
+474.0_6.15_23.38_64.43_Tostada shells
+467.0_6.81_25.24_53.16_Keikitos (muffins)
+445.0_8.81_16.11_66.28_Pan Dulce
+379.0_5.48_18.5_47.76_Pastry
+350.0_8.36_16.61_41.72_Garlic bread
+452.0_4.45_26.61_48.6_Cinnamon buns
+334.0_4.41_18.52_37.43_Cream puff
+249.0_8.77_7.89_35.82_Focaccia
+525.0_5.71_28.57_61.21_Candies
+410.0_33.2_25.6_11.0_Snacks
+341.0_0.0_0.0_85.13_Fruit syrup
+609.0_2.94_44.1_50.07_Topping
+261.0_0.0_0.02_65.1_Syrup
+472.0_12.1_47.7_36.2_Baking chocolate
+180.0_4.78_4.83_29.46_Ice creams
+145.0_4.53_4.03_22.78_Desserts
+144.0_1.1_2.0_30.4_Sherbet
+291.0_0.0_0.09_72.43_Syrups
+105.0_2.76_1.7_19.74_Puddings
+541.0_5.41_29.73_62.16_Chocolate-flavored hazelnut spread
+254.0_0.2_0.1_66.3_Toppings
+360.0_0.0_0.3_96.7_Chewing gum
+228.0_19.6_13.7_57.9_Cocoa
+410.0_6.9_6.4_82.8_Egg custards
+381.0_7.8_0.0_90.5_Gelatin desserts
+335.0_85.6_0.1_0.0_Gelatins
+348.0_0.0_0.0_91.6_Flan
+85.0_3.24_2.06_13.47_Rennin
+24.0_0.5_0.1_6.2_Frozen novelties
+397.0_1.1_17.6_63.2_Frostings
+159.0_4.0_5.6_24.2_Frozen yogurts
+173.0_0.39_0.3_42.47_Fruit butters
+304.0_0.3_0.0_82.4_Honey
+278.0_0.37_0.07_68.86_Jams and preserves
+266.0_0.15_0.02_69.95_Jellies
+246.0_0.3_0.0_66.3_Marmalade
+290.0_0.0_0.1_74.73_Molasses
+325.0_0.3_0.3_90.4_Pectin
+100.0_0.1_0.1_26.1_Pie fillings
+109.0_0.65_1.12_24.2_Pudding
+380.0_0.12_0.0_98.09_Sugars
+365.0_2.17_0.0_89.08_Sweeteners
+545.0_4.62_35.28_55.38_Snack
+415.0_11.0_5.7_80.0_Tortilla chips
+432.0_8.5_12.1_72.35_Cheese puffs and twists
+381.0_2.0_1.4_90.06_Popcorn
+487.0_7.1_20.8_67.8_Potato chips
+546.0_4.88_31.28_61.17_Chocolate
+399.0_0.0_0.0_99.8_Sugar
+310.0_0.09_0.45_76.37_Sweetener
+212.0_0.0_0.0_52.93_Jams
+371.0_13.56_7.02_65.25_Amaranth grain
+357.0_0.3_0.1_88.15_Arrowroot flour
+354.0_12.48_2.3_73.48_Barley
+343.0_13.25_3.4_71.5_Buckwheat
+346.0_11.73_2.71_74.95_Buckwheat groats
+335.0_12.62_3.1_70.59_Buckwheat flour
+342.0_12.29_1.33_75.87_Bulgur
+365.0_9.42_4.74_74.26_Corn grain
+224.0_8.36_0.92_85.64_Corn bran
+361.0_6.93_3.86_76.85_Corn flour
+362.0_8.12_3.59_76.89_Cornmeal
+381.0_0.26_0.05_91.27_Cornstarch
+376.0_12.76_0.64_77.43_Couscous
+72.0_1.48_0.88_14.26_Hominy
+378.0_11.02_4.22_72.85_Millet
+246.0_17.3_7.03_66.22_Oat bran
+368.0_14.12_6.07_64.16_Quinoa
+367.0_7.54_3.2_76.25_Rice
+389.0_16.89_6.9_66.27_Oats
+316.0_13.35_20.85_49.69_Rice bran
+366.0_5.95_1.42_80.13_Rice flour
+338.0_10.34_1.63_75.86_Rye grain
+325.0_15.91_2.22_68.63_Rye flour
+360.0_12.68_1.05_72.83_Semolina
+329.0_10.62_3.46_72.09_Sorghum grain
+358.0_0.19_0.02_88.69_Tapioca
+336.0_13.05_2.09_72.13_Triticale
+338.0_13.18_1.81_73.14_Triticale flour
+329.0_15.4_1.92_68.03_Wheat
+216.0_15.55_4.25_64.51_Wheat bran
+360.0_23.15_9.72_51.8_Wheat germ
+340.0_13.21_2.5_71.97_Wheat flour
+357.0_14.73_1.08_74.9_Wild rice
+357.0_7.46_2.08_79.26_Pasta
+367.0_13.14_1.04_74.88_Macaroni
+372.0_13.35_1.57_74.81_Spaghetti
+361.0_11.98_1.66_72.53_Wheat flours
+345.0_10.5_1.6_74.52_Barley flour or meal
+361.0_10.28_1.84_78.3_Barley malt flour
+404.0_14.66_9.12_65.7_Oat flour
+364.0_5.95_0.56_80.18_Rice noodles
+338.0_14.57_2.43_70.19_Spelt
+367.0_13.3_2.38_73.13_Teff
+382.0_10.75_4.25_75.12_Millet flour
+359.0_8.43_3.34_76.64_Sorghum flour
+203.0_28.73_9.16_0.0_Beef composite
+396.0_24.29_13.12_47.24_Formulated bar
+345.0_8.2_3.1_71.04_Pretzels
+412.0_30.34_15.17_38.4_Formulated Bar
+416.0_10.0_5.0_82.64_Rice crackers
+182.0_2.16_8.92_35.58_Sweet Potatoes
+161.0_1.36_3.58_30.72_Sweet Potato puffs
+28.0_0.8_0.07_7.0_Vegetable smoothie
+31.0_0.49_0.04_8.13_Vegetable juice
+160.0_1.5_14.0_7.0_Creamy dressing
+390.0_25.0_32.0_1.0_Imitation cheese
+89.0_2.5_0.8_17.54_Babyfood
+124.0_19.6_3.8_2.93_Turkey ham
+167.0_4.3_1.0_37.7_Milk dessert
+224.0_3.0_13.1_23.6_Whipped topping
+536.0_9.6_31.2_54.1_Granola bar
+465.0_0.0_53.0_0.0_Vegetable oil-butter spread
+307.0_22.7_23.0_0.7_Turkey and pork sausage
+407.0_13.7_37.63_2.36_Pork sausage rice links
+371.0_25.56_3.25_59.87_Papad
+392.0_7.1_4.3_81.1_Rice cake
+400.0_7.1_3.33_84.7_Cereals ready-to-eat
+332.0_4.6_0.5_77.3_Gums
+10.0_0.0_0.0_2.45_Fluid replacement
+329.0_23.5_2.6_52.9_Beverage
+464.0_9.8_17.6_66.7_Breakfast bars
+331.0_0.1_0.1_82.32_Vermicelli
+189.0_17.78_11.11_4.44_Luncheon slices
+290.0_23.0_18.0_9.0_Vegetarian fillets
+197.0_21.0_9.0_8.0_Vegetarian meatloaf or patties
+476.0_32.0_25.9_28.6_Bacon bits
+373.0_2.0_1.0_89.0_Butter replacement
+24.0_1.2_0.3_5.31_Tomato sauce
+100.0_0.9_6.0_10.6_Whipped cream substitute
+227.0_25.1_14.1_0.0_Quail
+239.0_32.4_12.1_0.0_Pheasant
+131.0_13.1_5.6_7.5_Eggs
+151.0_12.5_8.1_6.9_Soybean
+22.0_0.6_0.1_4.59_Tomato and vegetable juice
+46.0_0.39_0.13_12.2_Cranberry juice
+185.0_23.88_0.9_20.42_Yeast extract spread
+94.0_3.5_1.8_15.96_Tofu yogurt
+36.0_5.5_1.4_0.0_Jellyfish
+377.0_4.4_7.5_72.9_Breakfast bar
+688.0_0.0_77.8_0.3_Mayonnaise dressing
+319.0_11.3_2.1_63.7_Celery flakes
+370.0_75.16_1.85_13.79_Vital wheat gluten
+73.0_16.4_0.3_0.0_Frog legs
