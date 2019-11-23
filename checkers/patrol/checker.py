@@ -60,7 +60,7 @@ async def check_in_list(request, id):
 @checker.define_put(vuln_num=1, vuln_rate=1)
 async def put_flag_into_the_service(request: PutRequest) -> Verdict:
     rid = uuid.uuid4()
-    id = uuid.uuid4()
+    id = f"{str(datetime.datetime.now().timestamp()).split('.')[0]}_{uuid.uuid4()}"
 
     cmd = f'java -Xss1024m -jar ./build/libs/patrol-1.0.0.jar -m=create --id={id} --rid={rid} -f={request.flag}'
     _json, last = await get_out(cmd)
