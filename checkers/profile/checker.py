@@ -31,7 +31,8 @@ async def put_flag_lwe(request: PutRequest) -> Verdict:
     async with API(request.hostname) as api:
         try:
             pub_key = await api.get_pub_key(algo, login)
-            pub_key = list(map(int, b64decode(pub_key['pub_key']).decode().split(',')))
+            pub_key = list(list(map(int, x.split(','))) for x in b64decode(pub_key['pub_key']).decode().split(';'))
+
         except Exception as e:
             return Verdict.MUMBLE("Can't get public key", traceback.format_exc())
     
@@ -44,7 +45,7 @@ async def put_flag_lwe(request: PutRequest) -> Verdict:
         except Exception as e:
             return Verdict.MUMBLE("Can't sign message", traceback.format_exc())
 
-    algo = RLWE(16, 929, 5)
+    algo = RLWE(16, 929)
     if algo.verify(_note_hash, pub_key, _signature):
         return Verdict.OK("{}:{}:{}".format(login, note_hash, signature))
     else:
@@ -73,7 +74,7 @@ async def get_flag_lwe(request: GetRequest) -> Verdict:
 
         try:
             pub_key = await api.get_pub_key(algo, login)
-            pub_key = list(map(int, b64decode(pub_key['pub_key']).decode().split(',')))
+            pub_key = list(list(map(int, x.split(','))) for x in b64decode(pub_key['pub_key']).decode().split(';'))
         except Exception as e:
             return Verdict.MUMBLE("No public key", traceback.format_exc())
         
