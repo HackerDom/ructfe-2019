@@ -122,12 +122,13 @@ app.post('/register', async function (request, response) {
         lastName: request.body.lastName ? request.body.lastName.toString() : null,
         biography: request.body.biography ? request.body.biography.toString() : null
     });
+
     const isValid = fieldsAreExist(
         newUser.username,
         newUser.password,
         newUser.firstName,
         newUser.lastName,
-        newUser.biography);
+        newUser.biography) && newUser.username !== '' && newUser.password !== '';
 
     if (!isValid) {
         await sendResponseOnInvalidRequestFields(response);
