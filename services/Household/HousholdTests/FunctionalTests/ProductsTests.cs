@@ -27,6 +27,7 @@ namespace HouseholdTests.FunctionalTests
             var product = new ProductView
             {
                 Name = "Морковь",
+                Manufacturer = "Россия",
                 Calories = 10,
                 Carbohydrate = 10,
                 Fat = 0,
@@ -112,6 +113,7 @@ namespace HouseholdTests.FunctionalTests
             new ProductView
             {
                 Name = "Помидор",
+                Manufacturer = "Россия",
                 Calories = 20,
                 Carbohydrate = 10,
                 Fat = 0,
@@ -120,6 +122,7 @@ namespace HouseholdTests.FunctionalTests
             new ProductView
             {
                 Name = "Яйцо",
+                Manufacturer = "Россия",
                 Calories = 140,
                 Carbohydrate = 2,
                 Fat = 9,
@@ -128,6 +131,7 @@ namespace HouseholdTests.FunctionalTests
             new ProductView
             {
                 Name = "Картофель",
+                Manufacturer = "Россия",
                 Calories = 80,
                 Carbohydrate = 10,
                 Fat = 0,
@@ -136,6 +140,7 @@ namespace HouseholdTests.FunctionalTests
             new ProductView
             {
                 Name = "Лук",
+                Manufacturer = "Россия",
                 Calories = 30,
                 Carbohydrate = 10,
                 Fat = 0,
