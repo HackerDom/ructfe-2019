@@ -41,6 +41,7 @@ task fatJar(type: Jar) {
         attributes 'Implementation-Title': 'Gradle Jar File Example', 'Main-Class': 'AppKt'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    baseName = "ructfe"
     with jar
 }
 
@@ -49,7 +50,7 @@ task genExploit(type: Jar) {
         attributes 'Implementation-Title': 'Gradle Jar File Example', 'Main-Class': 'ExploitKt'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    archivesBaseName = "exploit"
+    baseName = "exploit"
     with jar
 }
 
