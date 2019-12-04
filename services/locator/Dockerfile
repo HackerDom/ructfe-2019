@@ -8,10 +8,10 @@ WORKDIR /app
 
 COPY . /app
 
-# RUN ./gradlew fatJar
+RUN ./gradlew fatJar
 
-# RUN chown -R locator /app
+RUN chown -R locator /app
 
-# USER locator
+USER locator
 
-# CMD ["java", "-jar", "build/libs/ructfe-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "build/libs/ructfe-1.0-SNAPSHOT.jar"]
