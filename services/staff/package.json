@@ -60,6 +60,6 @@
     "eslint-plugin-standard": "^4.0.1",
     "install": "^0.13.0",
     "nodemon": "^1.19.4",
-    "npm": "^6.13.0"
+    "npm": "^6.13.4"
   }
 }
