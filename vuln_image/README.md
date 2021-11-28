@@ -1,4 +1,3 @@
-
 # Base image preparation
 
 Before start generate new pair of ssh keys: `ssh-keygen`
@@ -6,12 +5,13 @@ Before start generate new pair of ssh keys: `ssh-keygen`
 * make VM
 * install Ubuntu Server from iso, use advanced installer, choose minimal installation (by F4)
 * make ructfe user during process
+* use separate partition for /home (because of docker) and then /var/lib/docker as bind mount to home
 
 After boot:
 * `swapoff /swapfile && rm /swapfile` (before it gets used)
 
 * set password for root and login as one
-* disable ructfe user: `passwd -l -d ructfe`
+* delete ructfe user: `deluser ructfe && rm -rf /home/ructfe`
 * `apt install --no-install-recommends docker.io docker-compose htop mc vim rpl`
 * `apt update && apt upgrade`
 * `sudo apt install virtualbox-guest-utils`
